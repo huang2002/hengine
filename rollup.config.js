@@ -7,7 +7,8 @@ export default [
         input,
         output: {
             format: 'esm',
-            file: 'dist/hengine.js'
+            file: 'dist/hengine.js',
+            freeze: false
         }
     },
     {
@@ -17,8 +18,9 @@ export default [
         ],
         output: {
             format: 'umd',
-            name: 'HEngine',
-            file: 'dist/hengine.umd.js'
+            name: 'HE',
+            file: 'dist/hengine.umd.js',
+            freeze: false
         }
     }
 ];

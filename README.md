@@ -27,9 +27,9 @@
 
     ```js
     // es2015+
-    import * as HEngine from "hengine";
+    import * as HE from "hengine";
     // es5
-    const HEngine = require("hengine");
+    const HE = require("hengine");
     ```
 
 3. Use it in your code.
@@ -50,7 +50,7 @@
     <script type="text/javascript" crossorigin="anonymous" src="https://unpkg.com/hengine@latest/dist/hengine.umd.min.js"></script>
     ```
 
-2. Access the APIs via the `HEngine` global.
+2. Access the APIs via the `HE` global.
 
 If you want a specified version, just replace `latest` with that in the url. By the way, it is recommended to use a specified version in production.
 
