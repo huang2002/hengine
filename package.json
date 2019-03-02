@@ -8,7 +8,7 @@
     "scripts": {
         "prebuild": "rd /q /s dist typings raw || exit 0",
         "build": "tsc && rollup -c",
-        "postbuild": "terser dist/hengine.js --config-file terser.json --module -o dist/hengine.min.js && terser dist/hengine.umd.js --config-file terser.json -o dist/hengine.umd.min.js"
+        "postbuild": "terser dist/hengine.js --config-file terser.json --module -o dist/hengine.min.js && terser dist/hengine.umd.js --config-file terser.json -o dist/hengine.umd.min.js && node stat"
     },
     "license": "MIT",
     "author": "3h",
