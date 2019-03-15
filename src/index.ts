@@ -13,8 +13,11 @@ export * from "./renderer/Sizing";
 export * from "./renderer/Renderer";
 
 export * from "./graph/Sprite";
+export * from "./graph/Text";
 export * from "./graph/Shape";
 export * from "./graph/Polygon";
 
-export * from "./core/Engine";
 export * from "./core/Runner";
+export * from "./core/Scene";
+export * from "./core/Inspector";
+export * from "./core/Engine";

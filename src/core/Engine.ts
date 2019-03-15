@@ -2,10 +2,12 @@ import { EMPTY_OBJECT, _assign, _null } from "../utils/refs";
 import { Runner } from "./Runner";
 import { Renderer } from "../renderer/Renderer";
 import { Scene } from "./Scene";
+import { Inspector } from "./Inspector";
 
 export type EngineOptions = Partial<{
     runner: Runner;
     renderer: Renderer;
+    inspector: Inspector | null;
     baseTime: number;
     maxDelay: number;
     currentScene: Scene | null;
@@ -13,7 +15,7 @@ export type EngineOptions = Partial<{
 
 export class Engine implements Required<EngineOptions> {
 
-    static Defaults: EngineOptions = {
+    static defaults: EngineOptions = {
         baseTime: 100,
         maxDelay: 2000,
     };
@@ -34,6 +36,7 @@ export class Engine implements Required<EngineOptions> {
 
     runner!: Runner;
     renderer!: Renderer;
+    inspector: Inspector | null = _null;
     baseTime!: number;
     maxDelay!: number;
     currentScene: Scene | null = _null;
@@ -53,11 +56,15 @@ export class Engine implements Required<EngineOptions> {
         if (deltaTime > this.maxDelay) {
             return;
         }
-        const { currentScene } = this;
+        const { currentScene, inspector, renderer } = this;
         if (currentScene) {
             this.runner.delay = currentScene.delay;
             currentScene.update(deltaTime / this.baseTime);
-            currentScene.render(this.renderer);
+            currentScene.render(renderer);
+        }
+        if (inspector) {
+            inspector.update(currentScene);
+            inspector.render(renderer);
         }
     }
 

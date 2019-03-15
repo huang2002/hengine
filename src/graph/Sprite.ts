@@ -2,7 +2,7 @@ import { Renderable } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { EMPTY_OBJECT, _assign, _document, _undefined } from "../utils/refs";
 import { Callback } from "../utils/common";
-import { CommonStyle, DefaultStyle } from "./CommonStyle";
+import { CommonStyle, commonStyle, applyCommonStyle } from "./CommonStyle";
 
 export type ImageLike = Exclude<CanvasImageSource, SVGImageElement>;
 
@@ -18,9 +18,9 @@ export type SpriteOptions = Partial<{
     height: number;
 }>;
 
-export class Sprite implements Renderable, Required<SpriteOptions> {
+export class Sprite implements Required<SpriteOptions>, Renderable {
 
-    static DefaultStyle: CommonStyle = _assign({} as CommonStyle, DefaultStyle);
+    static defaultStyle: CommonStyle = _assign({} as CommonStyle, commonStyle);
 
     static of(src: string, options?: Readonly<SpriteOptions>) {
         return (new Sprite(options)).load(src);
@@ -33,7 +33,7 @@ export class Sprite implements Renderable, Required<SpriteOptions> {
             this.position = new Vector();
         }
 
-        this.style = _assign({}, Sprite.DefaultStyle, options.style);
+        this.style = _assign({}, Sprite.defaultStyle, options.style);
 
     }
 
@@ -66,17 +66,11 @@ export class Sprite implements Renderable, Required<SpriteOptions> {
     render(context: CanvasRenderingContext2D) {
         const { image } = this;
         if (image) {
-            const { position, style } = this,
+            const { position } = this,
                 { width, height } = image,
                 dstW = this.width || width,
                 dstH = this.height || height;
-            context.globalAlpha = style.opacity;
-            if (style.shadowColor) {
-                context.shadowColor = style.shadowColor;
-                context.shadowBlur = style.shadowBlur;
-                context.shadowOffsetX = style.shadowOffsetX;
-                context.shadowOffsetY = style.shadowOffsetY;
-            }
+            applyCommonStyle(context, this.style);
             context.drawImage(
                 image,
                 (this.srcX || 0) - dstW / 2, (this.srcY || 0) - dstH / 2,

@@ -31,11 +31,11 @@ export interface BodyEvents {
     didUpdate: number;
 }
 
-export abstract class Body extends EventEmitter<BodyEvents> implements Renderable, Required<BodyOptions> {
+export abstract class Body extends EventEmitter<BodyEvents> implements Required<BodyOptions>, Renderable {
 
     static NormalPrecision = 3;
 
-    static Defaults: BodyOptions = {
+    static defaults: BodyOptions = {
         filter: 0,
         collisionFilter: 0,
         isSensor: false,
@@ -46,7 +46,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Renderabl
     constructor(options: Readonly<BodyOptions> = EMPTY_OBJECT) {
         super();
 
-        _assign(this, Body.Defaults, options);
+        _assign(this, Body.defaults, options);
 
         if (!options.position) {
             this.position = new Vector();

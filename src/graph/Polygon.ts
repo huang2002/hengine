@@ -10,15 +10,15 @@ export type PolygonOptions = ShapeOptions & Partial<{
     adjustment: boolean;
 }>;
 
-export class Polygon extends Shape implements Renderable, Required<PolygonOptions> {
+export class Polygon extends Shape implements Required<PolygonOptions>, Renderable {
 
-    static Defaults: PolygonOptions = {
+    static defaults: PolygonOptions = {
         clockwise: true,
         adjustment: true,
     };
 
     constructor(options: Readonly<PolygonOptions> = EMPTY_OBJECT) {
-        super(_assign({}, Polygon.Defaults, options));
+        super(_assign({}, Polygon.defaults, options));
 
         if (options.vertices) {
             this.updateVertices();

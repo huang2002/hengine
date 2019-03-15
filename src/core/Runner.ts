@@ -16,7 +16,7 @@ export class Runner extends EventEmitter<RunnerEvents> implements Required<Runne
 
     static RAFThreshold = 1000 / 60;
 
-    static Defaults: RunnerOptions = {
+    static defaults: RunnerOptions = {
         delay: Runner.RAFThreshold,
         allowRAF: true,
         fixDelay: true,
@@ -25,7 +25,7 @@ export class Runner extends EventEmitter<RunnerEvents> implements Required<Runne
     constructor(options?: Readonly<RunnerOptions>) {
         super();
 
-        _assign(this, Runner.Defaults, options);
+        _assign(this, Runner.defaults, options);
 
         this._tick = this._tick.bind(this);
 

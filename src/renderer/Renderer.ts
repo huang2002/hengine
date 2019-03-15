@@ -25,7 +25,7 @@ export type RendererOptions = Partial<{
 
 export class Renderer implements Required<RendererOptions>{
 
-    static Defaults: RendererOptions = {
+    static defaults: RendererOptions = {
         settings: EMPTY_OBJECT,
         width: 960,
         height: 640,

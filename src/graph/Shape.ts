@@ -2,7 +2,7 @@ import { Body, BodyOptions } from "../physics/Body";
 import { Renderable } from "../renderer/Renderer";
 import { EMPTY_OBJECT, _assign, _null } from "../utils/refs";
 import { Sprite } from "./Sprite";
-import { RenderingStyle, CommonStyle, DefaultStyle } from "./CommonStyle";
+import { RenderingStyle, CommonStyle, commonStyle, applyCommonStyle } from "./CommonStyle";
 
 export interface ShapeStyle extends CommonStyle {
     fillStyle: RenderingStyle | null;
@@ -24,16 +24,16 @@ export type ShapeOptions = BodyOptions & Partial<{
     sprite: Sprite | null;
 }>;
 
-export abstract class Shape extends Body implements Renderable, Required<ShapeOptions> {
+export abstract class Shape extends Body implements Required<ShapeOptions>, Renderable {
 
-    static Defaults: ShapeOptions = {
+    static defaults: ShapeOptions = {
         visible: true,
         fillFirst: true,
         closePath: true,
         isCircle: false,
     };
 
-    static DefaultStyle: ShapeStyle = _assign({} as ShapeStyle, DefaultStyle, {
+    static defaultStyle: ShapeStyle = _assign({} as ShapeStyle, commonStyle, {
         fillStyle: _null,
         strokeStyle: '#000',
         lineWidth: 1,
@@ -45,8 +45,8 @@ export abstract class Shape extends Body implements Renderable, Required<ShapeOp
     } as ShapeStyle);
 
     constructor(options: Readonly<ShapeOptions> = EMPTY_OBJECT) {
-        super(_assign({}, Shape.Defaults, options));
-        this.style = _assign({}, Shape.DefaultStyle, options.style);
+        super(_assign({}, Shape.defaults, options));
+        this.style = _assign({}, Shape.defaultStyle, options.style);
     }
 
     style!: ShapeStyle;
@@ -69,14 +69,7 @@ export abstract class Shape extends Body implements Renderable, Required<ShapeOp
 
         context.translate(position.x, position.y);
 
-        context.globalAlpha = style.opacity;
-
-        if (style.shadowColor) {
-            context.shadowColor = style.shadowColor;
-            context.shadowBlur = style.shadowBlur;
-            context.shadowOffsetX = style.shadowOffsetX;
-            context.shadowOffsetY = style.shadowOffsetY;
-        }
+        applyCommonStyle(context, style);
 
         context.beginPath();
         this.path(context);

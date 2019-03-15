@@ -28,7 +28,7 @@ export interface SceneEvents {
 
 export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOptions> {
 
-    static Defaults: SceneOptions = {
+    static defaults: SceneOptions = {
         delay: 0,
         timeScale: 1,
         background: '#fff',
@@ -38,7 +38,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     constructor(options: SceneOptions = EMPTY_OBJECT) {
         super();
 
-        _assign(this, Scene.Defaults, options);
+        _assign(this, Scene.defaults, options);
 
         if (!options.objects) {
             this.objects = [];
