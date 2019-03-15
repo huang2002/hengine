@@ -3,6 +3,7 @@ import { EMPTY_OBJECT, _assign, _undefined, _abs, _Infinity } from "../utils/ref
 import { Vector } from "../geometry/Vector";
 import { FilterTag, Filter } from "./Filter";
 import { Bounds } from "../geometry/Bounds";
+import { Renderable } from "../renderer/Renderer";
 
 export interface Projection {
     min: number;
@@ -13,6 +14,7 @@ export type BodyOptions = Partial<{
     tag: FilterTag;
     filter: number;
     collisionFilter: number;
+    isSensor: boolean;
     active: boolean;
     position: Vector;
     velocity: Vector;
@@ -29,13 +31,14 @@ export interface BodyEvents {
     didUpdate: number;
 }
 
-export abstract class Body extends EventEmitter<BodyEvents> implements Required<BodyOptions> {
+export abstract class Body extends EventEmitter<BodyEvents> implements Renderable, Required<BodyOptions> {
 
-    static NORMAL_PRECISION = 3;
+    static NormalPrecision = 3;
 
     static Defaults: BodyOptions = {
         filter: 0,
         collisionFilter: 0,
+        isSensor: false,
         active: false,
         density: .01,
     };
@@ -72,6 +75,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
     tag: FilterTag = '';
     filter!: number;
     collisionFilter!: number;
+    isSensor!: boolean;
     active!: boolean;
     bounds = new Bounds();
     position!: Vector;
@@ -107,6 +111,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
     protected abstract _scale(scaleX: number, scaleY: number, origin?: Vector): void;
     protected abstract _rotate(rotation: number, origin?: Vector): void;
     abstract project(direction: Vector): Projection;
+    abstract render(context: CanvasRenderingContext2D): void;
 
     setScale(scaleX: number, scaleY = scaleX) {
         const deltaScaleX = scaleX / this.scaleX,

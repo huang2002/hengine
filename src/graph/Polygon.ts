@@ -7,29 +7,30 @@ import { Body } from "../physics/Body";
 export type PolygonOptions = ShapeOptions & Partial<{
     vertices: ReadonlyArray<Vector>;
     clockwise: boolean;
-    centerAdjustment: boolean;
+    adjustment: boolean;
 }>;
 
 export class Polygon extends Shape implements Renderable, Required<PolygonOptions> {
 
     static Defaults: PolygonOptions = {
-        vertices: [],
         clockwise: true,
-        centerAdjustment: true,
+        adjustment: true,
     };
 
     constructor(options: Readonly<PolygonOptions> = EMPTY_OBJECT) {
         super(_assign({}, Polygon.Defaults, options));
 
-        if (this.vertices.length) {
+        if (options.vertices) {
             this.updateVertices();
+        } else {
+            this.vertices = [];
         }
 
     }
 
     vertices!: ReadonlyArray<Vector>;
     clockwise!: boolean;
-    centerAdjustment!: boolean;
+    adjustment!: boolean;
 
     updateVertices(vertices?: ReadonlyArray<Vector>) {
         if (vertices) {
@@ -39,8 +40,8 @@ export class Polygon extends Shape implements Renderable, Required<PolygonOption
         }
         const { bounds } = this;
         if (vertices.length > 1) {
-            const { clockwise, centerAdjustment } = this,
-                { NORMAL_PRECISION } = Body,
+            const { clockwise, adjustment } = this,
+                { NormalPrecision } = Body,
                 areas = new Array<number>(),
                 normals = new Array<Vector>(),
                 centers = new Array<Vector>(),
@@ -51,12 +52,12 @@ export class Polygon extends Shape implements Renderable, Required<PolygonOption
                     const area = Vector.cross(vertex1, vertex2) / 2;
                     totalArea += area;
                     const normal = Vector.subtract(vertex2, vertex1).turn(clockwise).normalize(),
-                        stringifiedNormal = normal.toString(NORMAL_PRECISION);
+                        stringifiedNormal = normal.toString(NormalPrecision);
                     if (!normalCache.has(stringifiedNormal)) {
                         normalCache.add(stringifiedNormal);
                         normals.push(normal);
                     }
-                    if (centerAdjustment) {
+                    if (adjustment) {
                         centers.push(Vector.of(
                             (vertex1.x + vertex2.x) / 3,
                             (vertex1.y + vertex2.y) / 3
@@ -67,7 +68,7 @@ export class Polygon extends Shape implements Renderable, Required<PolygonOption
                 },
                 vertices[vertices.length - 1]
             );
-            if (centerAdjustment) {
+            if (adjustment) {
                 const offset = Vector.mix(
                     centers.map((center, i) => center.scale(areas[i] / totalArea))
                 ).reverse();

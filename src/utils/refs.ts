@@ -3,7 +3,8 @@ export const _null = null,
     _Infinity = Infinity;
 
 export const _window = window,
-    { document: _document } = _window,
+    { document: _document, requestAnimationFrame: _requestAnimationFrame,
+        cancelAnimationFrame: _cancelAnimationFrame } = _window,
     _Object = Object,
     { assign: _assign } = _Object,
     _Map = Map,
