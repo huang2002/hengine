@@ -1,7 +1,8 @@
-import { EventEmitter, Events } from "../utils/index";
+import { EventEmitter } from "../utils/EventEmitter";
 import { EMPTY_OBJECT, _assign, _undefined, _abs, _Infinity } from "../utils/refs";
-import { Vector, Bounds } from "../geometry/index";
+import { Vector } from "../geometry/Vector";
 import { FilterTag, Filter } from "./Filter";
+import { Bounds } from "../geometry/Bounds";
 
 export interface Projection {
     min: number;
@@ -12,7 +13,7 @@ export type BodyOptions = Partial<{
     tag: FilterTag;
     filter: number;
     collisionFilter: number;
-    isStatic: boolean;
+    active: boolean;
     position: Vector;
     velocity: Vector;
     acceleration: Vector;
@@ -23,8 +24,9 @@ export type BodyOptions = Partial<{
     rotation: number;
 }>;
 
-export interface BodyEvents extends Events {
-    update: [number];
+export interface BodyEvents {
+    willUpdate: number;
+    didUpdate: number;
 }
 
 export abstract class Body extends EventEmitter<BodyEvents> implements Required<BodyOptions> {
@@ -34,7 +36,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
     static Defaults: BodyOptions = {
         filter: 0,
         collisionFilter: 0,
-        isStatic: false,
+        active: false,
         density: .01,
     };
 
@@ -70,7 +72,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
     tag: FilterTag = '';
     filter!: number;
     collisionFilter!: number;
-    isStatic!: boolean;
+    active!: boolean;
     bounds = new Bounds();
     position!: Vector;
     velocity!: Vector;
@@ -83,22 +85,22 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
 
     setDensity(density: number) {
         this.density = density;
-        if (!this.isStatic) {
+        if (this.active) {
             this.mass = this.area * density;
         }
         return this;
     }
 
     setMass(mass: number) {
-        if (!this.isStatic) {
+        if (this.active) {
             this.mass = mass;
         }
         this.density = mass / this.area;
         return this;
     }
 
-    setStatic(isStatic = true) {
-        this.mass = (this.isStatic = isStatic) ? _Infinity : this.area * this.density;
+    activate(active = true) {
+        this.mass = (this.active = active) ? this.area * this.density : _Infinity;
         return this;
     }
 
@@ -164,7 +166,8 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
     }
 
     update(timeScale: number) {
-        if (!this.isStatic) {
+        this.emit('willUpdate', timeScale);
+        if (this.active) {
             const { velocity } = this;
             this.position.addVector(
                 velocity.addVector(
@@ -173,7 +176,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
             );
             this.bounds.moveVector(velocity);
         }
-        this.emit('update', timeScale);
+        this.emit('didUpdate', timeScale);
         return this;
     }
 

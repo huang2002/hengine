@@ -1,10 +1,10 @@
 import { Body, BodyOptions } from "../physics/Body";
-import { Renderable } from "../renderer/index";
+import { Renderable } from "../renderer/Renderer";
 import { EMPTY_OBJECT, _assign, _null } from "../utils/refs";
+import { Sprite } from "./Sprite";
+import { RenderingStyle, CommonStyle, DefaultStyle } from "./CommonStyle";
 
-export type RenderingStyle = string | CanvasGradient | CanvasPattern;
-
-export interface ShapeStyle {
+export interface ShapeStyle extends CommonStyle {
     fillStyle: RenderingStyle | null;
     strokeStyle: RenderingStyle | null;
     lineWidth: number;
@@ -13,49 +13,48 @@ export interface ShapeStyle {
     miterLimit: number;
     lineDash: number[] | null;
     lineDashOffset: number;
-    shadowColor: string | null;
-    shadowBlur: number;
-    shadowOffsetX: number;
-    shadowOffsetY: number;
-    opacity: number;
 }
 
 export type ShapeOptions = BodyOptions & Partial<{
     style: Partial<ShapeStyle>;
     visible: boolean;
     fillFirst: boolean;
+    closePath: boolean;
+    isCircle: boolean;
+    sprite: Sprite | null;
 }>;
 
 export abstract class Shape extends Body implements Renderable, Required<ShapeOptions> {
 
     static Defaults: ShapeOptions = {
-        style: {
-            fillStyle: _null,
-            strokeStyle: '#000',
-            lineWidth: 1,
-            lineCap: 'butt',
-            lineJoin: 'miter',
-            miterLimit: 10,
-            lineDash: _null,
-            lineDashOffset: 0,
-            shadowColor: null,
-            shadowBlur: 0,
-            shadowOffsetX: 0,
-            shadowOffsetY: 0,
-            opacity: 1,
-        } as ShapeStyle,
         visible: true,
-        fillFirst: true
+        fillFirst: true,
+        closePath: true,
+        isCircle: false,
     };
+
+    static DefaultStyle: ShapeStyle = _assign({} as ShapeStyle, DefaultStyle, {
+        fillStyle: _null,
+        strokeStyle: '#000',
+        lineWidth: 1,
+        lineCap: 'butt',
+        lineJoin: 'miter',
+        miterLimit: 10,
+        lineDash: _null,
+        lineDashOffset: 0,
+    } as ShapeStyle);
 
     constructor(options: Readonly<ShapeOptions> = EMPTY_OBJECT) {
         super(_assign({}, Shape.Defaults, options));
-        this.style = _assign({}, Shape.Defaults.style, options.style) as ShapeStyle;
+        this.style = _assign({}, Shape.DefaultStyle, options.style);
     }
 
     style!: ShapeStyle;
-    fillFirst!: boolean;
     visible!: boolean;
+    fillFirst!: boolean;
+    closePath!: boolean;
+    isCircle!: boolean;
+    sprite: Sprite | null = _null;
 
     abstract path(context: CanvasRenderingContext2D): void;
 
@@ -65,12 +64,13 @@ export abstract class Shape extends Body implements Renderable, Required<ShapeOp
             return;
         }
 
-        const { style, fillFirst } = this,
+        const { style, fillFirst, position } = this,
             { fillStyle } = style;
 
-        context.save();
+        context.translate(position.x, position.y);
 
         context.globalAlpha = style.opacity;
+
         if (style.shadowColor) {
             context.shadowColor = style.shadowColor;
             context.shadowBlur = style.shadowBlur;
@@ -78,7 +78,11 @@ export abstract class Shape extends Body implements Renderable, Required<ShapeOp
             context.shadowOffsetY = style.shadowOffsetY;
         }
 
+        context.beginPath();
         this.path(context);
+        if (this.closePath) {
+            context.closePath();
+        }
 
         if (fillStyle) {
             context.fillStyle = fillStyle;
@@ -100,8 +104,6 @@ export abstract class Shape extends Body implements Renderable, Required<ShapeOp
         if (!fillFirst && fillStyle) {
             context.fill();
         }
-
-        context.restore();
 
     }
 

@@ -62,5 +62,5 @@ For more information about these two CDN sites, visit [www.jsdelivr.com](https:/
 
 ## Links
 
-- [Changelog](https://github.com/huang2002/hengine/blob/master/CHANGELOG.md)
-- [License (MIT)](https://github.com/huang2002/hengine/blob/master/LICENSE)
+- [Changelog](./CHANGELOG.md)
+- [License (MIT)](./LICENSE)

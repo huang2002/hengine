@@ -1,5 +1,5 @@
-import { Renderable } from "../renderer/index";
-import { Vector } from "../geometry/index";
+import { Renderable } from "../renderer/Renderer";
+import { Vector } from "../geometry/Vector";
 import { _abs, EMPTY_OBJECT, _assign, _Set } from "../utils/refs";
 import { Shape, ShapeOptions } from "./Shape";
 import { Body } from "../physics/Body";

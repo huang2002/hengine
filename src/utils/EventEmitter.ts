@@ -1,15 +1,20 @@
 import { _Map, _undefined } from "./refs";
-import { removeIndex } from "./common";
+import { removeIndex, ToArray, Callback } from "./common";
 
-export interface Events {
-    [event: string]: any[];
-}
+export type EventListener<T> = Callback<void, T, void>;
 
-export type EventListenerRecord<T extends any[]> = [EventListener<T>, boolean];
+export type EventListenerRecord<T> = [EventListener<T>, boolean];
 
-export type EventListener<T extends any[]> = (...args: T) => void;
+export class EventEmitter<E extends object = any> {
 
-export class EventEmitter<E extends Events = Events> {
+    constructor() {
+        this.on = this.on.bind(this);
+        this.off = this.off.bind(this);
+        this.once = this.once.bind(this);
+        this.emit = this.emit.bind(this as any);
+        this.clear = this.clear.bind(this);
+        this.clearAll = this.clearAll.bind(this);
+    }
 
     private _listenerMap = new _Map<keyof E, EventListenerRecord<any>[]>();
 
@@ -44,7 +49,7 @@ export class EventEmitter<E extends Events = Events> {
         return this.on(event, listener, true);
     }
 
-    emit<T extends keyof E>(event: T, ...args: E[T]) {
+    emit<T extends keyof E>(event: T, ...args: ToArray<E[T]>) {
         const { _listenerMap } = this;
         if (_listenerMap.has(event)) {
             const records = _listenerMap.get(event)!;

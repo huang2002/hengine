@@ -19,7 +19,8 @@ export const distance = (x1: number, y1: number, x2: number, y2: number) =>
 
 export const now = (_window.performance || _Date).now;
 
-export type Callback<T=void, A extends any[]=unknown[], R = unknown> = (this: T, ...args: A) => R;
+export type Callback<T=void, A = unknown[], R = unknown> =
+    (this: T, ...args: A extends any[] ? A : [A]) => R;
 
 export type DebounceCallback = Callback;
 
@@ -67,3 +68,5 @@ export const threshold = <F extends ThresholdCallback>(callback: F, initThreshol
 };
 
 threshold.DEFAULT_THRESHOLD = 100;
+
+export type ToArray<T> = T extends any[] ? T : [T];

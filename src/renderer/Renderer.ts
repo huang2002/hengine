@@ -1,10 +1,9 @@
 import { EMPTY_OBJECT, _document, _assign, _window, _undefined } from "../utils/refs";
 import { SizingFunction, Sizing } from "./Sizing";
-import { Vector } from "../geometry/index";
+import { Vector } from "../geometry/Vector";
 import { debounce } from "../utils/common";
 
 export interface Renderable {
-    position: Vector;
     render(context: CanvasRenderingContext2D): void;
 }
 
@@ -21,6 +20,7 @@ export type RendererOptions = Partial<{
     sizing: SizingFunction;
     resizeEvents: string[];
     resizeDelay: number;
+    restoration: boolean;
 }>;
 
 export class Renderer implements Required<RendererOptions>{
@@ -37,6 +37,7 @@ export class Renderer implements Required<RendererOptions>{
         sizing: Sizing.Fixed,
         resizeEvents: ['resize', 'orientationchange'],
         resizeDelay: 100,
+        restoration: false,
     };
 
     constructor(options: Readonly<RendererOptions> = EMPTY_OBJECT) {
@@ -83,6 +84,8 @@ export class Renderer implements Required<RendererOptions>{
 
     align!: boolean;
     sizing!: SizingFunction;
+
+    restoration!: boolean;
 
     set resizeDelay(delay: number) {
         this.resizeListener.delay = delay;
@@ -138,11 +141,14 @@ export class Renderer implements Required<RendererOptions>{
     }
 
     render(renderable: Renderable) {
-        const { context } = this,
-            { position } = renderable;
-        context.translate(position.x, position.y);
+        const { context, restoration } = this;
+        if (restoration) {
+            context.save();
+        }
         renderable.render(context);
-        context.translate(-position.x, -position.y);
+        if (restoration) {
+            context.restore();
+        }
     }
 
 }
