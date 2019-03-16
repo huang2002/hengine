@@ -19,6 +19,7 @@ export type BodyOptions = Partial<{
     position: Vector;
     velocity: Vector;
     acceleration: Vector;
+    gravity: Vector;
     density: number;
     mass: number;
     scaleX: number;
@@ -43,6 +44,8 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         density: .01,
     };
 
+    static defaultGravity = Vector.of(0, 5);
+
     constructor(options: Readonly<BodyOptions> = EMPTY_OBJECT) {
         super();
 
@@ -56,6 +59,9 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         }
         if (!options.acceleration) {
             this.acceleration = new Vector();
+        }
+        if (!options.gravity) {
+            this.gravity = Body.defaultGravity;
         }
 
         if (options.filter) {
@@ -72,39 +78,40 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
 
     readonly area = 0;
     readonly normals: ReadonlyArray<Vector> = [];
-    tag: FilterTag = '';
-    filter!: number;
-    collisionFilter!: number;
-    isSensor!: boolean;
-    active!: boolean;
-    bounds = new Bounds();
+    readonly scaleX = 1;
+    readonly scaleY = 1;
+    readonly rotation = 0;
+    readonly density!: number;
+    readonly mass = 0;
+    readonly active!: boolean;
+    readonly tag: FilterTag = '';
+    readonly filter!: number;
+    readonly collisionFilter!: number;
+    readonly isSensor!: boolean;
+    readonly bounds = new Bounds();
     position!: Vector;
     velocity!: Vector;
     acceleration!: Vector;
-    density!: number;
-    mass = 0;
-    scaleX = 1;
-    scaleY = 1;
-    rotation = 0;
+    gravity!: Vector;
 
     setDensity(density: number) {
-        this.density = density;
+        (this.density as number) = density;
         if (this.active) {
-            this.mass = this.area * density;
+            (this.mass as number) = this.area * density;
         }
         return this;
     }
 
     setMass(mass: number) {
         if (this.active) {
-            this.mass = mass;
+            (this.mass as number) = mass;
         }
-        this.density = mass / this.area;
+        (this.density as number) = mass / this.area;
         return this;
     }
 
     activate(active = true) {
-        this.mass = (this.active = active) ? this.area * this.density : _Infinity;
+        (this.mass as number) = ((this.active as boolean) = active) ? this.area * this.density : _Infinity;
         return this;
     }
 
@@ -118,10 +125,10 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
             deltaScaleY = scaleY / this.scaleY,
             scale = deltaScaleX * deltaScaleY;
         (this.area as number) *= scale;
-        this.mass *= scale;
+        (this.mass as number) *= scale;
         this._scale(deltaScaleX, deltaScaleY);
-        this.scaleX = scaleX;
-        this.scaleY = scaleY;
+        (this.scaleX as number) = scaleX;
+        (this.scaleY as number) = scaleY;
         this.position.scale(deltaScaleX, deltaScaleY);
         return this;
     }
@@ -129,10 +136,10 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
     scale(scaleX: number, scaleY = scaleX, origin?: Vector) {
         const scale = scaleX * scaleY;
         (this.area as number) *= scale;
-        this.mass *= scale;
+        (this.mass as number) *= scale;
         this._scale(scaleX, scaleY, origin);
-        this.scaleX *= scaleX;
-        this.scaleY *= scaleY;
+        (this.scaleX as number) *= scaleX;
+        (this.scaleY as number) *= scaleY;
         this.position.scale(scaleX, scaleY, origin);
         return this;
     }
@@ -140,10 +147,10 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
     shrink(shrinkX: number, shrinkY = shrinkX, origin?: Vector) {
         const shrink = shrinkX * shrinkY;
         (this.area as number) /= shrink;
-        this.mass /= shrink;
+        (this.mass as number) /= shrink;
         this._scale(1 / shrinkX, 1 / shrinkY, origin);
-        this.scaleX /= shrinkX;
-        this.scaleY /= shrinkY;
+        (this.scaleX as number) /= shrinkX;
+        (this.scaleY as number) /= shrinkY;
         this.position.shrink(shrinkX, shrinkY, origin);
         return this;
     }
@@ -151,14 +158,14 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
     setRotation(rotation: number, origin?: Vector) {
         const deltaRotation = rotation - this.rotation;
         this._rotate(deltaRotation, origin);
-        this.rotation = rotation;
+        (this.rotation as number) = rotation;
         this.position.rotate(deltaRotation, origin);
         return this;
     }
 
     rotate(rotation: number, origin?: Vector) {
         this._rotate(rotation, origin);
-        this.rotation += rotation;
+        (this.rotation as number) += rotation;
         this.position.rotate(rotation, origin);
         return this;
     }
@@ -176,7 +183,10 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
             const { velocity } = this;
             this.position.addVector(
                 velocity.addVector(
-                    this.acceleration.clone().scale(timeScale)
+                    Vector.mix([
+                        this.acceleration,
+                        this.gravity
+                    ]).scale(timeScale)
                 ).clone().scale(timeScale)
             );
             this.bounds.moveVector(velocity);

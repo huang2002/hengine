@@ -1,4 +1,4 @@
-import { _sqrt, _pow, _cos, _sin } from "../utils/refs";
+import { _sqrt, _pow, _cos, _sin, _atan, _PI } from "../utils/refs";
 import { distance } from "../utils/common";
 
 export interface VectorLike {
@@ -138,6 +138,11 @@ export class Vector {
             this.y = x * sin + y * cos;
         }
         return this;
+    }
+
+    getAngle() {
+        const { y } = this;
+        return _atan(y / this.x) + (y > 0 ? 0 : _PI);
     }
 
     turn(clockwise?: boolean) {

@@ -15,6 +15,24 @@ export interface ShapeStyle extends CommonStyle {
     lineDashOffset: number;
 }
 
+export const applyShapeStyle = (context: CanvasRenderingContext2D, shapeStyle: ShapeStyle) => {
+    const { fillStyle } = shapeStyle;
+    applyCommonStyle(context, shapeStyle);
+    if (fillStyle) {
+        context.fillStyle = fillStyle;
+    }
+    if (shapeStyle.strokeStyle) {
+        context.strokeStyle = shapeStyle.strokeStyle;
+        context.lineWidth = shapeStyle.lineWidth;
+        context.lineCap = shapeStyle.lineCap;
+        context.lineJoin = shapeStyle.lineJoin;
+        if (shapeStyle.lineDash) {
+            context.setLineDash(shapeStyle.lineDash);
+            context.lineDashOffset = shapeStyle.lineDashOffset;
+        }
+    }
+};
+
 export type ShapeOptions = BodyOptions & Partial<{
     style: Partial<ShapeStyle>;
     visible: boolean;
@@ -64,12 +82,16 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
             return;
         }
 
-        const { style, fillFirst, position } = this,
+        const { style, fillFirst, position, sprite } = this,
             { fillStyle } = style;
 
         context.translate(position.x, position.y);
 
-        applyCommonStyle(context, style);
+        if (sprite) {
+            return sprite.render(context);
+        }
+
+        applyShapeStyle(context, style);
 
         context.beginPath();
         this.path(context);
@@ -77,21 +99,10 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
             context.closePath();
         }
 
-        if (fillStyle) {
-            context.fillStyle = fillStyle;
-            if (fillFirst) {
-                context.fill();
-            }
+        if (fillFirst && fillStyle) {
+            context.fill();
         }
         if (style.strokeStyle) {
-            context.strokeStyle = style.strokeStyle;
-            context.lineWidth = style.lineWidth;
-            context.lineCap = style.lineCap;
-            context.lineJoin = style.lineJoin;
-            if (style.lineDash) {
-                context.setLineDash(style.lineDash);
-                context.lineDashOffset = style.lineDashOffset;
-            }
             context.stroke();
         }
         if (!fillFirst && fillStyle) {

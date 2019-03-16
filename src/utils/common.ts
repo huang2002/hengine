@@ -14,8 +14,10 @@ export const rad2deg = (rad: number) => rad / _PI * 180;
 
 export const deg2rad = (deg: number) => deg / 180 * _PI;
 
+export const quadraticSum = (a: number, b: number) => _pow(a, 2) + _pow(b, 2);
+
 export const distance = (x1: number, y1: number, x2: number, y2: number) =>
-    _sqrt(_pow(x2 - x1, 2) + _pow(y2 - y1, 2));
+    _sqrt(quadraticSum(x2 - x1, y2 - y1));
 
 export const now = (_window.performance || _Date).now;
 

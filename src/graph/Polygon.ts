@@ -45,16 +45,16 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
                 areas = new Array<number>(),
                 normals = new Array<Vector>(),
                 centers = new Array<Vector>(),
-                normalCache = new _Set<string>();
+                tangents = new _Set<string>();
             let totalArea = 0;
             vertices.reduce(
                 (vertex1, vertex2) => {
                     const area = Vector.cross(vertex1, vertex2) / 2;
                     totalArea += area;
-                    const normal = Vector.subtract(vertex2, vertex1).turn(clockwise).normalize(),
-                        stringifiedNormal = normal.toString(NormalPrecision);
-                    if (!normalCache.has(stringifiedNormal)) {
-                        normalCache.add(stringifiedNormal);
+                    const normal = Vector.subtract(vertex2, vertex1).turn(clockwise),
+                        tangent = (normal.y / normal.x).toFixed(NormalPrecision);
+                    if (!tangents.has(tangent)) {
+                        tangents.add(tangent);
                         normals.push(normal);
                     }
                     if (adjustment) {
@@ -98,9 +98,9 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
             }
             (this.area as number) = totalArea;
             (this.normals as Vector[]) = normals;
-            this.mass = totalArea * this.density;
+            (this.mass as number) = totalArea * this.density;
         } else {
-            (this.area as number) = this.mass = 0;
+            (this.area as number) = (this.mass as number) = 0;
             const { position } = this;
             bounds.left = bounds.right = position.x;
             bounds.top = bounds.bottom = position.y;
@@ -125,7 +125,8 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
 
     project(direction: Vector) {
         const { vertices } = this;
-        let min!: number, max!: number,
+        let min = 0,
+            max = 0,
             projection;
         if (vertices.length) {
             vertices.forEach((vertex, i) => {
@@ -140,10 +141,12 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
                     min = max = projection;
                 }
             });
-        } else {
-            min = max = Vector.project(this.position, direction);
         }
-        return { min, max };
+        const positionProjection = Vector.project(this.position, direction);
+        return {
+            min: min + positionProjection,
+            max: max + positionProjection
+        };
     }
 
     path(context: CanvasRenderingContext2D) {

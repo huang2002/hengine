@@ -1,16 +1,14 @@
 import { _assign, EMPTY_OBJECT } from "../utils/refs";
 import { Renderable } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
-import { CommonStyle, commonStyle, applyCommonStyle } from "./CommonStyle";
+import { ShapeStyle, applyShapeStyle, Shape } from "./Shape";
 
-/**
- * @todo Mixin `ShapeStyle` and extract an `applyShapeStyle()`.
- */
-export type TextStyle = CommonStyle & CanvasTextDrawingStyles;
+export type TextStyle = ShapeStyle & CanvasTextDrawingStyles;
 
 export type TextOptions = Partial<{
     visible: boolean;
     content: string;
+    fillFirst: boolean;
     position: Vector;
     style: Partial<TextStyle>;
 }>;
@@ -22,7 +20,7 @@ export class Text implements Required<TextOptions>, Renderable {
         content: '',
     };
 
-    static defaultStyle: TextStyle = _assign({} as TextStyle, commonStyle, {
+    static defaultStyle: TextStyle = _assign({} as TextStyle, Shape.defaultStyle, {
         font: 'Consolas 16px',
         textAlign: 'center',
         textBaseline: 'middle',
@@ -42,17 +40,27 @@ export class Text implements Required<TextOptions>, Renderable {
 
     visible!: boolean;
     content!: string;
+    fillFirst!: boolean;
     position!: Vector;
     style!: TextStyle;
 
     render(context: CanvasRenderingContext2D) {
-        const { style } = this;
-        applyCommonStyle(context, style);
+        const { style, fillFirst, content, position } = this,
+            { fillStyle } = style;
+        applyShapeStyle(context, style);
         context.font = style.font;
         context.textAlign = style.textAlign;
         context.textBaseline = style.textBaseline;
         context.direction = style.direction;
-
+        if (fillFirst && fillStyle) {
+            context.fillText(content, position.x, position.y);
+        }
+        if (style.strokeStyle) {
+            context.strokeText(content, position.x, position.y);
+        }
+        if (!fillFirst && fillStyle) {
+            context.fillText(content, position.x, position.y);
+        }
     }
 
 }
