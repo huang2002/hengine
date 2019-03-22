@@ -1,5 +1,5 @@
 import { Renderable } from "../renderer/Renderer";
-import { Vector } from "../geometry/Vector";
+import { Vector, VectorLike } from "../geometry/Vector";
 import { _abs, EMPTY_OBJECT, _assign, _Set, _cos, _sin, _sqrt, _max } from "../utils/refs";
 import { Shape, ShapeOptions } from "./Shape";
 import { quadraticSum } from "../utils/common";
@@ -26,12 +26,12 @@ export class Rect extends Shape implements Required<RectOptions>, Renderable {
     height!: number;
     radius!: number;
 
-    protected _scale(scaleX: number, scaleY: number, origin?: Vector) {
+    protected _scale(scaleX: number, scaleY: number, origin?: VectorLike) {
         this.width *= scaleX;
         this.height *= scaleY;
     }
 
-    protected _rotate(rotation: number, origin?: Vector) { }
+    protected _rotate(rotation: number, origin?: VectorLike) { }
 
     project(direction: Vector) {
         const { rotation, radius } = this;

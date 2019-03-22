@@ -1,5 +1,5 @@
 import { Renderable } from "../renderer/Renderer";
-import { Vector } from "../geometry/Vector";
+import { Vector, VectorLike } from "../geometry/Vector";
 import { _abs, EMPTY_OBJECT, _assign, _Set } from "../utils/refs";
 import { Shape, ShapeOptions } from "./Shape";
 import { Body } from "../physics/Body";
@@ -41,7 +41,7 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
         const { bounds } = this;
         if (vertices.length > 1) {
             const { clockwise, adjustment } = this,
-                { NormalPrecision } = Body,
+                { normalPrecision: NormalPrecision } = Body,
                 areas = new Array<number>(),
                 normals = new Array<Vector>(),
                 centers = new Array<Vector>(),
@@ -51,7 +51,7 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
                 (vertex1, vertex2) => {
                     const area = Vector.cross(vertex1, vertex2) / 2;
                     totalArea += area;
-                    const normal = Vector.subtract(vertex2, vertex1).turn(clockwise),
+                    const normal = Vector.minus(vertex2, vertex1).turn(clockwise),
                         tangent = (normal.y / normal.x).toFixed(NormalPrecision);
                     if (!tangents.has(tangent)) {
                         tangents.add(tangent);
@@ -69,11 +69,9 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
                 vertices[vertices.length - 1]
             );
             if (adjustment) {
-                const offset = Vector.mix(
-                    centers.map((center, i) => center.scale(areas[i] / totalArea))
-                ).reverse();
+                const offset = Vector.mix(centers.map((center, i) => center.scale(areas[i] / totalArea)));
                 vertices.forEach(vertex => {
-                    vertex.addVector(offset);
+                    vertex.minusVector(offset);
                 });
             }
             vertices.forEach(({ x, y }, i) => {
@@ -108,13 +106,13 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
         return this;
     }
 
-    protected _scale(scaleX: number, scaleY: number, origin?: Vector) {
+    protected _scale(scaleX: number, scaleY: number, origin?: VectorLike) {
         this.vertices.forEach(vertex => {
             vertex.scale(scaleX, scaleY, origin);
         });
     }
 
-    protected _rotate(rotation: number, origin?: Vector) {
+    protected _rotate(rotation: number, origin?: VectorLike) {
         this.vertices.forEach(vertex => {
             vertex.rotate(rotation, origin);
         });

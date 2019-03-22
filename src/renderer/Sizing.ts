@@ -13,18 +13,20 @@ export type SizingFunction = (
     margin: number
 ) => SizingResult;
 
-export const Sizing: {
+export interface SizingObject {
     Full: SizingFunction;
     Center: SizingFunction;
     FixedWidth: SizingFunction;
     FixedHeight: SizingFunction;
     Fixed: SizingFunction;
-} = {
+}
+
+export const Sizing: SizingObject = {
 
     Full: (innerWidth, innerHeight, outerWidth, outerHeight, margin) => {
-        const dbMargin = margin * 2,
-            width = outerWidth - dbMargin,
-            height = outerHeight - dbMargin;
+        const doubleMargin = margin * 2,
+            width = outerWidth - doubleMargin,
+            height = outerHeight - doubleMargin;
         return {
             width,
             height,
@@ -35,21 +37,19 @@ export const Sizing: {
         };
     },
 
-    Center: (innerWidth, innerHeight, outerWidth, outerHeight, margin) => {
-        return {
-            width: innerWidth,
-            height: innerHeight,
-            styleWidth: innerWidth,
-            styleHeight: innerHeight,
-            left: (outerWidth - innerWidth) / 2,
-            top: (outerHeight - innerHeight) / 2
-        };
-    },
+    Center: (innerWidth, innerHeight, outerWidth, outerHeight, margin) => ({
+        width: innerWidth,
+        height: innerHeight,
+        styleWidth: innerWidth,
+        styleHeight: innerHeight,
+        left: (outerWidth - innerWidth) / 2,
+        top: (outerHeight - innerHeight) / 2
+    }),
 
     FixedWidth: (innerWidth, innerHeight, outerWidth, outerHeight, margin) => {
-        const dbMargin = margin * 2,
-            styleWidth = outerWidth - dbMargin,
-            styleHeight = outerHeight - dbMargin,
+        const doubleMargin = margin * 2,
+            styleWidth = outerWidth - doubleMargin,
+            styleHeight = outerHeight - doubleMargin,
             scale = styleWidth / innerWidth;
         return {
             width: innerWidth,
@@ -62,9 +62,9 @@ export const Sizing: {
     },
 
     FixedHeight: (innerWidth, innerHeight, outerWidth, outerHeight, margin) => {
-        const dbMargin = margin * 2,
-            styleWidth = outerWidth - dbMargin,
-            styleHeight = outerHeight - dbMargin,
+        const doubleMargin = margin * 2,
+            styleWidth = outerWidth - doubleMargin,
+            styleHeight = outerHeight - doubleMargin,
             scale = styleHeight / innerHeight;
         return {
             width: styleWidth / scale,
@@ -76,14 +76,10 @@ export const Sizing: {
         };
     },
 
-    Fixed: (innerWidth, innerHeight, outerWidth, outerHeight, margin) => {
-        return (
-            outerWidth / innerWidth > outerHeight / innerHeight ?
-                Sizing.FixedHeight :
-                Sizing.FixedWidth
-        )(
-            innerWidth, innerHeight, outerWidth, outerHeight, margin
-        );
-    },
+    Fixed: (innerWidth, innerHeight, outerWidth, outerHeight, margin) => ((
+        outerWidth / innerWidth > outerHeight / innerHeight ?
+            Sizing.FixedHeight :
+            Sizing.FixedWidth
+    )(innerWidth, innerHeight, outerWidth, outerHeight, margin)),
 
 };

@@ -1,5 +1,5 @@
 import { Renderable } from "../renderer/Renderer";
-import { Vector } from "../geometry/Vector";
+import { Vector, VectorLike } from "../geometry/Vector";
 import { _abs, EMPTY_OBJECT, _assign, _Set, DOUBLE_PI, _cos, _sin, _sqrt } from "../utils/refs";
 import { Shape, ShapeOptions } from "./Shape";
 import { quadraticSum } from "../utils/common";
@@ -21,15 +21,16 @@ export class Circle extends Shape implements Required<CircleOptions>, Renderable
     readonly isCircle = true;
     radius!: number;
 
-    protected _scale(scaleX: number, scaleY: number, origin?: Vector) { }
+    protected _scale(scaleX: number, scaleY: number, origin?: VectorLike) { }
 
-    protected _rotate(rotation: number, origin?: Vector) { }
+    protected _rotate(rotation: number, origin?: VectorLike) { }
 
     project(direction: Vector) {
         const { radius, rotation, scaleX, scaleY } = this,
             positionProjection = Vector.project(this.position, direction),
-            cos = _cos(rotation),
-            sin = -_sin(rotation),
+            angle = rotation - direction.getAngle(),
+            cos = _cos(angle),
+            sin = _sin(angle),
             halfLength = radius * _sqrt(
                 quadraticSum(
                     cos * scaleX - sin * scaleY,

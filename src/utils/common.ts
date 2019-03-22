@@ -1,4 +1,4 @@
-import { _PI, _sqrt, _pow, _window, _now, _Date, _undefined, _clearTimeout, _setTimeout } from "./refs";
+import { _PI, _sqrt, _pow, _window, _now, _Date, _undefined, _clearTimeout, _setTimeout, _Map } from "./refs";
 
 export const removeIndex = function rmIndex(array: unknown[], index: number) {
     const end = array.length - 1;
@@ -21,8 +21,10 @@ export const distance = (x1: number, y1: number, x2: number, y2: number) =>
 
 export const now = (_window.performance || _Date).now;
 
-export type Callback<T=void, A = unknown[], R = unknown> =
-    (this: T, ...args: A extends any[] ? A : [A]) => R;
+export type ToArray<T> = T extends any[] ? T : [T];
+
+export type Callback<T=void, A = any[], R = unknown> =
+    (this: T, ...args: ToArray<A>) => R;
 
 export type DebounceCallback = Callback;
 
@@ -71,4 +73,22 @@ export const threshold = <F extends ThresholdCallback>(callback: F, initThreshol
 
 threshold.DEFAULT_THRESHOLD = 100;
 
-export type ToArray<T> = T extends any[] ? T : [T];
+export type CachedFunction<T extends Callback<any>> = T & {
+    cache: Map<string, ReturnType<T>>;
+};
+
+export const cache = <T extends Callback<any>>(fn: T): CachedFunction<T> => {
+    const map = new _Map<string, ReturnType<T>>();
+    const newFn = function (this: any, ...args: Parameters<T>) {
+        const parameters = args.join();
+        if (map.has(parameters)) {
+            return map.get(parameters) as ReturnType<T>;
+        } else {
+            const result = fn.apply(this, args) as ReturnType<T>;
+            map.set(parameters, result);
+            return result;
+        }
+    };
+    newFn.cache = map;
+    return newFn as CachedFunction<T>;
+};

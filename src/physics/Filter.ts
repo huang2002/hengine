@@ -44,7 +44,7 @@ export const Filter: FilterObject = {
     },
 
     tagFor(filter) {
-        let result!: FilterTag;
+        let result: FilterTag | undefined;
         Filter.registry.find(record => {
             if (record[1] === filter) {
                 result = record[0];

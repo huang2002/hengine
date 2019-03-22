@@ -30,7 +30,7 @@ export class Engine implements Required<EngineOptions> {
             this.renderer = new Renderer();
         }
 
-        this.runner.on('tick', this.update.bind(this));
+        this.runner.on('tick', this.update = this.update.bind(this));
 
     }
 

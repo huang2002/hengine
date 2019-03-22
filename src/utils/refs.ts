@@ -18,4 +18,5 @@ export const _window = window,
     _clearTimeout = clearTimeout;
 
 export const EMPTY_OBJECT = _Object.create(_null) as Readonly<{}>,
-    DOUBLE_PI = _PI * 2;
+    DOUBLE_PI = _PI * 2,
+    HALF_PI = _PI / 2;

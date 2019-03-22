@@ -1,4 +1,4 @@
-import { Vector } from "./Vector";
+import { VectorLike } from "./Vector";
 import { _max, _min, _null } from "../utils/refs";
 
 export class Bounds {
@@ -17,6 +17,14 @@ export class Bounds {
     bottom = 0;
     left = 0;
 
+    get width() {
+        return this.right - this.left;
+    }
+
+    get height() {
+        return this.bottom - this.top;
+    }
+
     move(deltaX: number, deltaY: number) {
         this.left += deltaX;
         this.right += deltaX;
@@ -24,7 +32,7 @@ export class Bounds {
         this.bottom += deltaY;
     }
 
-    moveVector(vector: Vector) {
+    moveVector(vector: VectorLike) {
         this.left += vector.x;
         this.right += vector.x;
         this.top += vector.y;

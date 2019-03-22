@@ -2,7 +2,7 @@ import { Body, BodyOptions } from "../physics/Body";
 import { Renderable } from "../renderer/Renderer";
 import { EMPTY_OBJECT, _assign, _null } from "../utils/refs";
 import { Sprite } from "./Sprite";
-import { RenderingStyle, CommonStyle, commonStyle, applyCommonStyle } from "./CommonStyle";
+import { RenderingStyle, CommonStyle } from "./CommonStyle";
 
 export interface ShapeStyle extends CommonStyle {
     fillStyle: RenderingStyle | null;
@@ -17,7 +17,7 @@ export interface ShapeStyle extends CommonStyle {
 
 export const applyShapeStyle = (context: CanvasRenderingContext2D, shapeStyle: ShapeStyle) => {
     const { fillStyle } = shapeStyle;
-    applyCommonStyle(context, shapeStyle);
+    CommonStyle.apply(context, shapeStyle);
     if (fillStyle) {
         context.fillStyle = fillStyle;
     }
@@ -51,7 +51,7 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
         isCircle: false,
     };
 
-    static defaultStyle: ShapeStyle = _assign({} as ShapeStyle, commonStyle, {
+    static defaultStyle: ShapeStyle = _assign({} as ShapeStyle, CommonStyle.defaults, {
         fillStyle: _null,
         strokeStyle: '#000',
         lineWidth: 1,

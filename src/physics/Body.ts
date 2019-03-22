@@ -1,6 +1,6 @@
 import { EventEmitter } from "../utils/EventEmitter";
-import { EMPTY_OBJECT, _assign, _undefined, _abs, _Infinity } from "../utils/refs";
-import { Vector } from "../geometry/Vector";
+import { EMPTY_OBJECT, _assign, _undefined, _abs, _Infinity, DOUBLE_PI } from "../utils/refs";
+import { Vector, VectorLike } from "../geometry/Vector";
 import { FilterTag, Filter } from "./Filter";
 import { Bounds } from "../geometry/Bounds";
 import { Renderable } from "../renderer/Renderer";
@@ -17,14 +17,18 @@ export type BodyOptions = Partial<{
     isSensor: boolean;
     active: boolean;
     position: Vector;
-    velocity: Vector;
     acceleration: Vector;
+    velocity: Vector;
+    maxSpeed: number;
+    angularSpeed: number;
+    maxAngularSpeed: number;
     gravity: Vector;
     density: number;
     mass: number;
     scaleX: number;
     scaleY: number;
     rotation: number;
+    fixRotation: boolean;
 }>;
 
 export interface BodyEvents {
@@ -34,17 +38,19 @@ export interface BodyEvents {
 
 export abstract class Body extends EventEmitter<BodyEvents> implements Required<BodyOptions>, Renderable {
 
-    static NormalPrecision = 3;
+    static normalPrecision = 3;
 
     static defaults: BodyOptions = {
         filter: 0,
         collisionFilter: 0,
         isSensor: false,
         active: false,
+        maxSpeed: 100,
+        maxAngularSpeed: 0,
+        gravity: Vector.of(0, 5),
         density: .01,
+        fixRotation: true,
     };
-
-    static defaultGravity = Vector.of(0, 5);
 
     constructor(options: Readonly<BodyOptions> = EMPTY_OBJECT) {
         super();
@@ -59,9 +65,6 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         }
         if (!options.acceleration) {
             this.acceleration = new Vector();
-        }
-        if (!options.gravity) {
-            this.gravity = Body.defaultGravity;
         }
 
         if (options.filter) {
@@ -90,9 +93,13 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
     readonly isSensor!: boolean;
     readonly bounds = new Bounds();
     position!: Vector;
-    velocity!: Vector;
     acceleration!: Vector;
+    velocity!: Vector;
+    maxSpeed!: number;
+    angularSpeed = 0;
+    maxAngularSpeed!: number;
     gravity!: Vector;
+    fixRotation!: boolean;
 
     setDensity(density: number) {
         (this.density as number) = density;
@@ -115,8 +122,8 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         return this;
     }
 
-    protected abstract _scale(scaleX: number, scaleY: number, origin?: Vector): void;
-    protected abstract _rotate(rotation: number, origin?: Vector): void;
+    protected abstract _scale(scaleX: number, scaleY: number, origin?: VectorLike): void;
+    protected abstract _rotate(rotation: number, origin?: VectorLike): void;
     abstract project(direction: Vector): Projection;
     abstract render(context: CanvasRenderingContext2D): void;
 
@@ -133,7 +140,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         return this;
     }
 
-    scale(scaleX: number, scaleY = scaleX, origin?: Vector) {
+    scale(scaleX: number, scaleY = scaleX, origin?: VectorLike) {
         const scale = scaleX * scaleY;
         (this.area as number) *= scale;
         (this.mass as number) *= scale;
@@ -144,7 +151,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         return this;
     }
 
-    shrink(shrinkX: number, shrinkY = shrinkX, origin?: Vector) {
+    shrink(shrinkX: number, shrinkY = shrinkX, origin?: VectorLike) {
         const shrink = shrinkX * shrinkY;
         (this.area as number) /= shrink;
         (this.mass as number) /= shrink;
@@ -155,7 +162,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         return this;
     }
 
-    setRotation(rotation: number, origin?: Vector) {
+    setRotation(rotation: number, origin?: VectorLike) {
         const deltaRotation = rotation - this.rotation;
         this._rotate(deltaRotation, origin);
         (this.rotation as number) = rotation;
@@ -163,33 +170,38 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         return this;
     }
 
-    rotate(rotation: number, origin?: Vector) {
+    rotate(rotation: number, origin?: VectorLike) {
         this._rotate(rotation, origin);
         (this.rotation as number) += rotation;
         this.position.rotate(rotation, origin);
         return this;
     }
 
-    applyForce(force: Vector) {
-        this.acceleration.addVector(
-            force.clone().shrink(this.mass)
-        );
+    applyForce(force: VectorLike) {
+        const { mass } = this;
+        this.acceleration.add(force.x / mass, force.y / mass);
         return this;
     }
 
     update(timeScale: number) {
         this.emit('willUpdate', timeScale);
         if (this.active) {
-            const { velocity } = this;
-            this.position.addVector(
-                velocity.addVector(
-                    Vector.mix([
-                        this.acceleration,
-                        this.gravity
-                    ]).scale(timeScale)
-                ).clone().scale(timeScale)
-            );
+            const { velocity, maxSpeed, angularSpeed, maxAngularSpeed } = this;
+            velocity.addVector(Vector.mix([this.acceleration, this.gravity]).scale(timeScale));
+            const speed = velocity.getModulus();
+            if (speed > maxSpeed) {
+                velocity.scale(maxSpeed / speed);
+            }
+            this.position.addVector(velocity.clone().scale(timeScale));
             this.bounds.moveVector(velocity);
+            if (angularSpeed > maxAngularSpeed) {
+                (this.rotation as number) += (this.angularSpeed = maxAngularSpeed);
+            } else {
+                (this.rotation as number) += angularSpeed;
+            }
+            if (this.fixRotation) {
+                (this.rotation as number) %= DOUBLE_PI;
+            }
         }
         this.emit('didUpdate', timeScale);
         return this;

@@ -9,26 +9,18 @@ export interface VectorLike {
 export class Vector {
 
     static of(x: number, y: number) {
-        return new Vector().set(x, y);
+        return new Vector(x, y);
     }
 
     static from(vectorLike: VectorLike) {
         return Vector.of(vectorLike.x, vectorLike.y);
     }
 
-    static fromArray(array: number[]) {
-        const vectors = [];
-        for (let i = 0; i < array.length; i += 2) {
-            vectors.push(Vector.of(array[i], array[i + 1]));
-        }
-        return vectors;
-    }
-
     static mix(vectors: VectorLike[]) {
         return vectors.reduce((ans: Vector, cur) => ans.addVector(cur), new Vector());
     }
 
-    static avg(vectors: VectorLike[]) {
+    static mean(vectors: VectorLike[]) {
         return Vector.mix(vectors).shrink(vectors.length);
     }
 
@@ -40,25 +32,30 @@ export class Vector {
         return vector1.x * vector2.y - vector1.y * vector2.x;
     }
 
-    static subtract(vector1: VectorLike, vector2: VectorLike) {
+    static minus(vector1: VectorLike, vector2: VectorLike) {
         return Vector.of(vector1.x - vector2.x, vector1.y - vector2.y);
     }
 
-    static project(sourceVector: VectorLike, directionVector: VectorLike) {
-        const dirVecMod = this.prototype.getModulus.call(directionVector);
+    static project(sourceVector: VectorLike, directionVector: Vector) {
+        const dirVecMod = directionVector.getModulus();
         return dirVecMod && Vector.dot(sourceVector, directionVector) / dirVecMod;
     }
 
-    static projectVector(sourceVector: VectorLike, directionVector: VectorLike) {
-        return Vector.from(directionVector).setModulus(Vector.project(sourceVector, directionVector));
+    static projectVector(sourceVector: VectorLike, directionVector: Vector) {
+        return directionVector.clone().setModulus(Vector.project(sourceVector, directionVector));
     }
 
     static distance(vector1: VectorLike, vector2: VectorLike) {
         return distance(vector1.x, vector1.y, vector2.x, vector2.y);
     }
 
-    x = 0;
-    y = 0;
+    constructor(x?: number, y?: number) {
+        this.x = x || 0;
+        this.y = y || 0;
+    }
+
+    x: number;
+    y: number;
 
     clone() {
         return Vector.of(this.x, this.y);
@@ -99,6 +96,18 @@ export class Vector {
     addVector(vector: VectorLike) {
         this.x += vector.x;
         this.y += vector.y;
+        return this;
+    }
+
+    minus(dx: number, dy: number) {
+        this.x -= dx;
+        this.y -= dy;
+        return this;
+    }
+
+    minusVector(vector: VectorLike) {
+        this.x -= vector.x;
+        this.y -= vector.y;
         return this;
     }
 
