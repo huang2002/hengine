@@ -1,4 +1,4 @@
-import { _assign } from "../utils/refs";
+import { _assign } from "../utils/references";
 import { Renderer } from "../renderer/Renderer";
 import { Scene } from "./Scene";
 

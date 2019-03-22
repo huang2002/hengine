@@ -1,4 +1,4 @@
-import { _PI, _sqrt, _pow, _window, _now, _Date, _undefined, _clearTimeout, _setTimeout, _Map } from "./refs";
+import { _PI, _sqrt, _pow, _window, _now, _Date, _undefined, _clearTimeout, _setTimeout, _Map } from "./references";
 
 export const removeIndex = function rmIndex(array: unknown[], index: number) {
     const end = array.length - 1;

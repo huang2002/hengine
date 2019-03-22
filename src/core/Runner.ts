@@ -1,4 +1,4 @@
-import { _assign, _undefined, _cancelAnimationFrame, _clearTimeout, _requestAnimationFrame, _setTimeout, _max } from "../utils/refs";
+import { _assign, _undefined, _cancelAnimationFrame, _clearTimeout, _requestAnimationFrame, _setTimeout, _max } from "../utils/references";
 import { EventEmitter } from "../utils/EventEmitter";
 import { now } from "../utils/common";
 

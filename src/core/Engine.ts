@@ -1,4 +1,4 @@
-import { EMPTY_OBJECT, _assign, _null } from "../utils/refs";
+import { EMPTY_OBJECT, _assign, _null } from "../utils/references";
 import { Runner } from "./Runner";
 import { Renderer } from "../renderer/Renderer";
 import { Scene } from "./Scene";

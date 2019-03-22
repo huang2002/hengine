@@ -1,5 +1,5 @@
 import { Renderable, Renderer } from "../renderer/Renderer";
-import { _assign, EMPTY_OBJECT } from "../utils/refs";
+import { _assign, EMPTY_OBJECT } from "../utils/references";
 import { EventEmitter } from "../utils/EventEmitter";
 import { RenderingStyle } from "../graph/CommonStyle";
 import { removeIndex } from "../utils/common";

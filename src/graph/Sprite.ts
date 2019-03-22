@@ -1,6 +1,6 @@
 import { Renderable } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
-import { EMPTY_OBJECT, _assign, _document, _undefined } from "../utils/refs";
+import { EMPTY_OBJECT, _assign, _document, _undefined } from "../utils/references";
 import { Callback } from "../utils/common";
 import { CommonStyle } from "./CommonStyle";
 

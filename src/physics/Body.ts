@@ -1,5 +1,5 @@
 import { EventEmitter } from "../utils/EventEmitter";
-import { EMPTY_OBJECT, _assign, _undefined, _abs, _Infinity, DOUBLE_PI } from "../utils/refs";
+import { EMPTY_OBJECT, _assign, _undefined, _abs, _Infinity, DOUBLE_PI } from "../utils/references";
 import { Vector, VectorLike } from "../geometry/Vector";
 import { FilterTag, Filter } from "./Filter";
 import { Bounds } from "../geometry/Bounds";

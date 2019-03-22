@@ -1,4 +1,4 @@
-import { EMPTY_OBJECT, _document, _assign, _window, _undefined } from "../utils/refs";
+import { EMPTY_OBJECT, _document, _assign, _window, _undefined } from "../utils/references";
 import { SizingFunction, Sizing } from "./Sizing";
 import { Vector } from "../geometry/Vector";
 import { debounce } from "../utils/common";

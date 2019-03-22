@@ -1,4 +1,4 @@
-import { _sqrt, _pow, _cos, _sin, _atan, _PI } from "../utils/refs";
+import { _sqrt, _pow, _cos, _sin, _atan, _PI } from "../utils/references";
 import { distance } from "../utils/common";
 
 export interface VectorLike {

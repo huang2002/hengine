@@ -1,4 +1,4 @@
-import { _assign, EMPTY_OBJECT } from "../utils/refs";
+import { _assign, EMPTY_OBJECT } from "../utils/references";
 import { Renderable } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { ShapeStyle, applyShapeStyle, Shape } from "./Shape";

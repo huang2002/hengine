@@ -1,4 +1,4 @@
-import { _null } from "../utils/refs";
+import { _null } from "../utils/references";
 
 export type RenderingStyle = string | CanvasGradient | CanvasPattern;
 

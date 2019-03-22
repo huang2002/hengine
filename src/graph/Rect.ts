@@ -1,6 +1,6 @@
 import { Renderable } from "../renderer/Renderer";
 import { Vector, VectorLike } from "../geometry/Vector";
-import { _abs, EMPTY_OBJECT, _assign, _Set, _cos, _sin, _sqrt, _max } from "../utils/refs";
+import { _abs, EMPTY_OBJECT, _assign, _Set, _cos, _sin, _sqrt, _max } from "../utils/references";
 import { Shape, ShapeOptions } from "./Shape";
 import { quadraticSum } from "../utils/common";
 

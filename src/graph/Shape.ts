@@ -1,6 +1,6 @@
 import { Body, BodyOptions } from "../physics/Body";
 import { Renderable } from "../renderer/Renderer";
-import { EMPTY_OBJECT, _assign, _null } from "../utils/refs";
+import { EMPTY_OBJECT, _assign, _null } from "../utils/references";
 import { Sprite } from "./Sprite";
 import { RenderingStyle, CommonStyle } from "./CommonStyle";
 

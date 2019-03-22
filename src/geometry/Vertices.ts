@@ -1,4 +1,4 @@
-import { DOUBLE_PI, _cos, _sin, HALF_PI, _PI, _Infinity } from "../utils/refs";
+import { DOUBLE_PI, _cos, _sin, HALF_PI, _PI, _Infinity } from "../utils/references";
 import { Vector, VectorLike } from "./Vector";
 import { CachedFunction, cache, quadraticSum } from "../utils/common";
 
