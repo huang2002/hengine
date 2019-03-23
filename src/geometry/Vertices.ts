@@ -4,7 +4,7 @@ import { CachedFunction, cache, quadraticSum } from "../utils/common";
 
 export interface VerticesObject {
     fromArray(array: number[]): Vector[];
-    findClosest(target: VectorLike, vertices: Vector[]): Vector;
+    findClosest(target: VectorLike, vertices: ReadonlyArray<Vector>): Vector;
     createPolygon: CachedFunction<(edges: number, radius: number, rotation?: number) => Vector[]>;
     createStar: CachedFunction<
         (angles: number, innerRadius: number, outerRadius: number, rotation?: number) => Vector[]

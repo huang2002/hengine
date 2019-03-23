@@ -3,6 +3,7 @@ import { Vector, VectorLike } from "../geometry/Vector";
 import { _abs, EMPTY_OBJECT, _assign, _Set } from "../utils/references";
 import { Shape, ShapeOptions } from "./Shape";
 import { Body } from "../physics/Body";
+import { Vertices } from "../geometry/Vertices";
 
 export type PolygonOptions = ShapeOptions & Partial<{
     vertices: ReadonlyArray<Vector>;
@@ -55,7 +56,7 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
                         tangent = (normal.y / normal.x).toFixed(NormalPrecision);
                     if (!tangents.has(tangent)) {
                         tangents.add(tangent);
-                        normals.push(normal);
+                        normals.push(normal.normalize());
                     }
                     if (adjustment) {
                         centers.push(Vector.of(
@@ -119,6 +120,10 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
         this.normals.forEach(normal => {
             normal.rotate(rotation, origin);
         });
+    }
+
+    getClosest(target: VectorLike) {
+        return Vertices.findClosest(target, this.vertices);
     }
 
     project(direction: Vector) {

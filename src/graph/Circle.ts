@@ -4,9 +4,7 @@ import { _abs, EMPTY_OBJECT, _assign, _Set, DOUBLE_PI, _cos, _sin, _sqrt } from 
 import { Shape, ShapeOptions } from "./Shape";
 import { quadraticSum } from "../utils/common";
 
-export type CircleOptions = Pick<ShapeOptions, Exclude<keyof ShapeOptions, 'isCircle'>> & Partial<{
-    radius: number;
-}>;
+export type CircleOptions = Pick<ShapeOptions, Exclude<keyof ShapeOptions, 'isCircle'>>;
 
 export class Circle extends Shape implements Required<CircleOptions>, Renderable {
 
@@ -24,6 +22,10 @@ export class Circle extends Shape implements Required<CircleOptions>, Renderable
     protected _scale(scaleX: number, scaleY: number, origin?: VectorLike) { }
 
     protected _rotate(rotation: number, origin?: VectorLike) { }
+
+    getClosest(target: VectorLike) {
+        return Vector.minus(target, this.position).grow(-this.radius);
+    }
 
     project(direction: Vector) {
         const { radius, rotation, scaleX, scaleY } = this,

@@ -38,7 +38,6 @@ export type ShapeOptions = BodyOptions & Partial<{
     visible: boolean;
     fillFirst: boolean;
     closePath: boolean;
-    isCircle: boolean;
     sprite: Sprite | null;
 }>;
 
@@ -48,7 +47,6 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
         visible: true,
         fillFirst: true,
         closePath: true,
-        isCircle: false,
     };
 
     static defaultStyle: ShapeStyle = _assign({} as ShapeStyle, CommonStyle.defaults, {
@@ -71,7 +69,6 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
     visible!: boolean;
     fillFirst!: boolean;
     closePath!: boolean;
-    isCircle!: boolean;
     sprite: Sprite | null = _null;
 
     abstract path(context: CanvasRenderingContext2D): void;

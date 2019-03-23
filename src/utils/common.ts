@@ -73,13 +73,13 @@ export const threshold = <F extends ThresholdCallback>(callback: F, initThreshol
 
 threshold.DEFAULT_THRESHOLD = 100;
 
-export type CachedFunction<T extends Callback<any>> = T & {
-    cache: Map<string, ReturnType<T>>;
-};
+export type CachedFunction<T extends Callback<any>> =
+    Callback<ThisParameterType<T>, Parameters<T>, ReturnType<T>> &
+    { cache: Map<string, ReturnType<T>>; };
 
 export const cache = <T extends Callback<any>>(fn: T): CachedFunction<T> => {
     const map = new _Map<string, ReturnType<T>>();
-    const newFn = function (this: any, ...args: Parameters<T>) {
+    const newFn = function (this: ThisParameterType<T>, ...args: ToArray<Parameters<T>>) {
         const parameters = args.join();
         if (map.has(parameters)) {
             return map.get(parameters) as ReturnType<T>;
@@ -90,5 +90,5 @@ export const cache = <T extends Callback<any>>(fn: T): CachedFunction<T> => {
         }
     };
     newFn.cache = map;
-    return newFn as CachedFunction<T>;
+    return newFn;
 };

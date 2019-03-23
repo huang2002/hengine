@@ -133,6 +133,16 @@ export class Vector {
         return this;
     }
 
+    grow(delta: number) {
+        const modulus = this.getModulus();
+        if (modulus) {
+            const scale = (modulus + delta) / modulus;
+            this.x *= scale;
+            this.y *= scale;
+        }
+        return this;
+    }
+
     rotate(radian: number, origin?: VectorLike) {
         const cos = _cos(radian),
             sin = _sin(radian);

@@ -1,8 +1,9 @@
 import { Renderable } from "../renderer/Renderer";
 import { Vector, VectorLike } from "../geometry/Vector";
-import { _abs, EMPTY_OBJECT, _assign, _Set, _cos, _sin, _sqrt, _max } from "../utils/references";
+import { _abs, EMPTY_OBJECT, _assign, _Set, _cos, _sin, _max, _sqrt } from "../utils/references";
 import { Shape, ShapeOptions } from "./Shape";
 import { quadraticSum } from "../utils/common";
+import { Vertices } from "../geometry/Vertices";
 
 export type RectOptions = ShapeOptions & Partial<{
     width: number;
@@ -32,6 +33,32 @@ export class Rect extends Shape implements Required<RectOptions>, Renderable {
     }
 
     protected _rotate(rotation: number, origin?: VectorLike) { }
+
+    getClosest(target: VectorLike) {
+        const { rotation, radius, width, height, position: { x, y } } = this;
+        let x0 = width / 2,
+            y0 = height / 2;
+        if (radius > 0) {
+            x0 -= radius;
+            y0 -= radius;
+        }
+        const cos = _cos(rotation),
+            sin = _sin(rotation),
+            x1 = x0 * cos - y0 * sin,
+            y1 = x0 * sin + y0 * cos,
+            x2 = x0 * cos - -y0 * sin,
+            y2 = x0 * sin + -y0 * cos,
+            closet = Vertices.findClosest(target, Vertices.fromArray([
+                x + x1, y + y1,
+                x + x2, y + y2,
+                x - x1, y - y1,
+                x - x2, y - y2
+            ]));
+        if (radius > 0) {
+            closet.grow(radius);
+        }
+        return closet;
+    }
 
     project(direction: Vector) {
         const { rotation, radius } = this;

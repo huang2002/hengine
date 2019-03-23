@@ -15,6 +15,7 @@ export type BodyOptions = Partial<{
     filter: number;
     collisionFilter: number;
     isSensor: boolean;
+    isCircle: boolean;
     active: boolean;
     position: Vector;
     acceleration: Vector;
@@ -29,6 +30,7 @@ export type BodyOptions = Partial<{
     scaleY: number;
     rotation: number;
     fixRotation: boolean;
+    radius: number;
 }>;
 
 export interface BodyEvents {
@@ -44,12 +46,14 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         filter: 0,
         collisionFilter: 0,
         isSensor: false,
+        isCircle: false,
         active: false,
         maxSpeed: 100,
         maxAngularSpeed: 0,
         gravity: Vector.of(0, 5),
         density: .01,
         fixRotation: true,
+        radius: 0,
     };
 
     constructor(options: Readonly<BodyOptions> = EMPTY_OBJECT) {
@@ -79,6 +83,13 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
 
     }
 
+    readonly active!: boolean;
+    readonly tag: FilterTag = '';
+    readonly filter!: number;
+    readonly collisionFilter!: number;
+    readonly isSensor!: boolean;
+    readonly isCircle!: boolean;
+    readonly bounds = new Bounds();
     readonly area = 0;
     readonly normals: ReadonlyArray<Vector> = [];
     readonly scaleX = 1;
@@ -86,12 +97,6 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
     readonly rotation = 0;
     readonly density!: number;
     readonly mass = 0;
-    readonly active!: boolean;
-    readonly tag: FilterTag = '';
-    readonly filter!: number;
-    readonly collisionFilter!: number;
-    readonly isSensor!: boolean;
-    readonly bounds = new Bounds();
     position!: Vector;
     acceleration!: Vector;
     velocity!: Vector;
@@ -100,6 +105,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
     maxAngularSpeed!: number;
     gravity!: Vector;
     fixRotation!: boolean;
+    radius!: number;
 
     setDensity(density: number) {
         (this.density as number) = density;
@@ -124,6 +130,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
 
     protected abstract _scale(scaleX: number, scaleY: number, origin?: VectorLike): void;
     protected abstract _rotate(rotation: number, origin?: VectorLike): void;
+    abstract getClosest(target: VectorLike): Vector;
     abstract project(direction: Vector): Projection;
     abstract render(context: CanvasRenderingContext2D): void;
 
