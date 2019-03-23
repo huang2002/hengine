@@ -9,7 +9,7 @@ export * from "./geometry/Vertices";
 
 export * from "./physics/Filter";
 export * from "./physics/Body";
-export * from "./physics/checkCollision";
+export * from "./physics/CollisionChecker";
 
 export * from "./renderer/Sizing";
 export * from "./renderer/Renderer";

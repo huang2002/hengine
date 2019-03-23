@@ -137,8 +137,8 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         return this;
     }
 
-    protected abstract _scale(scaleX: number, scaleY: number, origin?: VectorLike): void;
-    protected abstract _rotate(rotation: number, origin?: VectorLike): void;
+    protected _scale?(scaleX: number, scaleY: number, origin?: VectorLike): void;
+    protected _rotate?(rotation: number, origin?: VectorLike): void;
     abstract getClosest(target: VectorLike): Vector;
     abstract project(direction: Vector): Projection;
     abstract render(context: CanvasRenderingContext2D): void;
@@ -149,7 +149,9 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
             scale = deltaScaleX * deltaScaleY;
         (this.area as number) *= scale;
         (this.mass as number) *= scale;
-        this._scale(deltaScaleX, deltaScaleY);
+        if (this._scale) {
+            this._scale(deltaScaleX, deltaScaleY);
+        }
         (this.scaleX as number) = scaleX;
         (this.scaleY as number) = scaleY;
         this.position.scale(deltaScaleX, deltaScaleY);
@@ -160,7 +162,9 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         const scale = scaleX * scaleY;
         (this.area as number) *= scale;
         (this.mass as number) *= scale;
-        this._scale(scaleX, scaleY, origin);
+        if (this._scale) {
+            this._scale(scaleX, scaleY, origin);
+        }
         (this.scaleX as number) *= scaleX;
         (this.scaleY as number) *= scaleY;
         this.position.scale(scaleX, scaleY, origin);
@@ -171,7 +175,9 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         const shrink = shrinkX * shrinkY;
         (this.area as number) /= shrink;
         (this.mass as number) /= shrink;
-        this._scale(1 / shrinkX, 1 / shrinkY, origin);
+        if (this._scale) {
+            this._scale(1 / shrinkX, 1 / shrinkY, origin);
+        }
         (this.scaleX as number) /= shrinkX;
         (this.scaleY as number) /= shrinkY;
         this.position.shrink(shrinkX, shrinkY, origin);
@@ -180,14 +186,18 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
 
     setRotation(rotation: number, origin?: VectorLike) {
         const deltaRotation = rotation - this.rotation;
-        this._rotate(deltaRotation, origin);
+        if (this._rotate) {
+            this._rotate(deltaRotation, origin);
+        }
         (this.rotation as number) = rotation;
         this.position.rotate(deltaRotation, origin);
         return this;
     }
 
     rotate(rotation: number, origin?: VectorLike) {
-        this._rotate(rotation, origin);
+        if (this._rotate) {
+            this._rotate(rotation, origin);
+        }
         (this.rotation as number) += rotation;
         this.position.rotate(rotation, origin);
         return this;

@@ -32,8 +32,6 @@ export class Rect extends Shape implements Required<RectOptions>, Renderable {
         this.height *= scaleY;
     }
 
-    protected _rotate(rotation: number, origin?: VectorLike) { }
-
     getClosest(target: VectorLike) {
         const { rotation, radius, width, height, position: { x, y } } = this;
         let x0 = width / 2,

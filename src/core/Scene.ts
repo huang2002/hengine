@@ -1,9 +1,10 @@
 import { Renderable, Renderer } from "../renderer/Renderer";
-import { _assign, EMPTY_OBJECT } from "../utils/references";
+import { _assign, EMPTY_OBJECT, _null } from "../utils/references";
 import { EventEmitter } from "../utils/EventEmitter";
 import { RenderingStyle } from "../graph/CommonStyle";
 import { removeIndex } from "../utils/common";
 import { Body } from "../physics/Body";
+import { CollisionChecker } from "../physics/CollisionChecker";
 
 export type SceneObject = Body | Renderable;
 
@@ -15,7 +16,7 @@ export type SceneOptions = Partial<{
     clean: boolean;
     objects: SceneObject[];
     attachments: Renderable[];
-    collisionChecking: boolean;
+    collisionChecker: CollisionChecker | null;
 }>;
 
 export interface SceneEvents {
@@ -34,7 +35,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         timeScale: 1,
         background: '#fff',
         clean: false,
-        collisionChecking: false,
+        collisionChecker: _null,
     };
 
     constructor(options: SceneOptions = EMPTY_OBJECT) {
@@ -57,7 +58,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     clean!: boolean;
     objects!: SceneObject[];
     attachments!: Renderable[];
-    collisionChecking!: boolean;
+    collisionChecker!: CollisionChecker;
 
     set fps(fps: number) {
         this.delay = 1000 / fps;
@@ -110,7 +111,8 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
             }
         });
 
-        if (this.collisionChecking) {
+        const { collisionChecker } = this;
+        if (collisionChecker) {
 
         }
 

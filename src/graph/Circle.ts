@@ -19,12 +19,9 @@ export class Circle extends Shape implements Required<CircleOptions>, Renderable
     readonly isCircle = true;
     radius!: number;
 
-    protected _scale(scaleX: number, scaleY: number, origin?: VectorLike) { }
-
-    protected _rotate(rotation: number, origin?: VectorLike) { }
-
     getClosest(target: VectorLike) {
-        return Vector.minus(target, this.position).grow(-this.radius);
+        const { position } = this;
+        return Vector.minus(target, position).setModulus(this.radius).addVector(position);
     }
 
     project(direction: Vector) {
