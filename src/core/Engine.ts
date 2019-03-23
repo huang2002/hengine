@@ -63,7 +63,7 @@ export class Engine implements Required<EngineOptions> {
             currentScene.render(renderer);
         }
         if (inspector) {
-            inspector.update(currentScene);
+            inspector.update(this);
             inspector.render(renderer);
         }
     }

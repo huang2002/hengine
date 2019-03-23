@@ -31,6 +31,8 @@ export class Runner extends EventEmitter<RunnerEvents> implements Required<Runne
 
     }
 
+    readonly lastFrameDelay: number = 0;
+    readonly lastFrameDuration: number = 0;
     delay!: number;
     allowRAF!: boolean;
     fixDelay!: boolean;
@@ -41,11 +43,12 @@ export class Runner extends EventEmitter<RunnerEvents> implements Required<Runne
 
     private _tick(timestamp = now()) {
 
-        const deltaTime = timestamp - this._lastTickTime;
+        const deltaTime = (this.lastFrameDelay as number) = timestamp - this._lastTickTime;
         this._lastTickTime = timestamp;
         this.emit('tick', deltaTime);
 
-        const delay = this.delay - (this.fixDelay ? now() - timestamp : 0);
+        const duration = (this.lastFrameDuration as number) = now() - timestamp,
+            delay = this.delay - (this.fixDelay ? duration : 0);
         this._timer = (this._usedRAF = delay <= Runner.RAFThreshold && this.allowRAF) ?
             _requestAnimationFrame(this._tick) :
             _setTimeout(this._tick, _max(delay, 0));

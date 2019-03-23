@@ -27,8 +27,8 @@ export class Renderer implements Required<RendererOptions>{
 
     static defaults: RendererOptions = {
         settings: EMPTY_OBJECT,
-        width: 960,
-        height: 640,
+        width: 480,
+        height: 320,
         margin: 10,
         ratio: _window.devicePixelRatio || 1,
         origin: Vector.of(.5, .5),

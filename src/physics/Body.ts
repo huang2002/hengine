@@ -26,6 +26,9 @@ export type BodyOptions = Partial<{
     gravity: Vector;
     density: number;
     mass: number;
+    stiffness: number;
+    elasticity: number;
+    roughness: number;
     scaleX: number;
     scaleY: number;
     rotation: number;
@@ -52,6 +55,9 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         maxAngularSpeed: 0,
         gravity: Vector.of(0, 5),
         density: .01,
+        stiffness: .9,
+        elasticity: .5,
+        roughness: .6,
         fixRotation: true,
         radius: 0,
     };
@@ -104,6 +110,9 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
     angularSpeed = 0;
     maxAngularSpeed!: number;
     gravity!: Vector;
+    stiffness!: number;
+    elasticity!: number;
+    roughness!: number;
     fixRotation!: boolean;
     radius!: number;
 

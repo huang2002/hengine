@@ -17,6 +17,7 @@ export * from "./renderer/Renderer";
 export * from "./graph/CommonStyle";
 export * from "./graph/Sprite";
 export * from "./graph/Text";
+export * from "./graph/Paragraph";
 export * from "./graph/Shape";
 export * from "./graph/Rect";
 export * from "./graph/Circle";

@@ -1,7 +1,7 @@
 import { _assign, EMPTY_OBJECT } from "../utils/references";
 import { Renderable } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
-import { ShapeStyle, applyShapeStyle, Shape } from "./Shape";
+import { ShapeStyle, Shape } from "./Shape";
 
 export type TextStyle = ShapeStyle & CanvasTextDrawingStyles;
 
@@ -27,6 +27,14 @@ export class Text implements Required<TextOptions>, Renderable {
         direction: 'inherit',
     } as TextStyle);
 
+    static applyStyle(context: CanvasRenderingContext2D, textStyle: TextStyle) {
+        Shape.applyStyle(context, textStyle);
+        context.font = textStyle.font;
+        context.textAlign = textStyle.textAlign;
+        context.textBaseline = textStyle.textBaseline;
+        context.direction = textStyle.direction;
+    }
+
     constructor(options: TextOptions = EMPTY_OBJECT) {
         _assign(this, Text.defaults, options);
 
@@ -47,11 +55,7 @@ export class Text implements Required<TextOptions>, Renderable {
     render(context: CanvasRenderingContext2D) {
         const { style, fillFirst, content, position } = this,
             { fillStyle } = style;
-        applyShapeStyle(context, style);
-        context.font = style.font;
-        context.textAlign = style.textAlign;
-        context.textBaseline = style.textBaseline;
-        context.direction = style.direction;
+        Text.applyStyle(context, style);
         if (fillFirst && fillStyle) {
             context.fillText(content, position.x, position.y);
         }

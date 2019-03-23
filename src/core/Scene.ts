@@ -15,6 +15,7 @@ export type SceneOptions = Partial<{
     clean: boolean;
     objects: SceneObject[];
     attachments: Renderable[];
+    collisionChecking: boolean;
 }>;
 
 export interface SceneEvents {
@@ -33,6 +34,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         timeScale: 1,
         background: '#fff',
         clean: false,
+        collisionChecking: false,
     };
 
     constructor(options: SceneOptions = EMPTY_OBJECT) {
@@ -55,6 +57,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     clean!: boolean;
     objects!: SceneObject[];
     attachments!: Renderable[];
+    collisionChecking!: boolean;
 
     set fps(fps: number) {
         this.delay = 1000 / fps;
@@ -93,14 +96,26 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
 
     update(timeScale: number) {
         timeScale *= this.timeScale;
+
         this.emit('willUpdate', timeScale);
+
+        const filteredObjects = new Array<Body>();
+
         this.objects.forEach(object => {
             if ((object as Body).update) {
                 (object as Body).update(timeScale);
+                if ((object as Body).filter && (object as Body).collisionFilter) {
+                    filteredObjects.push(object as Body);
+                }
             }
         });
 
+        if (this.collisionChecking) {
+
+        }
+
         this.emit('didUpdate', timeScale);
+
     }
 
     render(renderer: Renderer) {

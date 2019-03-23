@@ -15,24 +15,6 @@ export interface ShapeStyle extends CommonStyle {
     lineDashOffset: number;
 }
 
-export const applyShapeStyle = (context: CanvasRenderingContext2D, shapeStyle: ShapeStyle) => {
-    const { fillStyle } = shapeStyle;
-    CommonStyle.apply(context, shapeStyle);
-    if (fillStyle) {
-        context.fillStyle = fillStyle;
-    }
-    if (shapeStyle.strokeStyle) {
-        context.strokeStyle = shapeStyle.strokeStyle;
-        context.lineWidth = shapeStyle.lineWidth;
-        context.lineCap = shapeStyle.lineCap;
-        context.lineJoin = shapeStyle.lineJoin;
-        if (shapeStyle.lineDash) {
-            context.setLineDash(shapeStyle.lineDash);
-            context.lineDashOffset = shapeStyle.lineDashOffset;
-        }
-    }
-};
-
 export type ShapeOptions = BodyOptions & Partial<{
     style: Partial<ShapeStyle>;
     visible: boolean;
@@ -59,6 +41,24 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
         lineDash: _null,
         lineDashOffset: 0,
     } as ShapeStyle);
+
+    static applyStyle(context: CanvasRenderingContext2D, shapeStyle: ShapeStyle) {
+        const { fillStyle } = shapeStyle;
+        CommonStyle.apply(context, shapeStyle);
+        if (fillStyle) {
+            context.fillStyle = fillStyle;
+        }
+        if (shapeStyle.strokeStyle) {
+            context.strokeStyle = shapeStyle.strokeStyle;
+            context.lineWidth = shapeStyle.lineWidth;
+            context.lineCap = shapeStyle.lineCap;
+            context.lineJoin = shapeStyle.lineJoin;
+            if (shapeStyle.lineDash) {
+                context.setLineDash(shapeStyle.lineDash);
+                context.lineDashOffset = shapeStyle.lineDashOffset;
+            }
+        }
+    }
 
     constructor(options: Readonly<ShapeOptions> = EMPTY_OBJECT) {
         super(_assign({}, Shape.defaults, options));
@@ -88,7 +88,7 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
             return sprite.render(context);
         }
 
-        applyShapeStyle(context, style);
+        Shape.applyStyle(context, style);
 
         context.beginPath();
         this.path(context);
