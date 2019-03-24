@@ -129,6 +129,8 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
                         continue;
                     }
 
+                    // TODO: emit collision events
+
                     const { velocity: v1, position: p1 } = body1,
                         { velocity: v2, position: p2 } = body2;
 

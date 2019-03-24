@@ -39,6 +39,7 @@ export type BodyOptions = Partial<{
 export interface BodyEvents {
     willUpdate: number;
     didUpdate: number;
+    // TODO: add collision events
 }
 
 export abstract class Body extends EventEmitter<BodyEvents> implements Required<BodyOptions>, Renderable {
