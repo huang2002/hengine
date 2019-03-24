@@ -203,9 +203,11 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         return this;
     }
 
-    applyForce(force: VectorLike) {
+    applyForce(force: VectorLike, point?: VectorLike) {
         const { mass } = this;
-        this.acceleration.add(force.x / mass, force.y / mass);
+        this.acceleration.plus(force.x / mass, force.y / mass);
+        // TODO: update angular speed
+
         return this;
     }
 
@@ -213,12 +215,12 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         this.emit('willUpdate', timeScale);
         if (this.active) {
             const { velocity, maxSpeed, angularSpeed, maxAngularSpeed } = this;
-            velocity.addVector(Vector.mix([this.acceleration, this.gravity]).scale(timeScale));
+            velocity.plusVector(Vector.plus([this.acceleration, this.gravity]).scale(timeScale));
             const speed = velocity.getModulus();
             if (speed > maxSpeed) {
                 velocity.scale(maxSpeed / speed);
             }
-            this.position.addVector(velocity.clone().scale(timeScale));
+            this.position.plusVector(velocity.clone().scale(timeScale));
             this.bounds.moveVector(velocity);
             if (angularSpeed > maxAngularSpeed) {
                 (this.rotation as number) += (this.angularSpeed = maxAngularSpeed);

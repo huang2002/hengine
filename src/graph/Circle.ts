@@ -21,7 +21,7 @@ export class Circle extends Shape implements Required<CircleOptions>, Renderable
 
     getClosest(target: VectorLike) {
         const { position } = this;
-        return Vector.minus(target, position).setModulus(this.radius).addVector(position);
+        return Vector.minus(target, position).setModulus(this.radius).plusVector(position);
     }
 
     project(direction: Vector) {

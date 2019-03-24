@@ -35,7 +35,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         timeScale: 1,
         background: '#fff',
         clean: false,
-        collisionChecker: _null,
+        collisionChecker: CollisionChecker.Smart,
     };
 
     constructor(options: SceneOptions = EMPTY_OBJECT) {
@@ -113,7 +113,26 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
 
         const { collisionChecker } = this;
         if (collisionChecker) {
+            const filteredObjectCount = filteredObjects.length;
+            for (let i = 0; i < filteredObjectCount; i++) {
+                const body1 = filteredObjects[i];
+                for (let j = i + 1; j < filteredObjectCount; j++) {
 
+                    const body2 = filteredObjects[j];
+
+                    if (!(body1.filter & body2.collisionFilter && body1.collisionFilter & body2.filter)) {
+                        continue;
+                    }
+
+                    const separatingVector = collisionChecker(body1, body2);
+                    if (!separatingVector) {
+                        continue;
+                    }
+
+                    // TODO: finish collision checking
+
+                }
+            }
         }
 
         this.emit('didUpdate', timeScale);

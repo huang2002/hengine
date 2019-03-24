@@ -16,12 +16,12 @@ export class Vector {
         return Vector.of(vectorLike.x, vectorLike.y);
     }
 
-    static mix(vectors: VectorLike[]) {
-        return vectors.reduce((ans: Vector, cur) => ans.addVector(cur), new Vector());
+    static plus(vectors: VectorLike[]) {
+        return vectors.reduce((ans: Vector, cur) => ans.plusVector(cur), new Vector());
     }
 
     static mean(vectors: VectorLike[]) {
-        return Vector.mix(vectors).shrink(vectors.length);
+        return Vector.plus(vectors).shrink(vectors.length);
     }
 
     static dot(vector1: VectorLike, vector2: VectorLike) {
@@ -87,13 +87,13 @@ export class Vector {
         return this;
     }
 
-    add(dx: number, dy: number) {
+    plus(dx: number, dy: number) {
         this.x += dx;
         this.y += dy;
         return this;
     }
 
-    addVector(vector: VectorLike) {
+    plusVector(vector: VectorLike) {
         this.x += vector.x;
         this.y += vector.y;
         return this;

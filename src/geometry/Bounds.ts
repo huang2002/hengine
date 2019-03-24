@@ -3,7 +3,7 @@ import { _max, _min, _null } from "../utils/references";
 
 export class Bounds {
 
-    static overlap(bounds1: Bounds, bounds2: Bounds) {
+    static getOverlap(bounds1: Bounds, bounds2: Bounds) {
         const result = new Bounds();
         result.left = _max(bounds1.left, bounds2.left);
         result.right = _min(bounds1.right, bounds2.right);
@@ -37,6 +37,15 @@ export class Bounds {
         this.right += vector.x;
         this.top += vector.y;
         this.bottom += vector.y;
+    }
+
+    overlaps(bounds: Bounds) {
+        return !(
+            bounds.right < this.left ||
+            bounds.left > this.right ||
+            bounds.bottom < this.top ||
+            bounds.top > this.bottom
+        );
     }
 
 }

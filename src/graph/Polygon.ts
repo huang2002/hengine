@@ -70,7 +70,7 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
                 vertices[vertices.length - 1]
             );
             if (adjustment) {
-                const offset = Vector.mix(centers.map((center, i) => center.scale(areas[i] / totalArea)));
+                const offset = Vector.plus(centers.map((center, i) => center.scale(areas[i] / totalArea)));
                 vertices.forEach(vertex => {
                     vertex.minusVector(offset);
                 });
