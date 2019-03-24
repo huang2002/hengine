@@ -1,4 +1,4 @@
-import { _sqrt, _pow, _cos, _sin, _atan, _PI } from "../utils/references";
+import { _sqrt, _pow, _cos, _sin, _atan, _PI, _abs } from "../utils/references";
 import { distance } from "../utils/common";
 
 export interface VectorLike {
@@ -47,6 +47,16 @@ export class Vector {
 
     static distance(vector1: VectorLike, vector2: VectorLike) {
         return distance(vector1.x, vector1.y, vector2.x, vector2.y);
+    }
+
+    static distribute(vector0: VectorLike, vector1: VectorLike, vector2: VectorLike, k1: number, k2: number) {
+        const sum = _abs(k1) + _abs(k2);
+        k1 /= sum;
+        k2 /= sum;
+        vector1.x += vector0.x * k1;
+        vector1.y += vector0.y * k1;
+        vector2.x += vector0.x * k2;
+        vector2.y += vector0.y * k2;
     }
 
     constructor(x?: number, y?: number) {

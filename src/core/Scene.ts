@@ -5,6 +5,7 @@ import { RenderingStyle } from "../graph/CommonStyle";
 import { removeIndex } from "../utils/common";
 import { Body } from "../physics/Body";
 import { CollisionChecker } from "../physics/CollisionChecker";
+import { Vector } from "../geometry/Vector";
 
 export type SceneObject = Body | Renderable;
 
@@ -117,7 +118,6 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
             for (let i = 0; i < filteredObjectCount; i++) {
                 const body1 = filteredObjects[i];
                 for (let j = i + 1; j < filteredObjectCount; j++) {
-
                     const body2 = filteredObjects[j];
 
                     if (!(body1.filter & body2.collisionFilter && body1.collisionFilter & body2.filter)) {
@@ -128,6 +128,12 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
                     if (!separatingVector) {
                         continue;
                     }
+
+                    const { velocity: v1, position: p1 } = body1,
+                        { velocity: v2, position: p2 } = body2;
+
+                    // TODO: solve static bodies
+                    Vector.distribute(separatingVector, p1, p2, -body1.stiffness, body2.stiffness);
 
                     // TODO: finish collision checking
 
