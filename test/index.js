@@ -5,7 +5,7 @@
 const engine = new HE.Engine({
     inspector: new HE.Inspector(),
     renderer: new HE.Renderer({
-        ratio: 2
+        ratio: 2,
     }),
 });
 
@@ -17,7 +17,7 @@ const menuScene = new HE.Scene({
 menuScene.add(new HE.Text({
     content: 'Hello, world!',
     style: {
-        font: 'bold 30px Consolas',
+        font: 'bold 36px Consolas',
         fillStyle: '#6f0',
         strokeStyle: '#03f',
         lineWidth: 4,

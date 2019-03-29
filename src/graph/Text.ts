@@ -1,5 +1,5 @@
 import { _assign } from "../utils/references";
-import { Renderable } from "../renderer/Renderer";
+import { Renderable, Renderer } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { ShapeStyle, Shape } from "./Shape";
 import { EMPTY_OBJECT, TRANSPARENT } from "../utils/common";
@@ -28,8 +28,9 @@ export class Text implements Required<TextOptions>, Renderable {
         direction: 'inherit',
     } as TextStyle);
 
-    static applyStyle(context: CanvasRenderingContext2D, textStyle: TextStyle) {
-        Shape.applyStyle(context, textStyle);
+    static applyStyle(renderer: Renderer, textStyle: TextStyle) {
+        Shape.applyStyle(renderer, textStyle);
+        const { context } = renderer;
         context.font = textStyle.font;
         context.textAlign = textStyle.textAlign;
         context.textBaseline = textStyle.textBaseline;
@@ -53,10 +54,11 @@ export class Text implements Required<TextOptions>, Renderable {
     position!: Vector;
     style!: TextStyle;
 
-    render(context: CanvasRenderingContext2D) {
+    render(renderer: Renderer) {
         const { style, fillFirst, content, position } = this,
-            { fillStyle } = style;
-        Text.applyStyle(context, style);
+            { fillStyle } = style,
+            { context } = renderer;
+        Text.applyStyle(renderer, style);
         if (fillFirst && fillStyle) {
             context.fillText(content, position.x, position.y);
             context.shadowColor = TRANSPARENT;

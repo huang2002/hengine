@@ -4,7 +4,7 @@ import { Vector } from "../geometry/Vector";
 import { EMPTY_OBJECT, debounce } from "../utils/common";
 
 export interface Renderable {
-    render(context: CanvasRenderingContext2D): void;
+    render(renderer: Renderer): void;
 }
 
 export type RendererOptions = Partial<{
@@ -144,7 +144,7 @@ export class Renderer implements Required<RendererOptions>{
         if (restoration) {
             context.save();
         }
-        renderable.render(context);
+        renderable.render(this);
         if (restoration) {
             context.restore();
         }

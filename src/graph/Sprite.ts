@@ -1,4 +1,4 @@
-import { Renderable } from "../renderer/Renderer";
+import { Renderable, Renderer } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { _assign, _document, _undefined } from "../utils/references";
 import { EMPTY_OBJECT, Callback } from "../utils/common";
@@ -63,14 +63,15 @@ export class Sprite implements Required<SpriteOptions>, Renderable {
         return this;
     }
 
-    render(context: CanvasRenderingContext2D) {
+    render(renderer: Renderer) {
         const { image } = this;
         if (image) {
             const { position } = this,
                 { width, height } = image,
+                { context } = renderer,
                 dstW = this.width || width,
                 dstH = this.height || height;
-            CommonStyle.apply(context, this.style);
+            CommonStyle.apply(renderer, this.style);
             context.drawImage(
                 image,
                 (this.srcX || 0) - dstW / 2, (this.srcY || 0) - dstH / 2,

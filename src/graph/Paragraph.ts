@@ -1,5 +1,5 @@
 import { _assign } from "../utils/references";
-import { Renderable } from "../renderer/Renderer";
+import { Renderable, Renderer } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { TextStyle, Text } from "./Text";
 import { EMPTY_OBJECT, TRANSPARENT } from "../utils/common";
@@ -44,10 +44,11 @@ export class Paragraph implements Required<ParagraphOptions>, Renderable {
     position!: Vector;
     style!: TextStyle;
 
-    render(context: CanvasRenderingContext2D) {
+    render(renderer: Renderer) {
         const { style, fillFirst, lines, lineHeight, indent, position } = this,
-            { fillStyle, strokeStyle, shadowColor } = style;
-        Text.applyStyle(context, style);
+            { fillStyle, strokeStyle, shadowColor } = style,
+            { context } = renderer;
+        Text.applyStyle(renderer, style);
         context.translate(position.x, position.y);
         lines.forEach((line, i) => {
             if (fillFirst && fillStyle) {

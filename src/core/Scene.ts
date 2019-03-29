@@ -194,7 +194,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
             context.clearRect(renderer.left, renderer.top, renderer.width, renderer.height);
         }
         this.objects.concat(this.attachments).forEach(renderable => {
-            renderable.render(context);
+            renderable.render(renderer);
         });
         if (renderer.restoration) {
             context.restore();

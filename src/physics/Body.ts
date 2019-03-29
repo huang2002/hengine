@@ -3,7 +3,7 @@ import { _assign, _undefined, _abs, _Infinity } from "../utils/references";
 import { Vector, VectorLike } from "../geometry/Vector";
 import { FilterTag, Filter } from "./Filter";
 import { Bounds } from "../geometry/Bounds";
-import { Renderable } from "../renderer/Renderer";
+import { Renderable, Renderer } from "../renderer/Renderer";
 import { EMPTY_OBJECT, DOUBLE_PI } from "../utils/common";
 
 export interface Projection {
@@ -143,7 +143,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
     protected _rotate?(rotation: number, origin?: VectorLike): void;
     abstract getClosest(target: VectorLike): Vector;
     abstract project(direction: Vector): Projection;
-    abstract render(context: CanvasRenderingContext2D): void;
+    abstract render(renderer: Renderer): void;
 
     setScale(scaleX: number, scaleY = scaleX) {
         const deltaScaleX = scaleX / this.scaleX,

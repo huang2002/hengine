@@ -1,5 +1,5 @@
 import { Body, BodyOptions } from "../physics/Body";
-import { Renderable } from "../renderer/Renderer";
+import { Renderable, Renderer } from "../renderer/Renderer";
 import { _assign, _null } from "../utils/references";
 import { Sprite } from "./Sprite";
 import { RenderingStyle, CommonStyle } from "./CommonStyle";
@@ -43,9 +43,10 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
         lineDashOffset: 0,
     } as ShapeStyle);
 
-    static applyStyle(context: CanvasRenderingContext2D, shapeStyle: ShapeStyle) {
-        const { fillStyle } = shapeStyle;
-        CommonStyle.apply(context, shapeStyle);
+    static applyStyle(renderer: Renderer, shapeStyle: ShapeStyle) {
+        const { context } = renderer,
+            { fillStyle } = shapeStyle;
+        CommonStyle.apply(renderer, shapeStyle);
         if (fillStyle) {
             context.fillStyle = fillStyle;
         }
@@ -74,22 +75,23 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
 
     abstract path(context: CanvasRenderingContext2D): void;
 
-    render(context: CanvasRenderingContext2D) {
+    render(renderer: Renderer) {
 
         if (!this.visible) {
             return;
         }
 
         const { style, fillFirst, position, sprite } = this,
-            { fillStyle } = style;
+            { fillStyle } = style,
+            { context } = renderer;
 
         context.translate(position.x, position.y);
 
         if (sprite) {
-            return sprite.render(context);
+            return sprite.render(renderer);
         }
 
-        Shape.applyStyle(context, style);
+        Shape.applyStyle(renderer, style);
 
         context.beginPath();
         this.path(context);
