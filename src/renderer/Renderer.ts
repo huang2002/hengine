@@ -34,7 +34,7 @@ export class Renderer implements Required<RendererOptions>{
         origin: Vector.of(.5, .5),
         parent: _document.body,
         align: true,
-        sizing: Sizing.Fixed,
+        sizing: Sizing.Fit,
         resizeEvents: ['resize', 'orientationchange'],
         resizeDelay: 100,
         restoration: false,
@@ -46,12 +46,11 @@ export class Renderer implements Required<RendererOptions>{
         let { canvas } = this;
         if (!canvas) {
             canvas = this.canvas || (this.canvas = _document.createElement('canvas'));
-        } else {
-            if (canvas.parentNode) {
-                this.parent = canvas.parentElement;
-            } else if (this.parent) {
-                this.parent.appendChild(canvas);
-            }
+        } else if (canvas.parentNode) {
+            this.parent = canvas.parentElement;
+        }
+        if (this.parent) {
+            this.parent.appendChild(canvas);
         }
 
         this.context = canvas.getContext('2d', options.settings)!;
@@ -122,10 +121,10 @@ export class Renderer implements Required<RendererOptions>{
         const originOffsetX = width * origin.x,
             originOffsetY = height * origin.y;
 
-        this.context.setTransform(1, 0, originOffsetX, 0, 1, originOffsetY);
+        this.context.setTransform(ratio, 0, 0, ratio, originOffsetX * ratio, originOffsetY * ratio);
         (this.top as number) = -originOffsetY;
-        (this.right as number) = width - originOffsetX;
-        (this.bottom as number) = height - originOffsetY;
+        (this.right as number) = -originOffsetX + width;
+        (this.bottom as number) = -originOffsetY + height;
         (this.left as number) = -originOffsetX;
 
     }

@@ -1,14 +1,11 @@
 import { _null } from "../utils/references";
+import { TRANSPARENT } from "../utils/common";
 
 export type RenderingStyle = string | CanvasGradient | CanvasPattern;
 
-export interface CommonStyle {
-    shadowColor: string | null;
-    shadowBlur: number;
-    shadowOffsetX: number;
-    shadowOffsetY: number;
+export type CommonStyle = CanvasShadowStyles & {
     opacity: number;
-}
+};
 
 export interface CommonStyleObject {
     defaults: CommonStyle;
@@ -18,7 +15,7 @@ export interface CommonStyleObject {
 export const CommonStyle: CommonStyleObject = {
 
     defaults: {
-        shadowColor: _null,
+        shadowColor: TRANSPARENT,
         shadowBlur: 0,
         shadowOffsetX: 0,
         shadowOffsetY: 0,
@@ -27,12 +24,10 @@ export const CommonStyle: CommonStyleObject = {
 
     apply(context, commonStyle) {
         context.globalAlpha = commonStyle.opacity;
-        if (commonStyle.shadowColor) {
-            context.shadowColor = commonStyle.shadowColor;
-            context.shadowBlur = commonStyle.shadowBlur;
-            context.shadowOffsetX = commonStyle.shadowOffsetX;
-            context.shadowOffsetY = commonStyle.shadowOffsetY;
-        }
+        context.shadowColor = commonStyle.shadowColor;
+        context.shadowBlur = commonStyle.shadowBlur;
+        context.shadowOffsetX = commonStyle.shadowOffsetX;
+        context.shadowOffsetY = commonStyle.shadowOffsetY;
     },
 
 };

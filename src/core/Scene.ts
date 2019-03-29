@@ -182,14 +182,13 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     }
 
     render(renderer: Renderer) {
-        const { background } = this,
-            { context } = renderer;
+        const { context } = renderer;
         this.emit('willRender', context);
         if (renderer.restoration) {
             context.save();
         }
-        if (background) {
-            context.fillStyle = background;
+        if (this.background) {
+            context.fillStyle = this.background;
             context.fillRect(renderer.left, renderer.top, renderer.width, renderer.height);
         } else {
             context.clearRect(renderer.left, renderer.top, renderer.width, renderer.height);

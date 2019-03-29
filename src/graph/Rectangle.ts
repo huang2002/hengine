@@ -5,22 +5,22 @@ import { Shape, ShapeOptions } from "./Shape";
 import { EMPTY_OBJECT, quadraticSum } from "../utils/common";
 import { Vertices } from "../geometry/Vertices";
 
-export type RectOptions = ShapeOptions & Partial<{
+export type RectangleOptions = ShapeOptions & Partial<{
     width: number;
     height: number;
     radius: number;
 }>;
 
-export class Rect extends Shape implements Required<RectOptions>, Renderable {
+export class Rectangle extends Shape implements Required<RectangleOptions>, Renderable {
 
-    static defaults: RectOptions = {
+    static defaults: RectangleOptions = {
         width: 20,
         height: 20,
         radius: 0,
     };
 
-    constructor(options: Readonly<RectOptions> = EMPTY_OBJECT) {
-        super(_assign({}, Rect.defaults, options));
+    constructor(options: Readonly<RectangleOptions> = EMPTY_OBJECT) {
+        super(_assign({}, Rectangle.defaults, options));
     }
 
     width!: number;

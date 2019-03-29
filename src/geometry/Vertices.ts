@@ -9,6 +9,7 @@ export interface VerticesObject {
     createStar: CachedFunction<
         (angles: number, innerRadius: number, outerRadius: number, rotation?: number) => Vector[]
     >;
+    createRectangle: CachedFunction<(width: number, height: number, rotation?: number) => Vector[]>;
 }
 
 export const Vertices: VerticesObject = {
@@ -54,6 +55,32 @@ export const Vertices: VerticesObject = {
             rotation += angle;
         }
         return results;
+    }),
+
+    createRectangle: cache(function (width, height, rotation) {
+        const x0 = width / 2,
+            y0 = height / 2;
+        if (rotation) {
+            const cos = _cos(rotation),
+                sin = _sin(rotation),
+                x1 = x0 * cos - y0 * sin,
+                y1 = x0 * sin + y0 * sin,
+                x2 = -x0 * cos - y0 * sin,
+                y2 = -x0 * sin + y0 * sin;
+            return [
+                Vector.of(x1, y1),
+                Vector.of(x2, y2),
+                Vector.of(-x1, -y1),
+                Vector.of(-x2, -y2)
+            ];
+        } else {
+            return [
+                Vector.of(x0, y0),
+                Vector.of(-x0, y0),
+                Vector.of(-x0, -y0),
+                Vector.of(x0, -y0)
+            ];
+        }
     }),
 
 };

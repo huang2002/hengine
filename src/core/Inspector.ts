@@ -29,10 +29,12 @@ export class Inspector implements Required<InspectorOptions> {
         if (!options.paragraph) {
             this.paragraph = new Paragraph({
                 position: Vector.of(-230, -150),
+                lineHeight: 15,
                 style: {
-                    font: 'Consolas 15px',
+                    font: '10px Consolas',
                     textAlign: 'left',
                     textBaseline: 'top',
+                    strokeStyle: '#00f',
                 },
             });
         }

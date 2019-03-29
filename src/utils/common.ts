@@ -5,7 +5,8 @@ import {
 
 export const EMPTY_OBJECT = _Object.create(_null) as Readonly<{}>,
     DOUBLE_PI = _PI * 2,
-    HALF_PI = _PI / 2;
+    HALF_PI = _PI / 2,
+    TRANSPARENT = 'rgba(0,0,0,0)';
 
 export const removeIndex = (array: unknown[], index: number) => {
     const end = array.length - 1;
@@ -26,7 +27,7 @@ export const quadraticSum = (a: number, b: number) => _pow(a, 2) + _pow(b, 2);
 export const distance = (x1: number, y1: number, x2: number, y2: number) =>
     _sqrt(quadraticSum(x2 - x1, y2 - y1));
 
-export const now = (_window.performance || _Date).now;
+export const now = _window.performance ? _window.performance.now.bind(_window.performance) : _Date.now;
 
 export type ToArray<T> = T extends any[] ? T : [T];
 

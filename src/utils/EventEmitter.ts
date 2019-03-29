@@ -12,8 +12,8 @@ export class EventEmitter<E extends object = any> {
         this.off = this.off.bind(this);
         this.once = this.once.bind(this);
         this.emit = this.emit.bind(this as any);
-        this.clear = this.clear.bind(this);
-        this.clearAll = this.clearAll.bind(this);
+        this.clearEvent = this.clearEvent.bind(this);
+        this.clearEvents = this.clearEvents.bind(this);
     }
 
     private _recordMap = new _Map<keyof E, EventListenerRecord<any>[]>();
@@ -21,9 +21,9 @@ export class EventEmitter<E extends object = any> {
     on<T extends keyof E>(event: T, listener: EventListener<E[T]>, once?: boolean) {
         const { _recordMap } = this;
         if (_recordMap.has(event)) {
-            _recordMap.get(event)!.push([listener, !!once]);
+            _recordMap.get(event)!.push([listener, !once]);
         } else {
-            _recordMap.set(event, [[listener, !!once]]);
+            _recordMap.set(event, [[listener, !once]]);
         }
         return this;
     }
@@ -64,12 +64,12 @@ export class EventEmitter<E extends object = any> {
         return false;
     }
 
-    clear<T extends keyof E>(event: T) {
+    clearEvent<T extends keyof E>(event: T) {
         this._recordMap.delete(event);
         return this;
     }
 
-    clearAll() {
+    clearEvents() {
         this._recordMap.clear();
         return this;
     }

@@ -16,6 +16,7 @@ export type SizingFunction = (
 export interface SizingObject {
     Full: SizingFunction;
     Center: SizingFunction;
+    Fit: SizingFunction;
     FixedWidth: SizingFunction;
     FixedHeight: SizingFunction;
     Fixed: SizingFunction;
@@ -45,6 +46,22 @@ export const Sizing: SizingObject = {
         left: (outerWidth - innerWidth) / 2,
         top: (outerHeight - innerHeight) / 2
     }),
+
+    Fit: (innerWidth, innerHeight, outerWidth, outerHeight, margin) => {
+        const scale = outerWidth / outerHeight > innerWidth / innerHeight ?
+            (outerHeight - margin * 2) / innerHeight :
+            (outerWidth - margin * 2) / innerWidth,
+            width = innerWidth * scale,
+            height = innerHeight * scale;
+        return {
+            width: innerWidth,
+            height: innerHeight,
+            styleWidth: width,
+            styleHeight: height,
+            left: (outerWidth - width) / 2,
+            top: (outerHeight - height) / 2
+        };
+    },
 
     FixedWidth: (innerWidth, innerHeight, outerWidth, outerHeight, margin) => {
         const doubleMargin = margin * 2,
@@ -77,7 +94,7 @@ export const Sizing: SizingObject = {
     },
 
     Fixed: (innerWidth, innerHeight, outerWidth, outerHeight, margin) => ((
-        outerWidth / innerWidth > outerHeight / innerHeight ?
+        outerWidth / outerHeight > innerWidth / innerHeight ?
             Sizing.FixedHeight :
             Sizing.FixedWidth
     )(innerWidth, innerHeight, outerWidth, outerHeight, margin)),

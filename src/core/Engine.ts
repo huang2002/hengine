@@ -31,7 +31,7 @@ export class Engine implements Required<EngineOptions> {
             this.renderer = new Renderer();
         }
 
-        this.runner.on('tick', this.update = this.update.bind(this));
+        this.runner.on('tick', this.tick = this.tick.bind(this));
 
     }
 
@@ -48,12 +48,16 @@ export class Engine implements Required<EngineOptions> {
         }
         this.currentScene = scene;
         if (scene) {
-            this.runner.delay = scene.delay;
+            const { runner } = this;
+            runner.delay = scene.delay;
+            if (!runner.isRunning) {
+                runner.start();
+            }
             scene.emit('enter');
         }
     }
 
-    update(deltaTime: number) {
+    tick(deltaTime: number) {
         if (deltaTime > this.maxDelay) {
             return;
         }

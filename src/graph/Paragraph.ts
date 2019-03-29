@@ -2,7 +2,7 @@ import { _assign } from "../utils/references";
 import { Renderable } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { TextStyle, Text } from "./Text";
-import { EMPTY_OBJECT } from "../utils/common";
+import { EMPTY_OBJECT, TRANSPARENT } from "../utils/common";
 
 export type ParagraphOptions = Partial<{
     visible: boolean;
@@ -19,6 +19,7 @@ export class Paragraph implements Required<ParagraphOptions>, Renderable {
     static defaults: ParagraphOptions = {
         visible: true,
         lines: [],
+        indent: 0,
         lineHeight: 20,
     };
 
@@ -45,21 +46,29 @@ export class Paragraph implements Required<ParagraphOptions>, Renderable {
 
     render(context: CanvasRenderingContext2D) {
         const { style, fillFirst, lines, lineHeight, indent, position } = this,
-            { fillStyle, strokeStyle } = style;
+            { fillStyle, strokeStyle, shadowColor } = style;
         Text.applyStyle(context, style);
         context.translate(position.x, position.y);
-        lines.forEach(line => {
-            context.translate(indent, lineHeight);
+        lines.forEach((line, i) => {
             if (fillFirst && fillStyle) {
                 context.fillText(line, 0, 0);
+                context.shadowColor = TRANSPARENT;
             }
             if (strokeStyle) {
                 context.strokeText(line, 0, 0);
+                context.shadowColor = TRANSPARENT;
             }
             if (!fillFirst && fillStyle) {
                 context.fillText(line, 0, 0);
             }
+            context.translate(indent, lineHeight);
+            context.shadowColor = shadowColor;
         });
+        const { length: lineCount } = lines;
+        context.translate(
+            -position.x - indent * lineCount,
+            -position.y - lineHeight * lineCount
+        );
     }
 
 }

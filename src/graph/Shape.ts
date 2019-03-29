@@ -3,7 +3,7 @@ import { Renderable } from "../renderer/Renderer";
 import { _assign, _null } from "../utils/references";
 import { Sprite } from "./Sprite";
 import { RenderingStyle, CommonStyle } from "./CommonStyle";
-import { EMPTY_OBJECT } from "../utils/common";
+import { EMPTY_OBJECT, TRANSPARENT } from "../utils/common";
 
 export interface ShapeStyle extends CommonStyle {
     fillStyle: RenderingStyle | null;
@@ -99,13 +99,17 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
 
         if (fillFirst && fillStyle) {
             context.fill();
+            context.shadowColor = TRANSPARENT;
         }
         if (style.strokeStyle) {
             context.stroke();
+            context.shadowColor = TRANSPARENT;
         }
         if (!fillFirst && fillStyle) {
             context.fill();
         }
+
+        context.translate(-position.x, -position.y);
 
     }
 

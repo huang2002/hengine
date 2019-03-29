@@ -19,7 +19,7 @@ export * from "./graph/Sprite";
 export * from "./graph/Text";
 export * from "./graph/Paragraph";
 export * from "./graph/Shape";
-export * from "./graph/Rect";
+export * from "./graph/Rectangle";
 export * from "./graph/Circle";
 export * from "./graph/Polygon";
 

@@ -2,7 +2,7 @@ import { _assign } from "../utils/references";
 import { Renderable } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { ShapeStyle, Shape } from "./Shape";
-import { EMPTY_OBJECT } from "../utils/common";
+import { EMPTY_OBJECT, TRANSPARENT } from "../utils/common";
 
 export type TextStyle = ShapeStyle & CanvasTextDrawingStyles;
 
@@ -22,7 +22,7 @@ export class Text implements Required<TextOptions>, Renderable {
     };
 
     static defaultStyle: TextStyle = _assign({} as TextStyle, Shape.defaultStyle, {
-        font: 'Consolas 16px',
+        font: '16px Consolas',
         textAlign: 'center',
         textBaseline: 'middle',
         direction: 'inherit',
@@ -59,9 +59,11 @@ export class Text implements Required<TextOptions>, Renderable {
         Text.applyStyle(context, style);
         if (fillFirst && fillStyle) {
             context.fillText(content, position.x, position.y);
+            context.shadowColor = TRANSPARENT;
         }
         if (style.strokeStyle) {
             context.strokeText(content, position.x, position.y);
+            context.shadowColor = TRANSPARENT;
         }
         if (!fillFirst && fillStyle) {
             context.fillText(content, position.x, position.y);
