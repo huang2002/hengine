@@ -1,9 +1,10 @@
 import { EventEmitter } from "../utils/EventEmitter";
-import { EMPTY_OBJECT, _assign, _undefined, _abs, _Infinity, DOUBLE_PI } from "../utils/references";
+import { _assign, _undefined, _abs, _Infinity } from "../utils/references";
 import { Vector, VectorLike } from "../geometry/Vector";
 import { FilterTag, Filter } from "./Filter";
 import { Bounds } from "../geometry/Bounds";
 import { Renderable } from "../renderer/Renderer";
+import { EMPTY_OBJECT, DOUBLE_PI } from "../utils/common";
 
 export interface Projection {
     min: number;
@@ -39,7 +40,7 @@ export type BodyOptions = Partial<{
 export interface BodyEvents {
     willUpdate: number;
     didUpdate: number;
-    // TODO: add collision events
+    collision: [Body, Vector];
 }
 
 export abstract class Body extends EventEmitter<BodyEvents> implements Required<BodyOptions>, Renderable {
@@ -216,12 +217,13 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         this.emit('willUpdate', timeScale);
         if (this.active) {
             const { velocity, maxSpeed, angularSpeed, maxAngularSpeed } = this;
-            velocity.plusVector(Vector.plus([this.acceleration, this.gravity]).scale(timeScale));
+            velocity.plusVector(this.acceleration, timeScale);
+            velocity.plusVector(this.gravity, timeScale);
             const speed = velocity.getModulus();
             if (speed > maxSpeed) {
                 velocity.scale(maxSpeed / speed);
             }
-            this.position.plusVector(velocity.clone().scale(timeScale));
+            this.position.plusVector(velocity, timeScale);
             this.bounds.moveVector(velocity);
             if (angularSpeed > maxAngularSpeed) {
                 (this.rotation as number) += (this.angularSpeed = maxAngularSpeed);

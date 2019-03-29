@@ -1,8 +1,9 @@
-import { EMPTY_OBJECT, _assign, _null } from "../utils/references";
+import { _assign, _null } from "../utils/references";
 import { Runner } from "./Runner";
 import { Renderer } from "../renderer/Renderer";
 import { Scene } from "./Scene";
 import { Inspector } from "./Inspector";
+import { EMPTY_OBJECT } from "../utils/common";
 
 export type EngineOptions = Partial<{
     runner: Runner;
@@ -21,7 +22,7 @@ export class Engine implements Required<EngineOptions> {
     };
 
     constructor(options: Readonly<EngineOptions> = EMPTY_OBJECT) {
-        _assign(this, options);
+        _assign(this, Engine.defaults, options);
 
         if (!options.runner) {
             this.runner = new Runner();

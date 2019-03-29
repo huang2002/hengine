@@ -1,8 +1,8 @@
 import { Renderable, Renderer } from "../renderer/Renderer";
-import { _assign, EMPTY_OBJECT, _null } from "../utils/references";
+import { _assign, _null } from "../utils/references";
 import { EventEmitter } from "../utils/EventEmitter";
 import { RenderingStyle } from "../graph/CommonStyle";
-import { removeIndex } from "../utils/common";
+import { EMPTY_OBJECT, removeIndex } from "../utils/common";
 import { Body } from "../physics/Body";
 import { CollisionChecker } from "../physics/CollisionChecker";
 import { Vector } from "../geometry/Vector";
@@ -129,15 +129,49 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
                         continue;
                     }
 
-                    // TODO: emit collision events
+                    body1.emit('collision', body2, separatingVector);
+                    body2.emit('collision', body1, separatingVector);
 
                     const { velocity: v1, position: p1 } = body1,
-                        { velocity: v2, position: p2 } = body2;
-
-                    // TODO: solve static bodies
-                    Vector.distribute(separatingVector, p1, p2, -body1.stiffness, body2.stiffness);
-
-                    // TODO: finish collision checking
+                        { velocity: v2, position: p2 } = body2,
+                        elasticity = body1.elasticity * body2.elasticity,
+                        roughness = body1.roughness * body2.roughness,
+                        edgeVector = separatingVector.clone().turn();
+                    if (body1.active) {
+                        if (body2.active) {
+                            Vector.distribute(separatingVector, p1, p2, -body1.stiffness, body2.stiffness);
+                            if (elasticity) {
+                                Vector.distribute(separatingVector, v1, v2, -elasticity, elasticity);
+                            }
+                            if (roughness) {
+                                const relativeVelocity = Vector.minus(v2, v1),
+                                    relativeEdgeVelocity = Vector.projectVector(relativeVelocity, edgeVector)
+                                v1.minusVector(relativeEdgeVelocity, roughness);
+                                v2.minusVector(relativeEdgeVelocity, roughness);
+                            }
+                            // TODO: solve the rotations of body1 & body2 here
+                        } else {
+                            p1.minusVector(separatingVector, (body1.stiffness + body2.stiffness) / 2);
+                            if (elasticity) {
+                                v1.minusVector(separatingVector, elasticity);
+                            }
+                            if (roughness) {
+                                v1.minusVector(Vector.projectVector(v1, separatingVector), roughness);
+                            }
+                            // TODO: solve the rotation of body1 here
+                        }
+                    } else {
+                        if (body2.active) {
+                            p2.plusVector(separatingVector, (body1.stiffness + body2.stiffness) / 2);
+                            if (elasticity) {
+                                v2.plusVector(separatingVector, elasticity);
+                            }
+                            if (roughness) {
+                                v2.plusVector(Vector.projectVector(v2, separatingVector), roughness);
+                            }
+                            // TODO: solve the rotation of body2 here
+                        }
+                    }
 
                 }
             }

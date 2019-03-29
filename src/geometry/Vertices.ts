@@ -1,6 +1,6 @@
-import { DOUBLE_PI, _cos, _sin, HALF_PI, _PI, _Infinity } from "../utils/references";
+import { _cos, _sin, _PI, _Infinity } from "../utils/references";
 import { Vector, VectorLike } from "./Vector";
-import { CachedFunction, cache, quadraticSum } from "../utils/common";
+import { DOUBLE_PI, HALF_PI, CachedFunction, cache, quadraticSum } from "../utils/common";
 
 export interface VerticesObject {
     fromArray(array: number[]): Vector[];

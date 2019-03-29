@@ -1,7 +1,7 @@
-import { EMPTY_OBJECT, _document, _assign, _window, _undefined } from "../utils/references";
+import { _document, _assign, _window, _undefined } from "../utils/references";
 import { SizingFunction, Sizing } from "./Sizing";
 import { Vector } from "../geometry/Vector";
-import { debounce } from "../utils/common";
+import { EMPTY_OBJECT, debounce } from "../utils/common";
 
 export interface Renderable {
     render(context: CanvasRenderingContext2D): void;
@@ -41,7 +41,7 @@ export class Renderer implements Required<RendererOptions>{
     };
 
     constructor(options: Readonly<RendererOptions> = EMPTY_OBJECT) {
-        _assign(this, options);
+        _assign(this, Renderer.defaults, options);
 
         let { canvas } = this;
         if (!canvas) {

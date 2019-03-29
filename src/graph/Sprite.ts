@@ -1,7 +1,7 @@
 import { Renderable } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
-import { EMPTY_OBJECT, _assign, _document, _undefined } from "../utils/references";
-import { Callback } from "../utils/common";
+import { _assign, _document, _undefined } from "../utils/references";
+import { EMPTY_OBJECT, Callback } from "../utils/common";
 import { CommonStyle } from "./CommonStyle";
 
 export type ImageLike = Exclude<CanvasImageSource, SVGImageElement>;

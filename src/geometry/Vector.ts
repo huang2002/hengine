@@ -6,6 +6,8 @@ export interface VectorLike {
     y: number;
 }
 
+// TODO: add interface `ReadonlyVector`
+
 export class Vector {
 
     static of(x: number, y: number) {
@@ -103,7 +105,7 @@ export class Vector {
         return this;
     }
 
-    plusVector(vector: VectorLike) {
+    plusVector(vector: VectorLike, scale = 1) {
         this.x += vector.x;
         this.y += vector.y;
         return this;
@@ -115,7 +117,7 @@ export class Vector {
         return this;
     }
 
-    minusVector(vector: VectorLike) {
+    minusVector(vector: VectorLike, scale = 1) {
         this.x -= vector.x;
         this.y -= vector.y;
         return this;

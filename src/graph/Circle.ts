@@ -1,8 +1,8 @@
 import { Renderable } from "../renderer/Renderer";
 import { Vector, VectorLike } from "../geometry/Vector";
-import { _abs, EMPTY_OBJECT, _assign, _Set, DOUBLE_PI, _cos, _sin, _sqrt } from "../utils/references";
+import { _abs, _assign, _Set, _cos, _sin, _sqrt } from "../utils/references";
 import { Shape, ShapeOptions } from "./Shape";
-import { quadraticSum } from "../utils/common";
+import { EMPTY_OBJECT, DOUBLE_PI, quadraticSum } from "../utils/common";
 
 export type CircleOptions = Pick<ShapeOptions, Exclude<keyof ShapeOptions, 'isCircle'>>;
 

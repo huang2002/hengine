@@ -1,8 +1,9 @@
 import { Body, BodyOptions } from "../physics/Body";
 import { Renderable } from "../renderer/Renderer";
-import { EMPTY_OBJECT, _assign, _null } from "../utils/references";
+import { _assign, _null } from "../utils/references";
 import { Sprite } from "./Sprite";
 import { RenderingStyle, CommonStyle } from "./CommonStyle";
+import { EMPTY_OBJECT } from "../utils/common";
 
 export interface ShapeStyle extends CommonStyle {
     fillStyle: RenderingStyle | null;

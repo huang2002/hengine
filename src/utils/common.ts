@@ -1,6 +1,13 @@
-import { _PI, _sqrt, _pow, _window, _now, _Date, _undefined, _clearTimeout, _setTimeout, _Map } from "./references";
+import {
+    _PI, _sqrt, _pow, _window, _now, _Date, _undefined,
+    _clearTimeout, _setTimeout, _Map, _Object, _null
+} from "./references";
 
-export const removeIndex = function rmIndex(array: unknown[], index: number) {
+export const EMPTY_OBJECT = _Object.create(_null) as Readonly<{}>,
+    DOUBLE_PI = _PI * 2,
+    HALF_PI = _PI / 2;
+
+export const removeIndex = (array: unknown[], index: number) => {
     const end = array.length - 1;
     for (; index < end; index++) {
         array[index] = array[index + 1];
