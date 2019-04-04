@@ -6,6 +6,8 @@ import { Bounds } from "../geometry/Bounds";
 import { Renderable, Renderer } from "../renderer/Renderer";
 import { EMPTY_OBJECT, DOUBLE_PI } from "../utils/common";
 
+// TODO: `isSensor` -> `sensorFilter`
+
 export interface Projection {
     min: number;
     max: number;
@@ -209,7 +211,6 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         const { mass } = this;
         this.acceleration.plus(force.x / mass, force.y / mass);
         // TODO: update angular speed
-
         return this;
     }
 
@@ -217,8 +218,8 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         this.emit('willUpdate', timeScale);
         if (this.active) {
             const { velocity, maxSpeed, angularSpeed, maxAngularSpeed } = this;
-            velocity.plusVector(this.acceleration, timeScale);
-            velocity.plusVector(this.gravity, timeScale);
+            velocity.plusVector(this.acceleration, timeScale)
+                .plusVector(this.gravity, timeScale);
             const speed = velocity.getModulus();
             if (speed > maxSpeed) {
                 velocity.scale(maxSpeed / speed);

@@ -2,6 +2,8 @@ import { Body } from "./Body";
 import { Vector } from "../geometry/Vector";
 import { _null, _Infinity, _abs } from "../utils/references";
 
+// TODO: add interface `Collision` ({ point: Vector; vector: Vector; })
+
 export type CollisionChecker = (body1: Body, body2: Body) => Vector | null;
 
 export interface CollisionCheckerObject {
