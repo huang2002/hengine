@@ -1,6 +1,6 @@
-import * as common from "./utils/common";
+import * as Common from "./utils/common";
 
-export { common };
+export { Common };
 export * from "./utils/EventEmitter";
 
 export * from "./geometry/Vector";
@@ -10,6 +10,7 @@ export * from "./geometry/Vertices";
 export * from "./physics/Filter";
 export * from "./physics/Body";
 export * from "./physics/CollisionChecker";
+export * from "./physics/Constraint";
 
 export * from "./renderer/Sizing";
 export * from "./renderer/Renderer";
@@ -22,6 +23,7 @@ export * from "./graph/Shape";
 export * from "./graph/Rectangle";
 export * from "./graph/Circle";
 export * from "./graph/Polygon";
+export * from "./graph/Line";
 
 export * from "./core/Runner";
 export * from "./core/Scene";

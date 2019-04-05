@@ -14,7 +14,7 @@ const menuScene = new HE.Scene({
     delay: 100,
 });
 
-menuScene.add(new HE.Text({
+const title = new HE.Text({
     content: 'Hello, world!',
     style: {
         font: 'bold 36px Consolas',
@@ -26,6 +26,7 @@ menuScene.add(new HE.Text({
         shadowBlur: 10,
         shadowOffsetY: -10,
     },
-}));
+});
+menuScene.add(title);
 
 engine.enter(menuScene);

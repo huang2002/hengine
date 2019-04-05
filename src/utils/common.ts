@@ -31,7 +31,7 @@ export const now = _window.performance ? _window.performance.now.bind(_window.pe
 
 export type ToArray<T> = T extends any[] ? T : [T];
 
-export type Callback<T=void, A = any[], R = unknown> =
+export type Callback<T = void, A = any[], R = unknown> =
     (this: T, ...args: ToArray<A>) => R;
 
 export type DebounceCallback = Callback;
@@ -100,3 +100,5 @@ export const cache = <T extends Callback<any>>(fn: T): CachedFunction<T> => {
     newFn.cache = map;
     return newFn;
 };
+
+export type ExcludeKeys<O, K extends keyof O> = Pick<O, Exclude<keyof O, K>>;
