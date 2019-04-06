@@ -2,18 +2,12 @@ import { Body, BodyOptions } from "../physics/Body";
 import { Renderable, Renderer } from "../renderer/Renderer";
 import { _assign, _null } from "../utils/references";
 import { Sprite } from "./Sprite";
-import { RenderingStyle, CommonStyle } from "./CommonStyle";
+import { RenderingStyle, CommonStyle, StrokeStyle } from "./CommonStyle";
 import { EMPTY_OBJECT, TRANSPARENT } from "../utils/Common";
 
-export interface ShapeStyle extends CommonStyle {
+
+export interface ShapeStyle extends CommonStyle, StrokeStyle {
     fillStyle: RenderingStyle | null;
-    strokeStyle: RenderingStyle | null;
-    lineWidth: number;
-    lineCap: CanvasLineCap;
-    lineJoin: CanvasLineJoin;
-    miterLimit: number;
-    lineDash: number[] | null;
-    lineDashOffset: number;
 }
 
 export type ShapeOptions = BodyOptions & Partial<{

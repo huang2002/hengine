@@ -8,6 +8,16 @@ export type CommonStyle = CanvasShadowStyles & {
     opacity: number;
 };
 
+export interface StrokeStyle {
+    strokeStyle: RenderingStyle | null;
+    lineWidth: number;
+    lineCap: CanvasLineCap;
+    lineJoin: CanvasLineJoin;
+    miterLimit: number;
+    lineDash: number[] | null;
+    lineDashOffset: number;
+}
+
 export interface CommonStyleObject {
     defaults: CommonStyle;
     apply(renderer: Renderer, commonStyle: CommonStyle): void;
