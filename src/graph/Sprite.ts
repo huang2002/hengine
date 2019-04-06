@@ -2,7 +2,7 @@ import { Renderable, Renderer } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { _assign, _document, _undefined } from "../utils/references";
 import { EMPTY_OBJECT, Callback } from "../utils/Common";
-import { CommonStyle } from "./CommonStyle";
+import { Style, CommonStyle } from "./Style";
 
 export type ImageLike = Exclude<CanvasImageSource, SVGImageElement>;
 
@@ -20,7 +20,7 @@ export type SpriteOptions = Partial<{
 
 export class Sprite implements Required<SpriteOptions>, Renderable {
 
-    static defaultStyle: CommonStyle = _assign({} as CommonStyle, CommonStyle.defaults);
+    static defaultStyle: CommonStyle = _assign({} as CommonStyle, Style.Common.defaults);
 
     static of(src: string, options?: Readonly<SpriteOptions>) {
         return (new Sprite(options)).load(src);
@@ -71,7 +71,7 @@ export class Sprite implements Required<SpriteOptions>, Renderable {
                 { context } = renderer,
                 dstW = this.width || width,
                 dstH = this.height || height;
-            CommonStyle.apply(renderer, this.style);
+            Style.Common.apply(renderer, this.style);
             context.drawImage(
                 image,
                 (this.srcX || 0) - dstW / 2, (this.srcY || 0) - dstH / 2,

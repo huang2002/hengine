@@ -2,13 +2,11 @@ import { Body, BodyOptions } from "../physics/Body";
 import { Renderable, Renderer } from "../renderer/Renderer";
 import { _assign, _null } from "../utils/references";
 import { Sprite } from "./Sprite";
-import { RenderingStyle, CommonStyle, StrokeStyle } from "./CommonStyle";
+import { Style, StrokeStyle, CommonStyle, FillStyle } from "./Style";
 import { EMPTY_OBJECT, TRANSPARENT } from "../utils/Common";
 
 
-export interface ShapeStyle extends CommonStyle, StrokeStyle {
-    fillStyle: RenderingStyle | null;
-}
+export type ShapeStyle = CommonStyle & StrokeStyle & FillStyle;
 
 export type ShapeOptions = BodyOptions & Partial<{
     style: Partial<ShapeStyle>;
@@ -26,34 +24,17 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
         closePath: true,
     };
 
-    static defaultStyle: ShapeStyle = _assign({} as ShapeStyle, CommonStyle.defaults, {
-        fillStyle: _null,
-        strokeStyle: '#000',
-        lineWidth: 1,
-        lineCap: 'butt',
-        lineJoin: 'miter',
-        miterLimit: 10,
-        lineDash: _null,
-        lineDashOffset: 0,
-    } as ShapeStyle);
+    static defaultStyle: ShapeStyle = _assign(
+        {} as ShapeStyle,
+        Style.Common.defaults,
+        Style.Stroke.defaults,
+        { fillStyle: _null } as ShapeStyle
+    );
 
-    static applyStyle(renderer: Renderer, shapeStyle: ShapeStyle) {
-        const { context } = renderer,
-            { fillStyle } = shapeStyle;
-        CommonStyle.apply(renderer, shapeStyle);
-        if (fillStyle) {
-            context.fillStyle = fillStyle;
-        }
-        if (shapeStyle.strokeStyle) {
-            context.strokeStyle = shapeStyle.strokeStyle;
-            context.lineWidth = shapeStyle.lineWidth;
-            context.lineCap = shapeStyle.lineCap;
-            context.lineJoin = shapeStyle.lineJoin;
-            if (shapeStyle.lineDash) {
-                context.setLineDash(shapeStyle.lineDash);
-                context.lineDashOffset = shapeStyle.lineDashOffset;
-            }
-        }
+    static applyStyle(renderer: Renderer, style: ShapeStyle) {
+        Style.Common.apply(renderer, style);
+        Style.Fill.apply(renderer, style);
+        Style.Stroke.apply(renderer, style);
     }
 
     constructor(options: Readonly<ShapeOptions> = EMPTY_OBJECT) {

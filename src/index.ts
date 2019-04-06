@@ -15,7 +15,7 @@ export * from "./physics/Constraint";
 export * from "./renderer/Sizing";
 export * from "./renderer/Renderer";
 
-export * from "./graph/CommonStyle";
+export * from "./graph/Style";
 export * from "./graph/Sprite";
 export * from "./graph/Text";
 export * from "./graph/Paragraph";
