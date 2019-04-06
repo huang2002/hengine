@@ -3,7 +3,7 @@ import { Renderable, Renderer } from "../renderer/Renderer";
 import { _assign, _null } from "../utils/references";
 import { Sprite } from "./Sprite";
 import { RenderingStyle, CommonStyle } from "./CommonStyle";
-import { EMPTY_OBJECT, TRANSPARENT } from "../utils/common";
+import { EMPTY_OBJECT, TRANSPARENT } from "../utils/Common";
 
 export interface ShapeStyle extends CommonStyle {
     fillStyle: RenderingStyle | null;

@@ -1,7 +1,7 @@
 import { _assign } from "../utils/references";
 import { Renderer } from "../renderer/Renderer";
 import { Paragraph } from "../graph/Paragraph";
-import { EMPTY_OBJECT, Callback } from "../utils/common";
+import { EMPTY_OBJECT, Callback } from "../utils/Common";
 import { Vector } from "../geometry/Vector";
 import { Engine } from "./Engine";
 

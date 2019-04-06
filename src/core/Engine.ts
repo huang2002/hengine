@@ -3,7 +3,7 @@ import { Runner } from "./Runner";
 import { Renderer } from "../renderer/Renderer";
 import { Scene } from "./Scene";
 import { Inspector } from "./Inspector";
-import { EMPTY_OBJECT } from "../utils/common";
+import { EMPTY_OBJECT } from "../utils/Common";
 
 export type EngineOptions = Partial<{
     runner: Runner;

@@ -2,7 +2,7 @@ import { Renderable } from "../renderer/Renderer";
 import { Vector, VectorLike } from "../geometry/Vector";
 import { _assign } from "../utils/references";
 import { Shape, ShapeOptions } from "./Shape";
-import { EMPTY_OBJECT, quadraticSum } from "../utils/common";
+import { EMPTY_OBJECT, quadraticSum } from "../utils/Common";
 
 export type LineOptions = ShapeOptions & Partial<{
     start: Vector;

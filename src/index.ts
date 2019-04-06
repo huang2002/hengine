@@ -1,4 +1,4 @@
-import * as Common from "./utils/common";
+import * as Common from "./utils/Common";
 
 export { Common };
 export * from "./utils/EventEmitter";

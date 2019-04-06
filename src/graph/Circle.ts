@@ -2,7 +2,7 @@ import { Renderable } from "../renderer/Renderer";
 import { Vector, VectorLike } from "../geometry/Vector";
 import { _abs, _assign, _Set, _cos, _sin, _sqrt } from "../utils/references";
 import { Shape, ShapeOptions } from "./Shape";
-import { EMPTY_OBJECT, DOUBLE_PI, quadraticSum, ExcludeKeys } from "../utils/common";
+import { EMPTY_OBJECT, DOUBLE_PI, quadraticSum, ExcludeKeys } from "../utils/Common";
 
 export type CircleOptions = ExcludeKeys<ShapeOptions, 'isCircle'>;
 

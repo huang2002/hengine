@@ -4,7 +4,7 @@ import { Vector, VectorLike } from "../geometry/Vector";
 import { FilterTag, Filter } from "./Filter";
 import { Bounds } from "../geometry/Bounds";
 import { Renderable, Renderer } from "../renderer/Renderer";
-import { EMPTY_OBJECT, DOUBLE_PI } from "../utils/common";
+import { EMPTY_OBJECT, DOUBLE_PI } from "../utils/Common";
 
 // TODO: `isSensor` -> `sensorFilter`
 

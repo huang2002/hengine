@@ -4,7 +4,7 @@ import { _abs, _assign, _Set } from "../utils/references";
 import { Shape, ShapeOptions } from "./Shape";
 import { Body } from "../physics/Body";
 import { Vertices } from "../geometry/Vertices";
-import { EMPTY_OBJECT } from "../utils/common";
+import { EMPTY_OBJECT } from "../utils/Common";
 
 export type PolygonOptions = ShapeOptions & Partial<{
     vertices: ReadonlyArray<Vector>;

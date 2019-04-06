@@ -2,7 +2,7 @@ import { _assign } from "../utils/references";
 import { Renderable, Renderer } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { TextStyle, Text } from "./Text";
-import { EMPTY_OBJECT, TRANSPARENT } from "../utils/common";
+import { EMPTY_OBJECT, TRANSPARENT } from "../utils/Common";
 
 export type ParagraphOptions = Partial<{
     visible: boolean;

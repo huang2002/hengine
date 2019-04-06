@@ -1,7 +1,7 @@
 import { _document, _assign, _window, _undefined } from "../utils/references";
 import { SizingFunction, Sizing } from "./Sizing";
 import { Vector } from "../geometry/Vector";
-import { EMPTY_OBJECT, debounce } from "../utils/common";
+import { EMPTY_OBJECT, debounce } from "../utils/Common";
 
 export interface Renderable {
     render(renderer: Renderer): void;

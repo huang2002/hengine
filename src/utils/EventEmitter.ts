@@ -1,5 +1,5 @@
 import { _Map, _undefined } from "./references";
-import { removeIndex, ToArray, Callback } from "./common";
+import { removeIndex, ToArray, Callback } from "./Common";
 
 export type EventListener<T> = Callback<void, T, void>;
 
