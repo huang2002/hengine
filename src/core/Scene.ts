@@ -104,8 +104,8 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         const filteredObjects = new Array<Body>();
 
         this.objects.forEach(object => {
-            if ((object as Body).update) {
-                (object as Body).update(timeScale);
+            if (object.update) {
+                object.update(timeScale);
                 if ((object as Body).filter && (object as Body).collisionFilter) {
                     filteredObjects.push(object as Body);
                 }

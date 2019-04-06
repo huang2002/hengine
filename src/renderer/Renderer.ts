@@ -4,6 +4,7 @@ import { Vector } from "../geometry/Vector";
 import { EMPTY_OBJECT, debounce } from "../utils/Common";
 
 export interface Renderable {
+    update?(timeScale: number): void;
     render(renderer: Renderer): void;
 }
 
