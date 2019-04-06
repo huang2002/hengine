@@ -2,12 +2,13 @@
 /// <reference types=".." />
 "use strict";
 
-const engine = new HE.Engine({
-    inspector: new HE.Inspector(),
-    renderer: new HE.Renderer({
-        ratio: 2,
-    }),
+const renderer = new HE.Renderer({
+    ratio: 2,
 });
+
+const inspector = new HE.Inspector();
+
+const engine = new HE.Engine({ inspector, renderer });
 
 const menuScene = new HE.Scene({
     background: '#fff',
