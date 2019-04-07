@@ -1,5 +1,5 @@
-import { _null } from "../utils/references";
-import { TRANSPARENT } from "../utils/Common";
+import { _null } from "../common/references";
+import { TRANSPARENT } from "../common/Common";
 import { Renderer } from "../renderer/Renderer";
 
 export type RenderingStyle = string | CanvasGradient | CanvasPattern;

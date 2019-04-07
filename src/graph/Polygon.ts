@@ -1,10 +1,10 @@
 import { Renderable } from "../renderer/Renderer";
 import { Vector, VectorLike } from "../geometry/Vector";
-import { _abs, _assign, _Set } from "../utils/references";
+import { _abs, _assign, _Set } from "../common/references";
 import { Shape, ShapeOptions } from "./Shape";
 import { Body } from "../physics/Body";
 import { Vertices } from "../geometry/Vertices";
-import { EMPTY_OBJECT } from "../utils/Common";
+import { EMPTY_OBJECT } from "../common/Common";
 
 export type PolygonOptions = ShapeOptions & Partial<{
     vertices: ReadonlyArray<Vector>;

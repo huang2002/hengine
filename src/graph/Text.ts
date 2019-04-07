@@ -1,8 +1,8 @@
-import { _assign } from "../utils/references";
+import { _assign } from "../common/references";
 import { Renderable, Renderer } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { ShapeStyle, Shape } from "./Shape";
-import { EMPTY_OBJECT, TRANSPARENT } from "../utils/Common";
+import { EMPTY_OBJECT, TRANSPARENT } from "../common/Common";
 
 export type TextStyle = ShapeStyle & CanvasTextDrawingStyles;
 

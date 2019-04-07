@@ -1,8 +1,8 @@
 import { Renderable } from "../renderer/Renderer";
 import { Vector, VectorLike } from "../geometry/Vector";
-import { _abs, _assign, _Set, _cos, _sin, _max, _sqrt } from "../utils/references";
+import { _abs, _assign, _Set, _cos, _sin, _max, _sqrt } from "../common/references";
 import { Shape, ShapeOptions } from "./Shape";
-import { EMPTY_OBJECT, quadraticSum } from "../utils/Common";
+import { EMPTY_OBJECT, quadraticSum } from "../common/Common";
 import { Vertices } from "../geometry/Vertices";
 
 export type RectangleOptions = ShapeOptions & Partial<{

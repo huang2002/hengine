@@ -1,7 +1,7 @@
-import { _document, _assign, _window, _undefined } from "../utils/references";
+import { _document, _assign, _window, _undefined } from "../common/references";
 import { SizingFunction, Sizing } from "./Sizing";
 import { Vector } from "../geometry/Vector";
-import { EMPTY_OBJECT, debounce } from "../utils/Common";
+import { EMPTY_OBJECT, debounce } from "../common/Common";
 
 export interface Renderable {
     update?(timeScale: number): void;

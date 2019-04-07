@@ -1,7 +1,7 @@
-import * as Common from "./utils/Common";
+import * as Common from "./common/Common";
 
 export { Common };
-export * from "./utils/EventEmitter";
+export * from "./common/EventEmitter";
 
 export * from "./geometry/Vector";
 export * from "./geometry/Bounds";

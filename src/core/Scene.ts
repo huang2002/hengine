@@ -1,8 +1,8 @@
 import { Renderable, Renderer } from "../renderer/Renderer";
-import { _assign, _null } from "../utils/references";
-import { EventEmitter } from "../utils/EventEmitter";
+import { _assign, _null } from "../common/references";
+import { EventEmitter } from "../common/EventEmitter";
 import { RenderingStyle } from "../graph/Style";
-import { EMPTY_OBJECT, removeIndex } from "../utils/Common";
+import { EMPTY_OBJECT, removeIndex } from "../common/Common";
 import { Body } from "../physics/Body";
 import { CollisionChecker } from "../physics/CollisionChecker";
 import { Vector } from "../geometry/Vector";

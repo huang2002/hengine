@@ -1,8 +1,8 @@
-import { _assign, _undefined, _null } from "../utils/references";
+import { _assign, _undefined, _null } from "../common/references";
 import { Renderable, Renderer } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { Body } from "./Body";
-import { EMPTY_OBJECT } from "../utils/Common";
+import { EMPTY_OBJECT } from "../common/Common";
 import { StrokeStyle, Style, CommonStyle } from "../graph/Style";
 
 export type ConstraintStyle = CommonStyle & StrokeStyle;

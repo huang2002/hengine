@@ -1,6 +1,6 @@
 import { Body } from "./Body";
 import { Vector } from "../geometry/Vector";
-import { _null, _Infinity, _abs } from "../utils/references";
+import { _null, _Infinity, _abs } from "../common/references";
 
 // TODO: add interface `Collision` ({ point: Vector; vector: Vector; })
 

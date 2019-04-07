@@ -1,9 +1,9 @@
 import { Body, BodyOptions } from "../physics/Body";
 import { Renderable, Renderer } from "../renderer/Renderer";
-import { _assign, _null } from "../utils/references";
+import { _assign, _null } from "../common/references";
 import { Sprite } from "./Sprite";
 import { Style, StrokeStyle, CommonStyle, FillStyle } from "./Style";
-import { EMPTY_OBJECT, TRANSPARENT } from "../utils/Common";
+import { EMPTY_OBJECT, TRANSPARENT } from "../common/Common";
 
 
 export type ShapeStyle = CommonStyle & StrokeStyle & FillStyle;

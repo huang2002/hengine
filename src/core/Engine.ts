@@ -1,9 +1,9 @@
-import { _assign, _null } from "../utils/references";
+import { _assign, _null } from "../common/references";
 import { Runner } from "./Runner";
 import { Renderer } from "../renderer/Renderer";
 import { Scene } from "./Scene";
 import { Inspector } from "./Inspector";
-import { EMPTY_OBJECT } from "../utils/Common";
+import { EMPTY_OBJECT } from "../common/Common";
 
 export type EngineOptions = Partial<{
     runner: Runner;

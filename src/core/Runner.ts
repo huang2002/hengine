@@ -1,6 +1,6 @@
-import { _assign, _undefined, _cancelAnimationFrame, _clearTimeout, _requestAnimationFrame, _setTimeout, _max } from "../utils/references";
-import { EventEmitter } from "../utils/EventEmitter";
-import { now } from "../utils/Common";
+import { _assign, _undefined, _cancelAnimationFrame, _clearTimeout, _requestAnimationFrame, _setTimeout, _max } from "../common/references";
+import { EventEmitter } from "../common/EventEmitter";
+import { now } from "../common/Common";
 
 export type RunnerOptions = Partial<{
     delay: number;

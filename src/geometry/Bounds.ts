@@ -1,5 +1,5 @@
 import { VectorLike } from "./Vector";
-import { _max, _min, _null } from "../utils/references";
+import { _max, _min, _null } from "../common/references";
 
 export class Bounds {
 

@@ -1,10 +1,10 @@
-import { EventEmitter } from "../utils/EventEmitter";
-import { _assign, _undefined, _abs, _Infinity } from "../utils/references";
+import { EventEmitter } from "../common/EventEmitter";
+import { _assign, _undefined, _abs, _Infinity } from "../common/references";
 import { Vector, VectorLike } from "../geometry/Vector";
 import { FilterTag, Filter } from "./Filter";
 import { Bounds } from "../geometry/Bounds";
 import { Renderable, Renderer } from "../renderer/Renderer";
-import { EMPTY_OBJECT, DOUBLE_PI } from "../utils/Common";
+import { EMPTY_OBJECT, DOUBLE_PI } from "../common/Common";
 
 // TODO: `isSensor` -> `sensorFilter`
 
