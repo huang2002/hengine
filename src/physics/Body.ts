@@ -1,7 +1,7 @@
 import { EventEmitter } from "../common/EventEmitter";
 import { _assign, _undefined, _abs, _Infinity } from "../common/references";
 import { Vector, VectorLike } from "../geometry/Vector";
-import { FilterTag, Filter } from "./Filter";
+import { CategoryTag, Category } from "./Category";
 import { Bounds } from "../geometry/Bounds";
 import { Renderable, Renderer } from "../renderer/Renderer";
 import { Utils } from "../common/Utils";
@@ -12,7 +12,7 @@ export interface Projection {
 }
 
 export type BodyOptions = Partial<{
-    tag: FilterTag;
+    tag: CategoryTag;
     category: number;
     collisionFilter: number;
     sensorFilter: number;
@@ -49,7 +49,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
 
     static defaults: BodyOptions = {
         category: 0,
-        collisionFilter: 0,
+        collisionFilter: Category.FULL_FILTER,
         sensorFilter: 0,
         isCircle: false,
         active: false,
@@ -80,9 +80,9 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         }
 
         if (options.category) {
-            this.tag = Filter.tagFor(options.category) || '';
+            this.tag = Category.tagFor(options.category) || '';
         } else if (options.tag) {
-            this.category = Filter.for(options.tag);
+            this.category = Category.for(options.tag);
         }
 
         if (options.scaleX !== _undefined || options.scaleY !== _undefined) {
@@ -92,7 +92,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
     }
 
     readonly active!: boolean;
-    readonly tag: FilterTag = '';
+    readonly tag: CategoryTag = '';
     readonly category!: number;
     readonly collisionFilter!: number;
     readonly sensorFilter!: number;

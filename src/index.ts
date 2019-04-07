@@ -5,7 +5,7 @@ export * from "./geometry/Vector";
 export * from "./geometry/Bounds";
 export * from "./geometry/Vertices";
 
-export * from "./physics/Filter";
+export * from "./physics/Category";
 export * from "./physics/Body";
 export * from "./physics/CollisionChecker";
 export * from "./physics/Constraint";

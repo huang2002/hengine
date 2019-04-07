@@ -1,34 +1,34 @@
 import { _Map, _undefined } from "../common/references";
 
-export type FilterTag = string | symbol;
+export type CategoryTag = string | symbol;
 
-export interface FilterObject {
+export interface CategoryObject {
     readonly MAX_COUNT: number;
-    readonly FULL_MASK: number;
-    registry: [FilterTag, number][];
+    readonly FULL_FILTER: number;
+    registry: [CategoryTag, number][];
     count: number;
     next(): number;
-    for(tag: FilterTag): number;
-    tagFor(filter: number): FilterTag | void;
+    for(tag: CategoryTag): number;
+    tagFor(filter: number): CategoryTag | void;
 }
 
-export const Filter: FilterObject = {
+export const Category: CategoryObject = {
 
     MAX_COUNT: 32,
-    FULL_MASK: 0xFFFF_FFFF,
+    FULL_FILTER: 0xFFFF_FFFF,
     registry: [],
     count: 0,
 
     next() {
-        if (Filter.count > Filter.MAX_COUNT) {
+        if (Category.count > Category.MAX_COUNT) {
             throw "Max filter count exceeded";
         }
-        return 1 << Filter.count++;
+        return 1 << Category.count++;
     },
 
     for(tag) {
         let result!: number;
-        Filter.registry.find(record => {
+        Category.registry.find(record => {
             if (record[0] === tag) {
                 result = record[1];
                 return true;
@@ -37,15 +37,15 @@ export const Filter: FilterObject = {
             }
         });
         if (!result) {
-            result = Filter.next();
-            Filter.registry.push([tag, result]);
+            result = Category.next();
+            Category.registry.push([tag, result]);
         }
         return result;
     },
 
     tagFor(filter) {
-        let result: FilterTag | undefined;
-        Filter.registry.find(record => {
+        let result: CategoryTag | undefined;
+        Category.registry.find(record => {
             if (record[1] === filter) {
                 result = record[0];
                 return true;
