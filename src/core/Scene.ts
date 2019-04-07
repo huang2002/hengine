@@ -106,7 +106,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         this.objects.forEach(object => {
             if (object.update) {
                 object.update(timeScale);
-                if ((object as Body).filter && (object as Body).collisionFilter) {
+                if ((object as Body).category && (object as Body).collisionFilter) {
                     filteredObjects.push(object as Body);
                 }
             }
@@ -120,7 +120,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
                 for (let j = i + 1; j < filteredObjectCount; j++) {
                     const body2 = filteredObjects[j];
 
-                    if (!(body1.filter & body2.collisionFilter && body1.collisionFilter & body2.filter)) {
+                    if (!(body1.category & body2.collisionFilter && body1.collisionFilter & body2.category)) {
                         continue;
                     }
 

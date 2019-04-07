@@ -6,8 +6,6 @@ import { Bounds } from "../geometry/Bounds";
 import { Renderable, Renderer } from "../renderer/Renderer";
 import { Utils } from "../common/Utils";
 
-// TODO: `isSensor` -> `sensorFilter`
-
 export interface Projection {
     min: number;
     max: number;
@@ -15,7 +13,7 @@ export interface Projection {
 
 export type BodyOptions = Partial<{
     tag: FilterTag;
-    filter: number;
+    category: number;
     collisionFilter: number;
     isSensor: boolean;
     isCircle: boolean;
@@ -50,7 +48,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
     static normalPrecision = 3;
 
     static defaults: BodyOptions = {
-        filter: 0,
+        category: 0,
         collisionFilter: 0,
         isSensor: false,
         isCircle: false,
@@ -81,10 +79,10 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
             this.acceleration = new Vector();
         }
 
-        if (options.filter) {
-            this.tag = Filter.tagFor(options.filter) || '';
+        if (options.category) {
+            this.tag = Filter.tagFor(options.category) || '';
         } else if (options.tag) {
-            this.filter = Filter.for(options.tag);
+            this.category = Filter.for(options.tag);
         }
 
         if (options.scaleX !== _undefined || options.scaleY !== _undefined) {
@@ -95,7 +93,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
 
     readonly active!: boolean;
     readonly tag: FilterTag = '';
-    readonly filter!: number;
+    readonly category!: number;
     readonly collisionFilter!: number;
     readonly isSensor!: boolean;
     readonly isCircle!: boolean;
