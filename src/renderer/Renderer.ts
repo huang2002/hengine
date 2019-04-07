@@ -151,4 +151,6 @@ export class Renderer implements Required<RendererOptions>{
         }
     }
 
+    // TODO: implement `outer2inner` & `inner2outer`
+
 }

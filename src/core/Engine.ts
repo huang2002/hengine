@@ -5,6 +5,8 @@ import { Scene } from "./Scene";
 import { Inspector } from "./Inspector";
 import { Utils } from "../common/Utils";
 
+// TODO: add `pointer` to `engine`
+
 export type EngineOptions = Partial<{
     runner: Runner;
     renderer: Renderer;
