@@ -24,10 +24,11 @@ const title = new HE.Text({
         lineWidth: 4,
         lineJoin: 'round',
         shadowColor: '#ccc',
-        shadowBlur: 10,
-        shadowOffsetY: -10,
+        shadowBlur: 5,
+        shadowOffsetY: 2,
     },
 });
+title.position.y = -100;
 menuScene.add(title);
 
 engine.enter(menuScene);
