@@ -1,4 +1,4 @@
-import { _sqrt, _pow, _cos, _sin, _atan, _PI, _abs } from "../common/references";
+import { _sqrt, _pow, _cos, _sin, _PI, _abs, _Math } from "../common/references";
 import { Utils } from "../common/Utils";
 
 export interface VectorLike {
@@ -173,7 +173,7 @@ export class Vector {
 
     getAngle() {
         const { y } = this;
-        return _atan(y / this.x) + (y > 0 ? 0 : _PI);
+        return _Math.atan(y / this.x) + (y > 0 ? 0 : _PI);
     }
 
     turn(clockwise?: boolean) {

@@ -1,6 +1,6 @@
 import { Renderable } from "../renderer/Renderer";
 import { Vector, VectorLike } from "../geometry/Vector";
-import { _abs, _assign, _Set, _cos, _sin, _sqrt } from "../common/references";
+import { _abs, _assign, _cos, _sin, _sqrt } from "../common/references";
 import { Shape, ShapeOptions } from "./Shape";
 import { Utils } from "../common/Utils";
 

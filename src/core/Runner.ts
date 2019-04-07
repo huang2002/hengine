@@ -1,4 +1,4 @@
-import { _assign, _undefined, _cancelAnimationFrame, _clearTimeout, _requestAnimationFrame, _setTimeout, _max } from "../common/references";
+import { _assign, _undefined, _clearTimeout, _setTimeout, _max, _window } from "../common/references";
 import { EventEmitter } from "../common/EventEmitter";
 import { Utils } from "../common/Utils";
 
@@ -51,7 +51,7 @@ export class Runner extends EventEmitter<RunnerEvents> implements Required<Runne
         const duration = (this.lastFrameDuration as number) = Utils.now() - startTime,
             delay = this.delay - (this.fixDelay ? duration : 0);
         this._timer = (this._usedRAF = delay <= Runner.RAFThreshold && this.allowRAF) ?
-            _requestAnimationFrame(this._tick) :
+            _window.requestAnimationFrame(this._tick) :
             _setTimeout(this._tick, _max(delay, 0));
 
     }
@@ -65,7 +65,7 @@ export class Runner extends EventEmitter<RunnerEvents> implements Required<Runne
         (this.isRunning as boolean) = false;
         const { _timer } = this;
         if (_timer !== _undefined) {
-            (this._usedRAF ? _cancelAnimationFrame : _clearTimeout)(_timer);
+            (this._usedRAF ? _window.cancelAnimationFrame : _clearTimeout)(_timer);
             this._timer = _undefined;
         }
     }
