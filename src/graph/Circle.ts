@@ -2,9 +2,9 @@ import { Renderable } from "../renderer/Renderer";
 import { Vector, VectorLike } from "../geometry/Vector";
 import { _abs, _assign, _Set, _cos, _sin, _sqrt } from "../common/references";
 import { Shape, ShapeOptions } from "./Shape";
-import { EMPTY_OBJECT, DOUBLE_PI, quadraticSum, ExcludeKeys } from "../common/Common";
+import { Utils } from "../common/Utils";
 
-export type CircleOptions = ExcludeKeys<ShapeOptions, 'isCircle'>;
+export type CircleOptions = Utils.ExcludeKeys<ShapeOptions, 'isCircle'>;
 
 export class Circle extends Shape implements Required<CircleOptions>, Renderable {
 
@@ -12,7 +12,7 @@ export class Circle extends Shape implements Required<CircleOptions>, Renderable
         radius: 1,
     };
 
-    constructor(options: Readonly<CircleOptions> = EMPTY_OBJECT) {
+    constructor(options: Readonly<CircleOptions> = Utils.EMPTY_OBJECT) {
         super(_assign({}, Circle.defaults, options));
     }
 
@@ -31,7 +31,7 @@ export class Circle extends Shape implements Required<CircleOptions>, Renderable
             cos = _cos(angle),
             sin = _sin(angle),
             halfLength = radius * _sqrt(
-                quadraticSum(
+                Utils.quadraticSum(
                     cos * scaleX - sin * scaleY,
                     sin * scaleX + cos * scaleY
                 )
@@ -45,7 +45,7 @@ export class Circle extends Shape implements Required<CircleOptions>, Renderable
     path(context: CanvasRenderingContext2D) {
         context.rotate(this.rotation);
         context.scale(this.scaleX, this.scaleY);
-        context.arc(0, 0, this.radius, 0, DOUBLE_PI);
+        context.arc(0, 0, this.radius, 0, Utils.DOUBLE_PI);
     }
 
 }

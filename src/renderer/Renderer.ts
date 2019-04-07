@@ -1,7 +1,7 @@
 import { _document, _assign, _window, _undefined } from "../common/references";
 import { SizingFunction, Sizing } from "./Sizing";
 import { Vector } from "../geometry/Vector";
-import { EMPTY_OBJECT, debounce } from "../common/Common";
+import { Utils } from "../common/Utils";
 
 export interface Renderable {
     update?(timeScale: number): void;
@@ -27,7 +27,7 @@ export type RendererOptions = Partial<{
 export class Renderer implements Required<RendererOptions>{
 
     static defaults: RendererOptions = {
-        settings: EMPTY_OBJECT,
+        settings: Utils.EMPTY_OBJECT,
         width: 480,
         height: 320,
         margin: 10,
@@ -41,7 +41,7 @@ export class Renderer implements Required<RendererOptions>{
         restoration: false,
     };
 
-    constructor(options: Readonly<RendererOptions> = EMPTY_OBJECT) {
+    constructor(options: Readonly<RendererOptions> = Utils.EMPTY_OBJECT) {
         _assign(this, Renderer.defaults, options);
 
         let { canvas } = this;
@@ -67,14 +67,14 @@ export class Renderer implements Required<RendererOptions>{
 
     readonly canvas!: HTMLCanvasElement;
     readonly context: CanvasRenderingContext2D;
-    readonly settings: CanvasRenderingContext2DSettings = EMPTY_OBJECT;
+    readonly settings: CanvasRenderingContext2DSettings = Utils.EMPTY_OBJECT;
     readonly parent!: Element | null;
     readonly resizeEvents!: string[];
     readonly top!: number;
     readonly right!: number;
     readonly bottom!: number;
     readonly left!: number;
-    readonly resizeListener = debounce(this._resize.bind(this));
+    readonly resizeListener = Utils.debounce(this._resize.bind(this));
 
     width!: number;
     height!: number;

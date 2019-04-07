@@ -1,7 +1,7 @@
 import { Renderable, Renderer } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { _assign, _document, _undefined } from "../common/references";
-import { EMPTY_OBJECT, Callback } from "../common/Common";
+import { Utils } from "../common/Utils";
 import { Style, CommonStyle } from "./Style";
 
 export type ImageLike = Exclude<CanvasImageSource, SVGImageElement>;
@@ -26,7 +26,7 @@ export class Sprite implements Required<SpriteOptions>, Renderable {
         return (new Sprite(options)).load(src);
     }
 
-    constructor(options: Readonly<SpriteOptions> = EMPTY_OBJECT) {
+    constructor(options: Readonly<SpriteOptions> = Utils.EMPTY_OBJECT) {
         _assign(this, options);
 
         if (!options.position) {
@@ -49,8 +49,8 @@ export class Sprite implements Required<SpriteOptions>, Renderable {
 
     load(
         src: string,
-        onSuccess?: Callback<unknown, Event, void>,
-        onFailure?: Callback<unknown, [Event | string], void>
+        onSuccess?: Utils.Callback<unknown, Event, void>,
+        onFailure?: Utils.Callback<unknown, [Event | string], void>
     ) {
         const image = this.image = _document.createElement('img');
         image.src = src;

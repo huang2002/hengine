@@ -4,7 +4,7 @@ import { _abs, _assign, _Set } from "../common/references";
 import { Shape, ShapeOptions } from "./Shape";
 import { Body } from "../physics/Body";
 import { Vertices } from "../geometry/Vertices";
-import { EMPTY_OBJECT } from "../common/Common";
+import { Utils } from "../common/Utils";
 
 export type PolygonOptions = ShapeOptions & Partial<{
     vertices: ReadonlyArray<Vector>;
@@ -19,7 +19,7 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
         adjustment: true,
     };
 
-    constructor(options: Readonly<PolygonOptions> = EMPTY_OBJECT) {
+    constructor(options: Readonly<PolygonOptions> = Utils.EMPTY_OBJECT) {
         super(_assign({}, Polygon.defaults, options));
 
         if (options.vertices) {

@@ -1,7 +1,7 @@
 import { _Map, _undefined } from "./references";
-import { removeIndex, ToArray, Callback } from "./Common";
+import { Utils } from "./Utils";
 
-export type EventListener<T> = Callback<void, T, void>;
+export type EventListener<T> = Utils.Callback<void, T, void>;
 
 export type EventListenerRecord<T> = [EventListener<T>, boolean];
 
@@ -39,7 +39,7 @@ export class EventEmitter<E extends object = any> {
                         record[1] === once
                 );
             if (!~index) {
-                removeIndex(records, index);
+                Utils.removeIndex(records, index);
             }
         }
         return this;
@@ -49,7 +49,7 @@ export class EventEmitter<E extends object = any> {
         return this.on(event, listener, true);
     }
 
-    emit<T extends keyof E>(event: T, ...args: ToArray<E[T]>) {
+    emit<T extends keyof E>(event: T, ...args: Utils.ToArray<E[T]>) {
         const { _recordMap } = this;
         if (_recordMap.has(event)) {
             const records = _recordMap.get(event)!;

@@ -1,6 +1,4 @@
-import * as Common from "./common/Common";
-
-export { Common };
+export * from "./common/Utils";
 export * from "./common/EventEmitter";
 
 export * from "./geometry/Vector";

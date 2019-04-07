@@ -1,5 +1,5 @@
 import { _null } from "../common/references";
-import { TRANSPARENT } from "../common/Common";
+import { Utils } from "../common/Utils";
 import { Renderer } from "../renderer/Renderer";
 
 export type RenderingStyle = string | CanvasGradient | CanvasPattern;
@@ -38,7 +38,7 @@ export const Style: StyleObject = {
     Common: {
 
         defaults: {
-            shadowColor: TRANSPARENT,
+            shadowColor: Utils.TRANSPARENT,
             shadowBlur: 0,
             shadowOffsetX: 0,
             shadowOffsetY: 0,

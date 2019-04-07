@@ -2,7 +2,7 @@ import { _assign } from "../common/references";
 import { Renderable, Renderer } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { TextStyle, Text } from "./Text";
-import { EMPTY_OBJECT, TRANSPARENT } from "../common/Common";
+import { Utils } from "../common/Utils";
 
 export type ParagraphOptions = Partial<{
     visible: boolean;
@@ -25,7 +25,7 @@ export class Paragraph implements Required<ParagraphOptions>, Renderable {
 
     static defaultStyle: TextStyle = _assign({} as TextStyle, Text.defaultStyle);
 
-    constructor(options: ParagraphOptions = EMPTY_OBJECT) {
+    constructor(options: ParagraphOptions = Utils.EMPTY_OBJECT) {
         _assign(this, Paragraph.defaults, options);
 
         if (!options.position) {
@@ -53,11 +53,11 @@ export class Paragraph implements Required<ParagraphOptions>, Renderable {
         lines.forEach((line, i) => {
             if (fillFirst && fillStyle) {
                 context.fillText(line, 0, 0);
-                context.shadowColor = TRANSPARENT;
+                context.shadowColor = Utils.TRANSPARENT;
             }
             if (strokeStyle) {
                 context.strokeText(line, 0, 0);
-                context.shadowColor = TRANSPARENT;
+                context.shadowColor = Utils.TRANSPARENT;
             }
             if (!fillFirst && fillStyle) {
                 context.fillText(line, 0, 0);

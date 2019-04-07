@@ -3,7 +3,7 @@ import { Renderable, Renderer } from "../renderer/Renderer";
 import { _assign, _null } from "../common/references";
 import { Sprite } from "./Sprite";
 import { Style, StrokeStyle, CommonStyle, FillStyle } from "./Style";
-import { EMPTY_OBJECT, TRANSPARENT } from "../common/Common";
+import { Utils } from "../common/Utils";
 
 
 export type ShapeStyle = CommonStyle & StrokeStyle & FillStyle;
@@ -37,7 +37,7 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
         Style.Stroke.apply(renderer, style);
     }
 
-    constructor(options: Readonly<ShapeOptions> = EMPTY_OBJECT) {
+    constructor(options: Readonly<ShapeOptions> = Utils.EMPTY_OBJECT) {
         super(_assign({}, Shape.defaults, options));
         this.style = _assign({}, Shape.defaultStyle, options.style);
     }
@@ -76,11 +76,11 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
 
         if (fillFirst && fillStyle) {
             context.fill();
-            context.shadowColor = TRANSPARENT;
+            context.shadowColor = Utils.TRANSPARENT;
         }
         if (style.strokeStyle) {
             context.stroke();
-            context.shadowColor = TRANSPARENT;
+            context.shadowColor = Utils.TRANSPARENT;
         }
         if (!fillFirst && fillStyle) {
             context.fill();

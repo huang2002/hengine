@@ -2,7 +2,7 @@ import { Renderable } from "../renderer/Renderer";
 import { Vector, VectorLike } from "../geometry/Vector";
 import { _abs, _assign, _Set, _cos, _sin, _max, _sqrt } from "../common/references";
 import { Shape, ShapeOptions } from "./Shape";
-import { EMPTY_OBJECT, quadraticSum } from "../common/Common";
+import { Utils } from "../common/Utils";
 import { Vertices } from "../geometry/Vertices";
 
 export type RectangleOptions = ShapeOptions & Partial<{
@@ -19,7 +19,7 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
         radius: 0,
     };
 
-    constructor(options: Readonly<RectangleOptions> = EMPTY_OBJECT) {
+    constructor(options: Readonly<RectangleOptions> = Utils.EMPTY_OBJECT) {
         super(_assign({}, Rectangle.defaults, options));
     }
 
@@ -70,11 +70,11 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
             sin = _sin(rotation);
         let halfLength = _sqrt(
             _max(
-                quadraticSum(
+                Utils.quadraticSum(
                     cos * width - sin * height,
                     sin * width + cos * height
                 ),
-                quadraticSum(
+                Utils.quadraticSum(
                     cos * width - sin * -height,
                     sin * width + cos * -height
                 )

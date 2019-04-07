@@ -2,7 +2,7 @@ import { Renderable } from "../renderer/Renderer";
 import { Vector, VectorLike } from "../geometry/Vector";
 import { _assign } from "../common/references";
 import { Shape, ShapeOptions } from "./Shape";
-import { EMPTY_OBJECT, quadraticSum } from "../common/Common";
+import { Utils } from "../common/Utils";
 
 export type LineOptions = ShapeOptions & Partial<{
     start: Vector;
@@ -16,7 +16,7 @@ export class Line extends Shape implements Required<LineOptions>, Renderable {
         noWidth: false,
     };
 
-    constructor(options: Readonly<LineOptions> = EMPTY_OBJECT) {
+    constructor(options: Readonly<LineOptions> = Utils.EMPTY_OBJECT) {
         super(_assign({}, Line.defaults, options));
     }
 
@@ -26,8 +26,8 @@ export class Line extends Shape implements Required<LineOptions>, Renderable {
 
     getClosest(target: VectorLike) {
         const { start, end } = this,
-            result = quadraticSum(start.x - target.x, start.y - target.y) <
-                quadraticSum(end.x - target.x, end.y - target.y) ?
+            result = Utils.quadraticSum(start.x - target.x, start.y - target.y) <
+                Utils.quadraticSum(end.x - target.x, end.y - target.y) ?
                 start : end;
         return this.noWidth ? result : result.clone().grow(this.style.lineWidth);
     }

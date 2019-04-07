@@ -4,7 +4,7 @@ import { Vector, VectorLike } from "../geometry/Vector";
 import { FilterTag, Filter } from "./Filter";
 import { Bounds } from "../geometry/Bounds";
 import { Renderable, Renderer } from "../renderer/Renderer";
-import { EMPTY_OBJECT, DOUBLE_PI } from "../common/Common";
+import { Utils } from "../common/Utils";
 
 // TODO: `isSensor` -> `sensorFilter`
 
@@ -66,7 +66,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         radius: 0,
     };
 
-    constructor(options: Readonly<BodyOptions> = EMPTY_OBJECT) {
+    constructor(options: Readonly<BodyOptions> = Utils.EMPTY_OBJECT) {
         super();
 
         _assign(this, Body.defaults, options);
@@ -232,7 +232,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
                 (this.rotation as number) += angularSpeed;
             }
             if (this.fixRotation) {
-                (this.rotation as number) %= DOUBLE_PI;
+                (this.rotation as number) %= Utils.DOUBLE_PI;
             }
         }
         this.emit('didUpdate', timeScale);

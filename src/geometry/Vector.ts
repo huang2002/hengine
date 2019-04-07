@@ -1,5 +1,5 @@
 import { _sqrt, _pow, _cos, _sin, _atan, _PI, _abs } from "../common/references";
-import { distance } from "../common/Common";
+import { Utils } from "../common/Utils";
 
 export interface VectorLike {
     x: number;
@@ -48,7 +48,7 @@ export class Vector {
     }
 
     static distance(vector1: VectorLike, vector2: VectorLike) {
-        return distance(vector1.x, vector1.y, vector2.x, vector2.y);
+        return Utils.distance(vector1.x, vector1.y, vector2.x, vector2.y);
     }
 
     static distribute(vector0: VectorLike, vector1: VectorLike, vector2: VectorLike, k1: number, k2: number) {

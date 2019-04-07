@@ -1,11 +1,11 @@
 import { _assign } from "../common/references";
 import { Renderer } from "../renderer/Renderer";
 import { Paragraph } from "../graph/Paragraph";
-import { EMPTY_OBJECT, Callback } from "../common/Common";
+import { Utils } from "../common/Utils";
 import { Vector } from "../geometry/Vector";
 import { Engine } from "./Engine";
 
-export type InspectorCallback = Callback<void, Engine, string>;
+export type InspectorCallback = Utils.Callback<void, Engine, string>;
 
 export type InspectorOptions = Partial<{
     paragraph: Paragraph;
@@ -23,7 +23,7 @@ export class Inspector implements Required<InspectorOptions> {
         ],
     };
 
-    constructor(options: InspectorOptions = EMPTY_OBJECT) {
+    constructor(options: InspectorOptions = Utils.EMPTY_OBJECT) {
         _assign(this, Inspector.defaults, options);
 
         if (!options.paragraph) {

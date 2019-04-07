@@ -2,7 +2,7 @@ import { Renderable, Renderer } from "../renderer/Renderer";
 import { _assign, _null } from "../common/references";
 import { EventEmitter } from "../common/EventEmitter";
 import { RenderingStyle } from "../graph/Style";
-import { EMPTY_OBJECT, removeIndex } from "../common/Common";
+import { Utils } from "../common/Utils";
 import { Body } from "../physics/Body";
 import { CollisionChecker } from "../physics/CollisionChecker";
 import { Vector } from "../geometry/Vector";
@@ -39,7 +39,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         collisionChecker: CollisionChecker.Smart,
     };
 
-    constructor(options: SceneOptions = EMPTY_OBJECT) {
+    constructor(options: SceneOptions = Utils.EMPTY_OBJECT) {
         super();
 
         _assign(this, Scene.defaults, options);
@@ -77,7 +77,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         const { objects } = this,
             index = objects.indexOf(object);
         if (~index) {
-            removeIndex(objects, index);
+            Utils.removeIndex(objects, index);
         }
         return this;
     }
@@ -91,7 +91,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         const { attachments } = this,
             index = attachments.indexOf(renderable);
         if (~index) {
-            removeIndex(attachments, index);
+            Utils.removeIndex(attachments, index);
         }
         return this;
     }

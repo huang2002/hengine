@@ -3,7 +3,7 @@ import { Runner } from "./Runner";
 import { Renderer } from "../renderer/Renderer";
 import { Scene } from "./Scene";
 import { Inspector } from "./Inspector";
-import { EMPTY_OBJECT } from "../common/Common";
+import { Utils } from "../common/Utils";
 
 export type EngineOptions = Partial<{
     runner: Runner;
@@ -21,7 +21,7 @@ export class Engine implements Required<EngineOptions> {
         maxDelay: 2000,
     };
 
-    constructor(options: Readonly<EngineOptions> = EMPTY_OBJECT) {
+    constructor(options: Readonly<EngineOptions> = Utils.EMPTY_OBJECT) {
         _assign(this, Engine.defaults, options);
 
         if (!options.runner) {

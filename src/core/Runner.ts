@@ -1,6 +1,6 @@
 import { _assign, _undefined, _cancelAnimationFrame, _clearTimeout, _requestAnimationFrame, _setTimeout, _max } from "../common/references";
 import { EventEmitter } from "../common/EventEmitter";
-import { now } from "../common/Common";
+import { Utils } from "../common/Utils";
 
 export type RunnerOptions = Partial<{
     delay: number;
@@ -42,13 +42,13 @@ export class Runner extends EventEmitter<RunnerEvents> implements Required<Runne
     private _usedRAF?: boolean;
     private _lastTickTime!: number;
 
-    private _tick(startTime = now()) {
+    private _tick(startTime = Utils.now()) {
 
         const deltaTime = (this.lastFrameDelay as number) = startTime - this._lastTickTime;
         this._lastTickTime = startTime;
         this.emit('tick', deltaTime);
 
-        const duration = (this.lastFrameDuration as number) = now() - startTime,
+        const duration = (this.lastFrameDuration as number) = Utils.now() - startTime,
             delay = this.delay - (this.fixDelay ? duration : 0);
         this._timer = (this._usedRAF = delay <= Runner.RAFThreshold && this.allowRAF) ?
             _requestAnimationFrame(this._tick) :
@@ -58,7 +58,7 @@ export class Runner extends EventEmitter<RunnerEvents> implements Required<Runne
 
     start() {
         (this.isRunning as boolean) = true;
-        this._tick(this._lastTickTime = now());
+        this._tick(this._lastTickTime = Utils.now());
     }
 
     stop() {

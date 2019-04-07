@@ -2,7 +2,7 @@ import { _assign } from "../common/references";
 import { Renderable, Renderer } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { ShapeStyle, Shape } from "./Shape";
-import { EMPTY_OBJECT, TRANSPARENT } from "../common/Common";
+import { Utils } from "../common/Utils";
 
 export type TextStyle = ShapeStyle & CanvasTextDrawingStyles;
 
@@ -37,7 +37,7 @@ export class Text implements Required<TextOptions>, Renderable {
         context.direction = textStyle.direction;
     }
 
-    constructor(options: TextOptions = EMPTY_OBJECT) {
+    constructor(options: TextOptions = Utils.EMPTY_OBJECT) {
         _assign(this, Text.defaults, options);
 
         if (!options.position) {
@@ -61,11 +61,11 @@ export class Text implements Required<TextOptions>, Renderable {
         Text.applyStyle(renderer, style);
         if (fillFirst && fillStyle) {
             context.fillText(content, position.x, position.y);
-            context.shadowColor = TRANSPARENT;
+            context.shadowColor = Utils.TRANSPARENT;
         }
         if (style.strokeStyle) {
             context.strokeText(content, position.x, position.y);
-            context.shadowColor = TRANSPARENT;
+            context.shadowColor = Utils.TRANSPARENT;
         }
         if (!fillFirst && fillStyle) {
             context.fillText(content, position.x, position.y);

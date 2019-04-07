@@ -1,15 +1,15 @@
 import { _cos, _sin, _PI, _Infinity } from "../common/references";
 import { Vector, VectorLike } from "./Vector";
-import { DOUBLE_PI, HALF_PI, CachedFunction, cache, quadraticSum } from "../common/Common";
+import { Utils } from "../common/Utils";
 
 export interface VerticesObject {
     fromArray(array: number[]): Vector[];
     findClosest(target: VectorLike, vertices: ReadonlyArray<Vector>): Vector;
-    createPolygon: CachedFunction<(edges: number, radius: number, rotation?: number) => Vector[]>;
-    createStar: CachedFunction<
+    createPolygon: Utils.CachedFunction<(edges: number, radius: number, rotation?: number) => Vector[]>;
+    createStar: Utils.CachedFunction<
         (angles: number, innerRadius: number, outerRadius: number, rotation?: number) => Vector[]
     >;
-    createRectangle: CachedFunction<(width: number, height: number, rotation?: number) => Vector[]>;
+    createRectangle: Utils.CachedFunction<(width: number, height: number, rotation?: number) => Vector[]>;
 }
 
 export const Vertices: VerticesObject = {
@@ -26,7 +26,7 @@ export const Vertices: VerticesObject = {
         let min = _Infinity,
             closest!: Vector;
         vertices.forEach(vertex => {
-            const current = quadraticSum(target.x - vertex.x, target.y - vertex.y);
+            const current = Utils.quadraticSum(target.x - vertex.x, target.y - vertex.y);
             if (current < min) {
                 min = current;
                 closest = vertex;
@@ -35,8 +35,8 @@ export const Vertices: VerticesObject = {
         return closest;
     },
 
-    createPolygon: cache(function (edges, radius, rotation = -HALF_PI) {
-        const angle = DOUBLE_PI / edges,
+    createPolygon: Utils.cache(function (edges, radius, rotation = -Utils.HALF_PI) {
+        const angle = Utils.DOUBLE_PI / edges,
             results = [];
         for (let i = 0; i < edges; i++) {
             results.push(Vector.of(_cos(rotation), _sin(rotation)).setModulus(radius));
@@ -45,7 +45,7 @@ export const Vertices: VerticesObject = {
         return results;
     }),
 
-    createStar: cache(function (angles, innerRadius, outerRadius, rotation = -HALF_PI) {
+    createStar: Utils.cache(function (angles, innerRadius, outerRadius, rotation = -Utils.HALF_PI) {
         const angle = _PI / angles,
             results = [];
         for (let i = 0; i < angles; i++) {
@@ -57,7 +57,7 @@ export const Vertices: VerticesObject = {
         return results;
     }),
 
-    createRectangle: cache(function (width, height, rotation) {
+    createRectangle: Utils.cache(function (width, height, rotation) {
         const x0 = width / 2,
             y0 = height / 2;
         if (rotation) {
