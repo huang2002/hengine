@@ -64,8 +64,35 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
     }
 
     update(timeScale: number) {
-        // TODO: implement `constraint.update`
-
+        const { origin, target, minLength, maxLength } = this,
+            { position: targetPosition } = target,
+            originPosition = (origin as Body).position || origin,
+            offsetVector = Vector.minus(originPosition, targetPosition)
+                .plusVector(this.originOffset)
+                .minusVector(this.targetOffset),
+            offset = offsetVector.getModulus(),
+            delta = offset > maxLength ? maxLength - offset :
+                offset < minLength ? minLength - offset : 0;
+        if (!delta) {
+            return;
+        }
+        offsetVector.setModulus(delta * this.strength * timeScale);
+        const originIsActive = originPosition !== origin && (origin as Body).active;
+        if (originIsActive) {
+            if (target.active) {
+                Vector.distribute(
+                    offsetVector,
+                    (origin as Body).velocity, target.velocity,
+                    -target.mass, (origin as Body).mass
+                );
+            } else {
+                (origin as Body).velocity.minusVector(offsetVector);
+            }
+        } else {
+            if (target.active) {
+                target.velocity.plusVector(offsetVector);
+            }
+        }
     }
 
     render(renderer: Renderer) {
