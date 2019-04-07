@@ -26,7 +26,7 @@ export class Sprite implements Required<SpriteOptions>, Renderable {
         return (new Sprite(options)).load(src);
     }
 
-    constructor(options: Readonly<SpriteOptions> = Utils.EMPTY_OBJECT) {
+    constructor(options: Readonly<SpriteOptions> = Utils.Const.EMPTY_OBJECT) {
         _assign(this, options);
 
         if (!options.position) {

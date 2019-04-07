@@ -37,7 +37,7 @@ export class Text implements Required<TextOptions>, Renderable {
         context.direction = textStyle.direction;
     }
 
-    constructor(options: TextOptions = Utils.EMPTY_OBJECT) {
+    constructor(options: TextOptions = Utils.Const.EMPTY_OBJECT) {
         _assign(this, Text.defaults, options);
 
         if (!options.position) {
@@ -61,11 +61,11 @@ export class Text implements Required<TextOptions>, Renderable {
         Text.applyStyle(renderer, style);
         if (fillFirst && fillStyle) {
             context.fillText(content, position.x, position.y);
-            context.shadowColor = Utils.TRANSPARENT;
+            context.shadowColor = Utils.Const.TRANSPARENT;
         }
         if (style.strokeStyle) {
             context.strokeText(content, position.x, position.y);
-            context.shadowColor = Utils.TRANSPARENT;
+            context.shadowColor = Utils.Const.TRANSPARENT;
         }
         if (!fillFirst && fillStyle) {
             context.fillText(content, position.x, position.y);

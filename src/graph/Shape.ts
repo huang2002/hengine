@@ -37,7 +37,7 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
         Style.Stroke.apply(renderer, style);
     }
 
-    constructor(options: Readonly<ShapeOptions> = Utils.EMPTY_OBJECT) {
+    constructor(options: Readonly<ShapeOptions> = Utils.Const.EMPTY_OBJECT) {
         super(_assign({}, Shape.defaults, options));
         this.style = _assign({}, Shape.defaultStyle, options.style);
     }
@@ -76,11 +76,11 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
 
         if (fillFirst && fillStyle) {
             context.fill();
-            context.shadowColor = Utils.TRANSPARENT;
+            context.shadowColor = Utils.Const.TRANSPARENT;
         }
         if (style.strokeStyle) {
             context.stroke();
-            context.shadowColor = Utils.TRANSPARENT;
+            context.shadowColor = Utils.Const.TRANSPARENT;
         }
         if (!fillFirst && fillStyle) {
             context.fill();

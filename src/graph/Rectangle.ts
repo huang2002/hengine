@@ -19,7 +19,7 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
         radius: 0,
     };
 
-    constructor(options: Readonly<RectangleOptions> = Utils.EMPTY_OBJECT) {
+    constructor(options: Readonly<RectangleOptions> = Utils.Const.EMPTY_OBJECT) {
         super(_assign({}, Rectangle.defaults, options));
     }
 

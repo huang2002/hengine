@@ -66,7 +66,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         radius: 0,
     };
 
-    constructor(options: Readonly<BodyOptions> = Utils.EMPTY_OBJECT) {
+    constructor(options: Readonly<BodyOptions> = Utils.Const.EMPTY_OBJECT) {
         super();
 
         _assign(this, Body.defaults, options);
@@ -232,7 +232,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
                 (this.rotation as number) += angularSpeed;
             }
             if (this.fixRotation) {
-                (this.rotation as number) %= Utils.DOUBLE_PI;
+                (this.rotation as number) %= Utils.Const.DOUBLE_PI;
             }
         }
         this.emit('didUpdate', timeScale);

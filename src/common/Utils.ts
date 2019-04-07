@@ -1,14 +1,16 @@
 import {
-    _PI, _sqrt, _pow, _window, _now, _Date, _undefined,
+    _PI, _sqrt, _pow, _window, _now, _undefined,
     _clearTimeout, _setTimeout, _Map, _Object, _null
 } from "./references";
 
 export namespace Utils {
 
-    export const EMPTY_OBJECT = _Object.create(_null) as Readonly<{}>,
-        DOUBLE_PI = _PI * 2,
-        HALF_PI = _PI / 2,
-        TRANSPARENT = 'rgba(0,0,0,0)';
+    export const Const = {
+        EMPTY_OBJECT: _Object.create(_null) as {},
+        DOUBLE_PI: _PI * 2,
+        HALF_PI: _PI / 2,
+        TRANSPARENT: 'rgba(0,0,0,0)',
+    } as const;
 
     export const removeIndex = (array: unknown[], index: number) => {
         const end = array.length - 1;
@@ -29,7 +31,7 @@ export namespace Utils {
     export const distance = (x1: number, y1: number, x2: number, y2: number) =>
         _sqrt(quadraticSum(x2 - x1, y2 - y1));
 
-    export const now = _window.performance ? _window.performance.now.bind(_window.performance) : _Date.now;
+    export const now = _window.performance ? _window.performance.now.bind(_window.performance) : _now;
 
     export type ToArray<T> = T extends any[] ? T : [T];
 
@@ -55,11 +57,11 @@ export namespace Utils {
                 ([callback, wrapper.delay] as ApplyArgs).concat(arguments) as ApplyArgs
             );
         };
-        wrapper.delay = initDelay || debounce.DEFAULT_DELAY;
+        wrapper.delay = initDelay || debounce.defaultDelay;
         return wrapper;
     };
 
-    debounce.DEFAULT_DELAY = 100;
+    debounce.defaultDelay = 100;
 
     export type ThresholdCallback = Callback<any>;
 
@@ -77,11 +79,11 @@ export namespace Utils {
                 return callback.apply(this, arguments as unknown as unknown[]) as ReturnType<F>;
             }
         };
-        wrapper.threshold = initThreshold || threshold.DEFAULT_THRESHOLD;
+        wrapper.threshold = initThreshold || threshold.defaultThreshold;
         return wrapper;
     };
 
-    threshold.DEFAULT_THRESHOLD = 100;
+    threshold.defaultThreshold = 100;
 
     export type CachedFunction<T extends Callback<any>> =
         Callback<ThisParameterType<T>, Parameters<T>, ReturnType<T>> &

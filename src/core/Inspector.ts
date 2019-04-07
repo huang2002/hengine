@@ -23,7 +23,7 @@ export class Inspector implements Required<InspectorOptions> {
         ],
     };
 
-    constructor(options: InspectorOptions = Utils.EMPTY_OBJECT) {
+    constructor(options: InspectorOptions = Utils.Const.EMPTY_OBJECT) {
         _assign(this, Inspector.defaults, options);
 
         if (!options.paragraph) {

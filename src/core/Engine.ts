@@ -21,7 +21,7 @@ export class Engine implements Required<EngineOptions> {
         maxDelay: 2000,
     };
 
-    constructor(options: Readonly<EngineOptions> = Utils.EMPTY_OBJECT) {
+    constructor(options: Readonly<EngineOptions> = Utils.Const.EMPTY_OBJECT) {
         _assign(this, Engine.defaults, options);
 
         if (!options.runner) {

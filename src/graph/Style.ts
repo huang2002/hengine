@@ -38,7 +38,7 @@ export const Style: StyleObject = {
     Common: {
 
         defaults: {
-            shadowColor: Utils.TRANSPARENT,
+            shadowColor: Utils.Const.TRANSPARENT,
             shadowBlur: 0,
             shadowOffsetX: 0,
             shadowOffsetY: 0,

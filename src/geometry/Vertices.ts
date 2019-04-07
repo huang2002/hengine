@@ -35,8 +35,8 @@ export const Vertices: VerticesObject = {
         return closest;
     },
 
-    createPolygon: Utils.cache(function (edges, radius, rotation = -Utils.HALF_PI) {
-        const angle = Utils.DOUBLE_PI / edges,
+    createPolygon: Utils.cache(function (edges, radius, rotation = -Utils.Const.HALF_PI) {
+        const angle = Utils.Const.DOUBLE_PI / edges,
             results = [];
         for (let i = 0; i < edges; i++) {
             results.push(Vector.of(_cos(rotation), _sin(rotation)).setModulus(radius));
@@ -45,7 +45,7 @@ export const Vertices: VerticesObject = {
         return results;
     }),
 
-    createStar: Utils.cache(function (angles, innerRadius, outerRadius, rotation = -Utils.HALF_PI) {
+    createStar: Utils.cache(function (angles, innerRadius, outerRadius, rotation = -Utils.Const.HALF_PI) {
         const angle = _PI / angles,
             results = [];
         for (let i = 0; i < angles; i++) {

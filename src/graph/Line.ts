@@ -16,7 +16,7 @@ export class Line extends Shape implements Required<LineOptions>, Renderable {
         noWidth: false,
     };
 
-    constructor(options: Readonly<LineOptions> = Utils.EMPTY_OBJECT) {
+    constructor(options: Readonly<LineOptions> = Utils.Const.EMPTY_OBJECT) {
         super(_assign({}, Line.defaults, options));
     }
 

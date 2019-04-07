@@ -25,7 +25,7 @@ export class Paragraph implements Required<ParagraphOptions>, Renderable {
 
     static defaultStyle: TextStyle = _assign({} as TextStyle, Text.defaultStyle);
 
-    constructor(options: ParagraphOptions = Utils.EMPTY_OBJECT) {
+    constructor(options: ParagraphOptions = Utils.Const.EMPTY_OBJECT) {
         _assign(this, Paragraph.defaults, options);
 
         if (!options.position) {
@@ -53,11 +53,11 @@ export class Paragraph implements Required<ParagraphOptions>, Renderable {
         lines.forEach((line, i) => {
             if (fillFirst && fillStyle) {
                 context.fillText(line, 0, 0);
-                context.shadowColor = Utils.TRANSPARENT;
+                context.shadowColor = Utils.Const.TRANSPARENT;
             }
             if (strokeStyle) {
                 context.strokeText(line, 0, 0);
-                context.shadowColor = Utils.TRANSPARENT;
+                context.shadowColor = Utils.Const.TRANSPARENT;
             }
             if (!fillFirst && fillStyle) {
                 context.fillText(line, 0, 0);

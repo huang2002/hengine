@@ -27,7 +27,7 @@ export type RendererOptions = Partial<{
 export class Renderer implements Required<RendererOptions>{
 
     static defaults: RendererOptions = {
-        settings: Utils.EMPTY_OBJECT,
+        settings: Utils.Const.EMPTY_OBJECT,
         width: 480,
         height: 320,
         margin: 10,
@@ -41,7 +41,7 @@ export class Renderer implements Required<RendererOptions>{
         restoration: false,
     };
 
-    constructor(options: Readonly<RendererOptions> = Utils.EMPTY_OBJECT) {
+    constructor(options: Readonly<RendererOptions> = Utils.Const.EMPTY_OBJECT) {
         _assign(this, Renderer.defaults, options);
 
         let { canvas } = this;
@@ -67,7 +67,7 @@ export class Renderer implements Required<RendererOptions>{
 
     readonly canvas!: HTMLCanvasElement;
     readonly context: CanvasRenderingContext2D;
-    readonly settings: CanvasRenderingContext2DSettings = Utils.EMPTY_OBJECT;
+    readonly settings: CanvasRenderingContext2DSettings = Utils.Const.EMPTY_OBJECT;
     readonly parent!: Element | null;
     readonly resizeEvents!: string[];
     readonly top!: number;

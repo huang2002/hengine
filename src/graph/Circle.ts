@@ -12,7 +12,7 @@ export class Circle extends Shape implements Required<CircleOptions>, Renderable
         radius: 1,
     };
 
-    constructor(options: Readonly<CircleOptions> = Utils.EMPTY_OBJECT) {
+    constructor(options: Readonly<CircleOptions> = Utils.Const.EMPTY_OBJECT) {
         super(_assign({}, Circle.defaults, options));
     }
 
@@ -45,7 +45,7 @@ export class Circle extends Shape implements Required<CircleOptions>, Renderable
     path(context: CanvasRenderingContext2D) {
         context.rotate(this.rotation);
         context.scale(this.scaleX, this.scaleY);
-        context.arc(0, 0, this.radius, 0, Utils.DOUBLE_PI);
+        context.arc(0, 0, this.radius, 0, Utils.Const.DOUBLE_PI);
     }
 
 }

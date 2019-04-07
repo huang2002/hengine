@@ -39,7 +39,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         collisionChecker: CollisionChecker.Smart,
     };
 
-    constructor(options: SceneOptions = Utils.EMPTY_OBJECT) {
+    constructor(options: SceneOptions = Utils.Const.EMPTY_OBJECT) {
         super();
 
         _assign(this, Scene.defaults, options);
