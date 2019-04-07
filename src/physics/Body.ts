@@ -15,7 +15,7 @@ export type BodyOptions = Partial<{
     tag: FilterTag;
     category: number;
     collisionFilter: number;
-    isSensor: boolean;
+    sensorFilter: number;
     isCircle: boolean;
     active: boolean;
     position: Vector;
@@ -50,7 +50,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
     static defaults: BodyOptions = {
         category: 0,
         collisionFilter: 0,
-        isSensor: false,
+        sensorFilter: 0,
         isCircle: false,
         active: false,
         maxSpeed: 100,
@@ -95,7 +95,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
     readonly tag: FilterTag = '';
     readonly category!: number;
     readonly collisionFilter!: number;
-    readonly isSensor!: boolean;
+    readonly sensorFilter!: number;
     readonly isCircle!: boolean;
     readonly bounds = new Bounds();
     readonly area = 0;

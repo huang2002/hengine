@@ -116,11 +116,14 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         if (collisionChecker) {
             const filteredObjectCount = filteredObjects.length;
             for (let i = 0; i < filteredObjectCount; i++) {
-                const body1 = filteredObjects[i];
+                const body1 = filteredObjects[i],
+                    { category: category1, velocity: v1, position: p1, active: active1,
+                        sensorFilter: sensorFilter1, elasticity: elasticity1,
+                        stiffness: stiffness1, roughness: roughness1 } = body1;
                 for (let j = i + 1; j < filteredObjectCount; j++) {
                     const body2 = filteredObjects[j];
 
-                    if (!(body1.category & body2.collisionFilter && body1.collisionFilter & body2.category)) {
+                    if (!(category1 & body2.collisionFilter && body1.collisionFilter & body2.category)) {
                         continue;
                     }
 
@@ -132,14 +135,17 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
                     body1.emit('collision', body2, separatingVector);
                     body2.emit('collision', body1, separatingVector);
 
-                    const { velocity: v1, position: p1 } = body1,
-                        { velocity: v2, position: p2 } = body2,
-                        elasticity = body1.elasticity * body2.elasticity,
-                        roughness = body1.roughness * body2.roughness,
+                    if (category1 & body2.sensorFilter || sensorFilter1 & body2.category) {
+                        continue;
+                    }
+
+                    const { velocity: v2, position: p2 } = body2,
+                        elasticity = elasticity1 * body2.elasticity,
+                        roughness = roughness1 * body2.roughness,
                         edgeVector = separatingVector.clone().turn();
-                    if (body1.active) {
+                    if (active1) {
                         if (body2.active) {
-                            Vector.distribute(separatingVector, p1, p2, -body1.stiffness, body2.stiffness);
+                            Vector.distribute(separatingVector, p1, p2, -stiffness1, body2.stiffness);
                             if (elasticity) {
                                 Vector.distribute(separatingVector, v1, v2, -elasticity, elasticity);
                             }
@@ -151,7 +157,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
                             }
                             // TODO: solve the rotations of body1 & body2 here
                         } else {
-                            p1.minusVector(separatingVector, (body1.stiffness + body2.stiffness) / 2);
+                            p1.minusVector(separatingVector, (stiffness1 + body2.stiffness) / 2);
                             if (elasticity) {
                                 v1.minusVector(separatingVector, elasticity);
                             }
@@ -162,7 +168,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
                         }
                     } else {
                         if (body2.active) {
-                            p2.plusVector(separatingVector, (body1.stiffness + body2.stiffness) / 2);
+                            p2.plusVector(separatingVector, (stiffness1 + body2.stiffness) / 2);
                             if (elasticity) {
                                 v2.plusVector(separatingVector, elasticity);
                             }
