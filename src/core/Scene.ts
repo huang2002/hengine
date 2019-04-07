@@ -1,5 +1,5 @@
 import { Renderable, Renderer } from "../renderer/Renderer";
-import { _assign, _null } from "../common/references";
+import { _assign, _null, _min } from "../common/references";
 import { EventEmitter } from "../common/EventEmitter";
 import { RenderingStyle } from "../graph/Style";
 import { Utils } from "../common/Utils";
@@ -140,8 +140,8 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
                     }
 
                     const { velocity: v2, position: p2 } = body2,
-                        elasticity = elasticity1 * body2.elasticity,
-                        roughness = roughness1 * body2.roughness,
+                        elasticity = _min(elasticity1, body2.elasticity),
+                        roughness = _min(roughness1, body2.roughness),
                         edgeVector = separatingVector.clone().turn();
                     if (active1) {
                         if (body2.active) {
