@@ -85,12 +85,15 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
                     (origin as Body).velocity, target.velocity,
                     -target.mass, (origin as Body).mass
                 );
+                // TODO: solve the rotations of origin & target here
             } else {
                 (origin as Body).velocity.minusVector(offsetVector);
+                // TODO: solve the rotation of origin here
             }
         } else {
             if (target.active) {
                 target.velocity.plusVector(offsetVector);
+                // TODO: solve the rotation of target here
             }
         }
     }
