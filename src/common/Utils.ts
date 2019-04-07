@@ -47,7 +47,7 @@ export namespace Utils {
 
     export const debounce = <F extends DebounceCallback>(callback: F, initDelay?: number) => {
         let timer: any;
-        const wrapper: DebounceWrapper<F> = function () {
+        const wrapper: DebounceWrapper<F> = function debounceWrapper() {
             if (timer !== _undefined) {
                 _clearTimeout(timer);
             }
@@ -72,7 +72,7 @@ export namespace Utils {
 
     export const threshold = <F extends ThresholdCallback>(callback: F, initThreshold?: number) => {
         let lastCallTime = 0;
-        const wrapper: ThresholdWrapper<F> = function (this: any) {
+        const wrapper: ThresholdWrapper<F> = function thresholdWrapper(this: any) {
             const currentTime = _now();
             if (currentTime - lastCallTime >= wrapper.threshold) {
                 lastCallTime = currentTime;
@@ -85,13 +85,15 @@ export namespace Utils {
 
     threshold.defaultThreshold = 100;
 
-    export type CachedFunction<T extends Callback<any>> =
+    export type CacheWrapper<T extends Callback<any>> =
         Callback<ThisParameterType<T>, Parameters<T>, ReturnType<T>> &
         { cache: Map<string, ReturnType<T>>; };
 
-    export const cache = <T extends Callback<any>>(fn: T): CachedFunction<T> => {
+    export const cache = <T extends Callback<any>>(fn: T): CacheWrapper<T> => {
         const map = new _Map<string, ReturnType<T>>();
-        const newFn = function (this: ThisParameterType<T>, ...args: ToArray<Parameters<T>>) {
+        const cacheWrapper = function cacheWrapper(
+            this: ThisParameterType<T>, ...args: ToArray<Parameters<T>>
+        ) {
             const parameters = args.join();
             if (map.has(parameters)) {
                 return map.get(parameters) as ReturnType<T>;
@@ -101,8 +103,8 @@ export namespace Utils {
                 return result;
             }
         };
-        newFn.cache = map;
-        return newFn;
+        cacheWrapper.cache = map;
+        return cacheWrapper;
     };
 
     export type ExcludeKeys<O, K extends keyof O> = Pick<O, Exclude<keyof O, K>>;

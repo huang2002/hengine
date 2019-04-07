@@ -5,11 +5,11 @@ import { Utils } from "../common/Utils";
 export interface VerticesObject {
     fromArray(array: number[]): Vector[];
     findClosest(target: VectorLike, vertices: ReadonlyArray<Vector>): Vector;
-    createPolygon: Utils.CachedFunction<(edges: number, radius: number, rotation?: number) => Vector[]>;
-    createStar: Utils.CachedFunction<
+    createPolygon: Utils.CacheWrapper<(edges: number, radius: number, rotation?: number) => Vector[]>;
+    createStar: Utils.CacheWrapper<
         (angles: number, innerRadius: number, outerRadius: number, rotation?: number) => Vector[]
     >;
-    createRectangle: Utils.CachedFunction<(width: number, height: number, rotation?: number) => Vector[]>;
+    createRectangle: Utils.CacheWrapper<(width: number, height: number, rotation?: number) => Vector[]>;
 }
 
 export const Vertices: VerticesObject = {
