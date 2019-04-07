@@ -24,6 +24,7 @@ export * from "./graph/Polygon";
 export * from "./graph/Line";
 
 export * from "./core/Runner";
+export * from "./core/Pointer";
 export * from "./core/Scene";
 export * from "./core/Inspector";
 export * from "./core/Engine";
