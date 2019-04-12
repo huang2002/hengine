@@ -5,6 +5,7 @@ export type SizingResult = Readonly<{
     styleHeight: number;
     left: number;
     top: number;
+    scale: number;
 }>;
 
 export type SizingFunction = (
@@ -34,7 +35,8 @@ export const Sizing: SizingObject = {
             styleWidth: width,
             styleHeight: height,
             left: margin,
-            top: margin
+            top: margin,
+            scale: 1
         };
     },
 
@@ -44,7 +46,8 @@ export const Sizing: SizingObject = {
         styleWidth: innerWidth,
         styleHeight: innerHeight,
         left: (outerWidth - innerWidth) / 2,
-        top: (outerHeight - innerHeight) / 2
+        top: (outerHeight - innerHeight) / 2,
+        scale: 1
     }),
 
     Fit: (innerWidth, innerHeight, outerWidth, outerHeight, margin) => {
@@ -59,7 +62,8 @@ export const Sizing: SizingObject = {
             styleWidth: width,
             styleHeight: height,
             left: (outerWidth - width) / 2,
-            top: (outerHeight - height) / 2
+            top: (outerHeight - height) / 2,
+            scale
         };
     },
 
@@ -74,7 +78,8 @@ export const Sizing: SizingObject = {
             styleWidth,
             styleHeight,
             left: margin,
-            top: margin
+            top: margin,
+            scale
         };
     },
 
@@ -89,14 +94,19 @@ export const Sizing: SizingObject = {
             styleWidth,
             styleHeight,
             left: margin,
-            top: margin
+            top: margin,
+            scale
         };
     },
 
-    Fixed: (innerWidth, innerHeight, outerWidth, outerHeight, margin) => ((
-        outerWidth / outerHeight > innerWidth / innerHeight ?
-            Sizing.FixedHeight :
-            Sizing.FixedWidth
-    )(innerWidth, innerHeight, outerWidth, outerHeight, margin)),
+    Fixed: (innerWidth, innerHeight, outerWidth, outerHeight, margin) => (
+        (
+            outerWidth / outerHeight > innerWidth / innerHeight ?
+                Sizing.FixedHeight :
+                Sizing.FixedWidth
+        )(
+            innerWidth, innerHeight, outerWidth, outerHeight, margin
+        )
+    ),
 
 };
