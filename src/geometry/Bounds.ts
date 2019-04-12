@@ -1,5 +1,4 @@
 import { VectorLike } from "./Vector";
-import { _max, _min, _null } from "../common/references";
 
 export class Bounds {
 
@@ -37,6 +36,26 @@ export class Bounds {
             bounds.bottom < this.top ||
             bounds.top > this.bottom
         );
+    }
+
+    update(vertices: ReadonlyArray<VectorLike>) {
+        vertices.forEach(({ x, y }, i) => {
+            if (i > 0) {
+                if (x < this.left) {
+                    this.left = x;
+                } else if (x > this.right) {
+                    this.right = x;
+                }
+                if (y < this.top) {
+                    this.top = y;
+                } else if (y > this.bottom) {
+                    this.bottom = y;
+                }
+            } else {
+                this.left = this.right = x;
+                this.top = this.bottom = y;
+            }
+        });
     }
 
 }
