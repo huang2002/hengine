@@ -12,9 +12,9 @@ export const Vertices = {
         return vertices;
     },
 
-    findClosest(target: VectorLike, vertices: VectorLike[]) {
+    findClosest<T extends VectorLike>(target: VectorLike, vertices: ReadonlyArray<T>) {
         let min = _Infinity,
-            closest!: VectorLike;
+            closest!: T;
         vertices.forEach(vertex => {
             const current = Utils.quadraticSum(target.x - vertex.x, target.y - vertex.y);
             if (current < min) {
