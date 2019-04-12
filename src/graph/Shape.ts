@@ -49,6 +49,7 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
     sprite: Sprite | null = _null;
 
     abstract path(context: CanvasRenderingContext2D): void;
+    abstract updateBounds(): void;
 
     render(renderer: Renderer) {
 

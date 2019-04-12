@@ -14,10 +14,21 @@ export class Circle extends Shape implements Required<CircleOptions>, Renderable
 
     constructor(options: Readonly<CircleOptions> = Utils.Const.EMPTY_OBJECT) {
         super(_assign({}, Circle.defaults, options));
+        this.updateBounds();
     }
 
     readonly isCircle = true;
     radius!: number;
+
+    updateBounds() {
+        const { bounds, position: { x, y }, radius, rotation } = this,
+            halfWidth = _abs(radius * this.scaleX * _cos(rotation)),
+            halfHeight = _abs(radius * this.scaleY * -_sin(rotation));
+        bounds.left = x - halfWidth;
+        bounds.right = x + halfWidth;
+        bounds.top = y - halfHeight;
+        bounds.bottom = y + halfHeight;
+    }
 
     getClosest(target: VectorLike) {
         const { position } = this;

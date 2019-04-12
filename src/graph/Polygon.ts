@@ -40,7 +40,6 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
         } else {
             vertices = this.vertices;
         }
-        const { bounds } = this;
         if (vertices.length > 1) {
             const { clockwise, adjustment } = this,
                 { normalPrecision: NormalPrecision } = Body,
@@ -76,23 +75,6 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
                     vertex.minusVector(offset);
                 });
             }
-            vertices.forEach(({ x, y }, i) => {
-                if (i > 0) {
-                    if (x < bounds.left) {
-                        bounds.left = x;
-                    } else if (x > bounds.right) {
-                        bounds.right = x;
-                    }
-                    if (y < bounds.top) {
-                        bounds.top = y;
-                    } else if (y > bounds.bottom) {
-                        bounds.bottom = y;
-                    }
-                } else {
-                    bounds.left = bounds.right = x;
-                    bounds.top = bounds.bottom = y;
-                }
-            });
             if (clockwise) {
                 totalArea = -totalArea;
             }
@@ -101,10 +83,8 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
             (this.mass as number) = totalArea * this.density;
         } else {
             (this.area as number) = (this.mass as number) = 0;
-            const { position } = this;
-            bounds.left = bounds.right = position.x;
-            bounds.top = bounds.bottom = position.y;
         }
+        this.updateBounds();
         return this;
     }
 
@@ -121,6 +101,17 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
         this.normals.forEach(normal => {
             normal.rotate(rotation, origin);
         });
+    }
+
+    updateBounds() {
+        const { vertices, bounds } = this;
+        if (vertices.length) {
+            bounds.update(vertices);
+        } else {
+            const { position } = this;
+            bounds.left = bounds.right = position.x;
+            bounds.top = bounds.bottom = position.y;
+        }
     }
 
     getClosest(target: VectorLike) {

@@ -21,6 +21,7 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
 
     constructor(options: Readonly<RectangleOptions> = Utils.Const.EMPTY_OBJECT) {
         super(_assign({}, Rectangle.defaults, options));
+        this.updateBounds();
     }
 
     width!: number;
@@ -32,25 +33,53 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
         this.height *= scaleY;
     }
 
-    getClosest(target: VectorLike) {
-        const { rotation, radius, width, height, position: { x, y } } = this;
-        let x0 = width / 2,
-            y0 = height / 2;
+    updateBounds() {
+        const { bounds, rotation, radius, width, height, position: { x, y } } = this;
+        let dx0 = width / 2,
+            dy0 = height / 2;
         if (radius > 0) {
-            x0 -= radius;
-            y0 -= radius;
+            dx0 -= radius;
+            dy0 -= radius;
         }
         const cos = _cos(rotation),
             sin = _sin(rotation),
-            x1 = x0 * cos - y0 * sin,
-            y1 = x0 * sin + y0 * cos,
-            x2 = x0 * cos - -y0 * sin,
-            y2 = x0 * sin + -y0 * cos,
+            dx1 = dx0 * cos - dy0 * sin,
+            dy1 = dx0 * sin + dy0 * cos,
+            dx2 = dx0 * cos - -dy0 * sin,
+            dy2 = dx0 * sin + -dy0 * cos;
+        bounds.update(Vertices.fromArray([
+            x + dx1, y + dy1,
+            x + dx2, y + dy2,
+            x - dx1, y - dy1,
+            x - dx2, y - dy2
+        ]));
+        if (radius > 0) {
+            bounds.left -= radius;
+            bounds.right += radius;
+            bounds.top -= radius;
+            bounds.bottom += radius;
+        }
+    }
+
+    getClosest(target: VectorLike) {
+        const { rotation, radius, width, height, position: { x, y } } = this;
+        let dx0 = width / 2,
+            dy0 = height / 2;
+        if (radius > 0) {
+            dx0 -= radius;
+            dy0 -= radius;
+        }
+        const cos = _cos(rotation),
+            sin = _sin(rotation),
+            dx1 = dx0 * cos - dy0 * sin,
+            dy1 = dx0 * sin + dy0 * cos,
+            dx2 = dx0 * cos - -dy0 * sin,
+            dy2 = dx0 * sin + -dy0 * cos,
             closet = Vertices.findClosest(target, Vertices.fromArray([
-                x + x1, y + y1,
-                x + x2, y + y2,
-                x - x1, y - y1,
-                x - x2, y - y2
+                x + dx1, y + dy1,
+                x + dx2, y + dy2,
+                x - dx1, y - dy1,
+                x - dx2, y - dy2
             ]));
         if (radius > 0) {
             closet.grow(radius);

@@ -18,11 +18,30 @@ export class Line extends Shape implements Required<LineOptions>, Renderable {
 
     constructor(options: Readonly<LineOptions> = Utils.Const.EMPTY_OBJECT) {
         super(_assign({}, Line.defaults, options));
+        this.updateBounds();
     }
 
     start!: Vector;
     end!: Vector;
     noWidth!: boolean;
+
+    updateBounds() {
+        const { start: { x: x1, y: y1 }, end: { x: x2, y: y2 }, bounds } = this;
+        if (x1 > x2) {
+            bounds.left = x2;
+            bounds.right = x1;
+        } else {
+            bounds.left = x1;
+            bounds.right = x2;
+        }
+        if (y1 > y2) {
+            bounds.top = y2;
+            bounds.bottom = y1;
+        } else {
+            bounds.top = y1;
+            bounds.bottom = y2;
+        }
+    }
 
     getClosest(target: VectorLike) {
         const { start, end } = this,
