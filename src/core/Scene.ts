@@ -6,6 +6,7 @@ import { Utils } from "../common/Utils";
 import { Body } from "../physics/Body";
 import { Collision, CollisionChecker } from "../physics/Collision";
 import { Pointer } from "./Pointer";
+import { Vector } from "../geometry/Vector";
 
 // TODO: add `pointer` to `scene`
 
@@ -19,8 +20,9 @@ export type SceneOptions = Partial<{
     clean: boolean
     pointer: Pointer | null;
     objects: SceneObject[];
-    attachments: Renderable[];
+    attachments: SceneObject[];
     collisionChecker: CollisionChecker | null;
+    pointerChecker: CollisionChecker | null;
 }>;
 
 export interface SceneEvents {
@@ -39,8 +41,9 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         timeScale: 1,
         background: '#fff',
         clean: false,
-        collisionChecker: Collision.Checker.Smart,
         pointer: _null,
+        collisionChecker: Collision.Checker.Smart,
+        pointerChecker: Collision.Checker.Smart,
     };
 
     constructor(options: SceneOptions = Utils.Const.EMPTY_OBJECT) {
@@ -55,22 +58,54 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
             this.attachments = [];
         }
 
+        this._onPointerClick = this._onPointerClick.bind(this);
+
     }
 
     delay!: number;
     timeScale!: number;
     background!: RenderingStyle | null;
     clean!: boolean;
-    pointer!: Pointer | null;
     objects!: SceneObject[];
-    attachments!: Renderable[];
+    attachments!: SceneObject[];
     collisionChecker!: CollisionChecker;
+    pointerChecker!: CollisionChecker;
+    private _pointer!: Pointer | null;
 
     set fps(fps: number) {
         this.delay = 1000 / fps;
     }
     get fps() {
         return 1000 / this.delay;
+    }
+
+    set pointer(pointer: Pointer | null) {
+        if (this.pointer) {
+            this.pointer.off('click', this._onPointerClick);
+        }
+        if (this._pointer = pointer) {
+            pointer!.on('click', this._onPointerClick);
+        }
+    }
+    get pointer() {
+        return this._pointer;
+    }
+
+    private _onPointerClick(position: Vector, id: number, event: Event) {
+        const { pointerChecker } = this;
+        if (!pointerChecker) {
+            return;
+        }
+        const { pointer } = this,
+            interactiveBodies = this.objects.concat(this.attachments)
+                .filter(object => (object as Body).interactive) as Body[];
+        for (let i = interactiveBodies.length; i--;) {
+            const body = interactiveBodies[i];
+            if (pointerChecker(pointer!, body)) {
+                body.emit('click', position, id, event);
+                return;
+            }
+        }
     }
 
     add(object: SceneObject) {
@@ -87,12 +122,12 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         return this;
     }
 
-    attach(renderable: Renderable) {
+    attach(renderable: SceneObject) {
         this.attachments.push(renderable);
         return this;
     }
 
-    detach(renderable: Renderable) {
+    detach(renderable: SceneObject) {
         const { attachments } = this,
             index = attachments.indexOf(renderable);
         if (~index) {

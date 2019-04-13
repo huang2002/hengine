@@ -5,6 +5,7 @@ import { CategoryTag, Category } from "./Category";
 import { Bounds } from "../geometry/Bounds";
 import { Renderable, Renderer } from "../renderer/Renderer";
 import { Utils } from "../common/Utils";
+import { PointerEventParameters } from "../core/Pointer";
 
 export interface Projection {
     min: number;
@@ -52,6 +53,7 @@ export interface BodyEvents {
     willUpdate: number;
     didUpdate: number;
     collision: [Body, Vector];
+    click: PointerEventParameters;
 }
 
 export abstract class Body extends EventEmitter<BodyEvents>
