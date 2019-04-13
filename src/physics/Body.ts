@@ -17,6 +17,7 @@ export interface BodyLike {
     position: Vector;
     bounds: Bounds;
     normals: ReadonlyArray<Vector>;
+    getClosest(target: VectorLike): Vector;
     project(direction: Vector): Projection;
 }
 
