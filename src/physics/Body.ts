@@ -11,6 +11,15 @@ export interface Projection {
     max: number;
 }
 
+export interface BodyLike {
+    isCircle: boolean;
+    radius: number;
+    position: Vector;
+    bounds: Bounds;
+    normals: ReadonlyArray<Vector>;
+    project(direction: Vector): Projection;
+}
+
 export type BodyOptions = Partial<{
     tag: CategoryTag;
     category: number;
@@ -44,7 +53,8 @@ export interface BodyEvents {
     collision: [Body, Vector];
 }
 
-export abstract class Body extends EventEmitter<BodyEvents> implements Required<BodyOptions>, Renderable {
+export abstract class Body extends EventEmitter<BodyEvents>
+    implements Required<BodyOptions>, BodyLike, Renderable {
 
     static normalPrecision = 3;
 

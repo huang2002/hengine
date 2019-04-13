@@ -1,11 +1,11 @@
-import { Body } from "./Body";
+import { Body, BodyLike } from "./Body";
 import { Vector } from "../geometry/Vector";
 import { _null, _Infinity, _abs, _min } from "../common/references";
 
 // TODO: interface CollisionCheckingResult { point: Vector; vector: Vector; }
 export type CollisionCheckingResult = Vector;
 
-export type CollisionChecker = (body1: Body, body2: Body) => CollisionCheckingResult | null;
+export type CollisionChecker = (body1: BodyLike, body2: BodyLike) => CollisionCheckingResult | null;
 
 export interface CollisionObject {
     check(bodies: Body[], checker: CollisionChecker): void;
