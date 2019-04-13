@@ -54,7 +54,7 @@ export const Vertices = {
 
     createRectangle: Utils.cache(function (
         this: void, width: number, height: number, rotation?: number
-    ) {
+    ): Vector[] {
         const x0 = width / 2,
             y0 = height / 2;
         if (rotation) {
@@ -64,19 +64,19 @@ export const Vertices = {
                 y1 = x0 * sin + y0 * sin,
                 x2 = -x0 * cos - y0 * sin,
                 y2 = -x0 * sin + y0 * sin;
-            return [
-                Vector.of(x1, y1),
-                Vector.of(x2, y2),
-                Vector.of(-x1, -y1),
-                Vector.of(-x2, -y2)
-            ];
+            return Vertices.fromArray([
+                x1, y1,
+                x2, y2,
+                -x1, -y1,
+                -x2, -y2
+            ]);
         } else {
-            return [
-                Vector.of(x0, y0),
-                Vector.of(-x0, y0),
-                Vector.of(-x0, -y0),
-                Vector.of(x0, -y0)
-            ];
+            return Vertices.fromArray([
+                x0, y0,
+                -x0, y0,
+                -x0, -y0,
+                x0, -y0
+            ]);
         }
     }),
 
