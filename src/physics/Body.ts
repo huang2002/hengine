@@ -18,6 +18,7 @@ export type BodyOptions = Partial<{
     sensorFilter: number;
     isCircle: boolean;
     active: boolean;
+    interactive: boolean;
     position: Vector;
     acceleration: Vector;
     velocity: Vector;
@@ -53,6 +54,7 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
         sensorFilter: 0,
         isCircle: false,
         active: false,
+        interactive: false,
         maxSpeed: 100,
         maxAngularSpeed: 0,
         gravity: Vector.of(0, 5),
@@ -91,12 +93,8 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
 
     }
 
-    readonly active!: boolean;
     readonly tag: CategoryTag = '';
     readonly category!: number;
-    readonly collisionFilter!: number;
-    readonly sensorFilter!: number;
-    readonly isCircle!: boolean;
     readonly bounds = new Bounds();
     readonly area = 0;
     readonly normals: ReadonlyArray<Vector> = [];
@@ -105,6 +103,11 @@ export abstract class Body extends EventEmitter<BodyEvents> implements Required<
     readonly rotation = 0;
     readonly density!: number;
     readonly mass = 0;
+    active!: boolean;
+    interactive!: boolean;
+    collisionFilter!: number;
+    sensorFilter!: number;
+    isCircle!: boolean;
     position!: Vector;
     acceleration!: Vector;
     velocity!: Vector;
