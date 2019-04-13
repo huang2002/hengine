@@ -1,6 +1,6 @@
 import { _document, _assign, _window, _undefined } from "../common/references";
 import { SizingFunction, Sizing } from "./Sizing";
-import { Vector } from "../geometry/Vector";
+import { Vector, VectorLike } from "../geometry/Vector";
 import { Utils } from "../common/Utils";
 
 export interface Renderable {
@@ -75,17 +75,19 @@ export class Renderer implements Required<RendererOptions>{
     readonly bottom!: number;
     readonly left!: number;
     readonly resizeListener = Utils.debounce(this._resize.bind(this));
-
     width!: number;
     height!: number;
     margin!: number;
     ratio!: number;
     origin!: Vector;
-
     align!: boolean;
     sizing!: SizingFunction;
-
     restoration!: boolean;
+    private _offsetX!: number;
+    private _offsetY!: number;
+    private _originOffsetX!: number;
+    private _originOffsetY!: number;
+    private _scale!: number;
 
     set resizeDelay(delay: number) {
         this.resizeListener.delay = delay;
@@ -111,7 +113,12 @@ export class Renderer implements Required<RendererOptions>{
                 height = this.height = size.height;
                 styleWidth = size.styleWidth;
                 styleHeight = size.styleHeight;
+                this._offsetX = rect.left + size.left;
+                this._offsetY = rect.top + size.top;
+                this._scale = size.scale * ratio;
             }
+        } else {
+            this._scale = ratio;
         }
 
         canvas.width = width * ratio;
@@ -151,6 +158,20 @@ export class Renderer implements Required<RendererOptions>{
         }
     }
 
-    // TODO: implement `outer2inner` & `inner2outer`
+    outer2inner(position: VectorLike) {
+        const { _scale } = this;
+        return Vector.of(
+            (position.x - this._offsetX) / _scale - this._originOffsetX,
+            (position.y - this._offsetY) / _scale - this._originOffsetY
+        );
+    }
+
+    inner2outer(position: VectorLike) {
+        const { _scale } = this;
+        return Vector.of(
+            (position.x + this._originOffsetX) * _scale + this._offsetX,
+            (position.y + this._originOffsetY) * _scale + this._offsetY,
+        );
+    }
 
 }
