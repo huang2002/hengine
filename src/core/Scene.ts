@@ -1,11 +1,13 @@
 import { Renderable, Renderer } from "../renderer/Renderer";
-import { _assign, _null, _min } from "../common/references";
+import { _assign, _null } from "../common/references";
 import { EventEmitter } from "../common/EventEmitter";
 import { RenderingStyle } from "../graph/Style";
 import { Utils } from "../common/Utils";
 import { Body } from "../physics/Body";
-import { CollisionChecker } from "../physics/CollisionChecker";
-import { Vector } from "../geometry/Vector";
+import { Collision, CollisionChecker } from "../physics/Collision";
+import { Pointer } from "./Pointer";
+
+// TODO: add `pointer` to `scene`
 
 export type SceneObject = Body | Renderable;
 
@@ -14,7 +16,8 @@ export type SceneOptions = Partial<{
     fps: number;
     timeScale: number;
     background: RenderingStyle | null;
-    clean: boolean;
+    clean: boolean
+    pointer: Pointer | null;
     objects: SceneObject[];
     attachments: Renderable[];
     collisionChecker: CollisionChecker | null;
@@ -36,7 +39,8 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         timeScale: 1,
         background: '#fff',
         clean: false,
-        collisionChecker: CollisionChecker.Smart,
+        collisionChecker: Collision.Checker.Smart,
+        pointer: _null,
     };
 
     constructor(options: SceneOptions = Utils.Const.EMPTY_OBJECT) {
@@ -57,6 +61,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     timeScale!: number;
     background!: RenderingStyle | null;
     clean!: boolean;
+    pointer!: Pointer | null;
     objects!: SceneObject[];
     attachments!: Renderable[];
     collisionChecker!: CollisionChecker;
@@ -101,86 +106,20 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
 
         this.emit('willUpdate', timeScale);
 
-        const filteredObjects = new Array<Body>();
+        const collidableBodies = new Array<Body>();
 
         this.objects.forEach(object => {
             if (object.update) {
                 object.update(timeScale);
                 if ((object as Body).category && (object as Body).collisionFilter) {
-                    filteredObjects.push(object as Body);
+                    collidableBodies.push(object as Body);
                 }
             }
         });
 
         const { collisionChecker } = this;
         if (collisionChecker) {
-            const filteredObjectCount = filteredObjects.length;
-            for (let i = 0; i < filteredObjectCount; i++) {
-                const body1 = filteredObjects[i],
-                    { category: category1, velocity: v1, position: p1, active: active1,
-                        sensorFilter: sensorFilter1, elasticity: elasticity1,
-                        stiffness: stiffness1, roughness: roughness1 } = body1;
-                for (let j = i + 1; j < filteredObjectCount; j++) {
-                    const body2 = filteredObjects[j];
-
-                    if (!(category1 & body2.collisionFilter && body1.collisionFilter & body2.category)) {
-                        continue;
-                    }
-
-                    const separatingVector = collisionChecker(body1, body2);
-                    if (!separatingVector) {
-                        continue;
-                    }
-
-                    body1.emit('collision', body2, separatingVector);
-                    body2.emit('collision', body1, separatingVector);
-
-                    if (category1 & body2.sensorFilter || sensorFilter1 & body2.category) {
-                        continue;
-                    }
-
-                    const { velocity: v2, position: p2 } = body2,
-                        elasticity = _min(elasticity1, body2.elasticity),
-                        roughness = _min(roughness1, body2.roughness),
-                        edgeVector = separatingVector.clone().turn();
-                    if (active1) {
-                        if (body2.active) {
-                            Vector.distribute(separatingVector, p1, p2, -stiffness1, body2.stiffness);
-                            if (elasticity) {
-                                Vector.distribute(separatingVector, v1, v2, -elasticity, elasticity);
-                            }
-                            if (roughness) {
-                                const relativeVelocity = Vector.minus(v2, v1),
-                                    relativeEdgeVelocity = Vector.projectVector(relativeVelocity, edgeVector)
-                                v1.minusVector(relativeEdgeVelocity, roughness);
-                                v2.minusVector(relativeEdgeVelocity, roughness);
-                            }
-                            // TODO: solve the rotations of body1 & body2 here
-                        } else {
-                            p1.minusVector(separatingVector, (stiffness1 + body2.stiffness) / 2);
-                            if (elasticity) {
-                                v1.minusVector(separatingVector, elasticity);
-                            }
-                            if (roughness) {
-                                v1.minusVector(Vector.projectVector(v1, separatingVector), roughness);
-                            }
-                            // TODO: solve the rotation of body1 here
-                        }
-                    } else {
-                        if (body2.active) {
-                            p2.plusVector(separatingVector, (stiffness1 + body2.stiffness) / 2);
-                            if (elasticity) {
-                                v2.plusVector(separatingVector, elasticity);
-                            }
-                            if (roughness) {
-                                v2.plusVector(Vector.projectVector(v2, separatingVector), roughness);
-                            }
-                            // TODO: solve the rotation of body2 here
-                        }
-                    }
-
-                }
-            }
+            Collision.check(collidableBodies, collisionChecker);
         }
 
         this.emit('didUpdate', timeScale);

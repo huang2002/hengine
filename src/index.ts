@@ -7,7 +7,7 @@ export * from "./geometry/Vertices";
 
 export * from "./physics/Category";
 export * from "./physics/Body";
-export * from "./physics/CollisionChecker";
+export * from "./physics/Collision";
 export * from "./physics/Constraint";
 
 export * from "./renderer/Sizing";
