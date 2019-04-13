@@ -15,11 +15,13 @@ export type PointerOptions = Partial<{
     radius: number;
 }>;
 
+export type PointerEventParameters = [Vector, number, Event];
+
 export interface PointerEvents {
-    start: [Vector, number, Event];
-    move: [Vector, number, Event];
-    end: [Vector, number, Event];
-    click: [Vector, number, Event];
+    start: PointerEventParameters;
+    move: PointerEventParameters;
+    end: PointerEventParameters;
+    click: PointerEventParameters;
 }
 
 export class Pointer extends EventEmitter<PointerEvents> implements Required<PointerOptions>, BodyLike {
