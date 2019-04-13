@@ -4,12 +4,12 @@ import { Renderer } from "../renderer/Renderer";
 import { Scene } from "./Scene";
 import { Inspector } from "./Inspector";
 import { Utils } from "../common/Utils";
-
-// TODO: add `pointer` to `engine`
+import { Pointer } from "./Pointer";
 
 export type EngineOptions = Partial<{
     runner: Runner;
     renderer: Renderer;
+    pointer: Pointer;
     inspector: Inspector | null;
     baseTime: number;
     maxDelay: number;
@@ -32,13 +32,18 @@ export class Engine implements Required<EngineOptions> {
         if (!options.renderer) {
             this.renderer = new Renderer();
         }
+        if (!options.pointer) {
+            this.pointer = new Pointer();
+        }
 
         this.runner.on('tick', this.tick = this.tick.bind(this));
+        this.pointer.transform = this.renderer.outer2inner;
 
     }
 
     runner!: Runner;
     renderer!: Renderer;
+    pointer!: Pointer;
     inspector: Inspector | null = _null;
     baseTime!: number;
     maxDelay!: number;
