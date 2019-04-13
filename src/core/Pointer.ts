@@ -1,6 +1,8 @@
 import { _assign, _window, _null, _Map } from "../common/references";
 import { Vector, VectorLike } from "../geometry/Vector";
 import { EventEmitter } from "../common/EventEmitter";
+import { BodyLike } from "../physics/Body";
+import { Bounds } from "../geometry/Bounds";
 
 export type PointerTransform = (position: VectorLike) => VectorLike;
 
@@ -10,6 +12,7 @@ export type PointerOptions = Partial<{
     isTouchMode: boolean;
     holdOnly: boolean;
     clickThreshold: number;
+    radius: number;
 }>;
 
 export interface PointerEvents {
@@ -19,7 +22,7 @@ export interface PointerEvents {
     click: [Vector, number, Event];
 }
 
-export class Pointer extends EventEmitter<PointerEvents> implements Required<PointerOptions> {
+export class Pointer extends EventEmitter<PointerEvents> implements Required<PointerOptions>, BodyLike {
 
     static defaults: PointerOptions = {
         target: _window,
@@ -62,7 +65,10 @@ export class Pointer extends EventEmitter<PointerEvents> implements Required<Poi
 
     readonly target!: EventTarget;
     readonly isTouchMode!: boolean;
+    readonly isCircle = true;
     readonly position = new Vector();
+    readonly bounds = new Bounds();
+    readonly normals: [] = [];
     readonly active: boolean = true;
     readonly isHolding: boolean = false;
     readonly startTimeStamps = new _Map<number, number>();
@@ -72,30 +78,51 @@ export class Pointer extends EventEmitter<PointerEvents> implements Required<Poi
     holdOnly!: boolean;
     clickThreshold!: number;
     transform!: null | PointerTransform;
+    radius!: number;
+
+    private _setPosition(x: number, y: number) {
+        this.position.set(x, y);
+        const { bounds, radius } = this;
+        bounds.left = x - radius;
+        bounds.right = x + radius;
+        bounds.top = y - radius;
+        bounds.bottom = y + radius;
+    }
 
     private _start(id: number, x: number, y: number, event: Event) {
         (this.isHolding as boolean) = true;
         this.startTimeStamps.set(id, event.timeStamp);
-        this.emit('start', this.position.set(x, y), id, event);
+        this._setPosition(x, y);
+        this.emit('start', this.position, id, event);
     }
 
     private _move(id: number, x: number, y: number, event: Event) {
         if (this.holdOnly && !this.isHolding) {
             return;
         }
-        this.emit('move', this.position.set(x, y), id, event);
+        this._setPosition(x, y);
+        this.emit('move', this.position, id, event);
     }
 
     private _end(id: number, x: number, y: number, event: Event) {
-        this.position.set(x, y);
+        this._setPosition(x, y);
         (this.isHolding as boolean) = false;
         const { startTimeStamps } = this,
             startTimeStamp = startTimeStamps.get(id)!;
         startTimeStamps.delete(id);
-        this.emit('end', this.position.set(x, y), id, event);
+        this.emit('end', this.position, id, event);
         if (event.timeStamp - startTimeStamp <= this.clickThreshold) {
             this.emit('click', this.position, id, event);
         }
+    }
+
+    project(direction: Vector) {
+        const { radius } = this,
+            positionProjection = Vector.project(this.position, direction);
+        return {
+            min: positionProjection - radius,
+            max: positionProjection + radius
+        };
     }
 
     destroy() {
@@ -113,3 +140,5 @@ export class Pointer extends EventEmitter<PointerEvents> implements Required<Poi
     }
 
 }
+
+Pointer.defaults.radius = Pointer.defaults.isTouchMode ? 5 : 0;
