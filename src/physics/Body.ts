@@ -54,6 +54,7 @@ export interface BodyEvents {
     didUpdate: number;
     collision: [Body, Vector];
     click: PointerEventParameters;
+    // TODO: add drag events
 }
 
 export abstract class Body extends EventEmitter<BodyEvents>

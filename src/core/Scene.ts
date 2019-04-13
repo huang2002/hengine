@@ -8,7 +8,7 @@ import { Collision, CollisionChecker } from "../physics/Collision";
 import { Pointer } from "./Pointer";
 import { Vector } from "../geometry/Vector";
 
-// TODO: add `pointer` to `scene`
+// TODO: add drag events
 
 export type SceneObject = Body | Renderable;
 
