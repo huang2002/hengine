@@ -37,7 +37,7 @@ export class Engine implements Required<EngineOptions> {
         }
 
         this.timer.on('tick', this.tick = this.tick.bind(this));
-        this.pointer.transform = this.renderer.outer2inner;
+        this.pointer.transform = this.renderer.outer2inner.bind(this.renderer);
 
     }
 
