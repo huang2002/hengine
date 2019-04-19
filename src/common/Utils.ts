@@ -63,27 +63,27 @@ export namespace Utils {
 
     debounce.defaultDelay = 100;
 
-    export type ThresholdCallback = Callback<any>;
+    export type ThrottleCallback = Callback<any>;
 
-    export interface ThresholdWrapper<F extends ThresholdCallback> {
+    export interface ThresholdWrapper<F extends ThrottleCallback> {
         (...args: Parameters<F>): ReturnType<F> | void;
         threshold: number;
     }
 
-    export const threshold = <F extends ThresholdCallback>(callback: F, initThreshold?: number) => {
+    export const throttle = <F extends ThrottleCallback>(callback: F, initThreshold?: number) => {
         let lastCallTime = 0;
-        const wrapper: ThresholdWrapper<F> = function thresholdWrapper(this: any) {
+        const wrapper: ThresholdWrapper<F> = function throttleWrapper(this: any) {
             const currentTime = _now();
             if (currentTime - lastCallTime >= wrapper.threshold) {
                 lastCallTime = currentTime;
                 return callback.apply(this, arguments as unknown as unknown[]) as ReturnType<F>;
             }
         };
-        wrapper.threshold = initThreshold || threshold.defaultThreshold;
+        wrapper.threshold = initThreshold || throttle.defaultThreshold;
         return wrapper;
     };
 
-    threshold.defaultThreshold = 100;
+    throttle.defaultThreshold = 100;
 
     export type CacheWrapper<T extends Callback<any>> =
         Callback<ThisParameterType<T>, Parameters<T>, ReturnType<T>> &
