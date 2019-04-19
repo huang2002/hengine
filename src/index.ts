@@ -23,7 +23,7 @@ export * from "./graph/Circle";
 export * from "./graph/Polygon";
 export * from "./graph/Line";
 
-export * from "./core/Runner";
+export * from "./core/Timer";
 export * from "./core/Pointer";
 export * from "./core/Scene";
 export * from "./core/Inspector";

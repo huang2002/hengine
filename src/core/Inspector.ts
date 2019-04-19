@@ -16,8 +16,8 @@ export class Inspector implements Required<InspectorOptions> {
 
     static defaults: InspectorOptions = {
         callbacks: [
-            engine => `FPS: ${(1000 / engine.runner.lastFrameDelay).toFixed(3)}`,
-            engine => `Frame Duration: ${engine.runner.lastFrameDuration.toFixed(3)}`,
+            engine => `FPS: ${(1000 / engine.timer.lastFrameDelay).toFixed(3)}`,
+            engine => `Frame Duration: ${engine.timer.lastFrameDuration.toFixed(3)}`,
             engine => `Objects: ${engine.currentScene ? engine.currentScene.objects.length : 0}`,
             engine => `Attachments: ${engine.currentScene ? engine.currentScene.attachments.length : 0}`,
         ],

@@ -2,30 +2,30 @@ import { _assign, _undefined, _clearTimeout, _setTimeout, _max, _window } from "
 import { EventEmitter } from "../common/EventEmitter";
 import { Utils } from "../common/Utils";
 
-export type RunnerOptions = Partial<{
+export type TimerOptions = Partial<{
     delay: number;
     allowRAF: boolean;
     fixDelay: boolean;
 }>;
 
-export interface RunnerEvents {
+export interface TimerEvents {
     tick: number;
 }
 
-export class Runner extends EventEmitter<RunnerEvents> implements Required<RunnerOptions> {
+export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOptions> {
 
     static RAFThreshold = 1000 / 60;
 
-    static defaults: RunnerOptions = {
-        delay: Runner.RAFThreshold,
+    static defaults: TimerOptions = {
+        delay: Timer.RAFThreshold,
         allowRAF: true,
         fixDelay: true,
     };
 
-    constructor(options?: Readonly<RunnerOptions>) {
+    constructor(options?: Readonly<TimerOptions>) {
         super();
 
-        _assign(this, Runner.defaults, options);
+        _assign(this, Timer.defaults, options);
 
         this._tick = this._tick.bind(this);
 
@@ -50,7 +50,7 @@ export class Runner extends EventEmitter<RunnerEvents> implements Required<Runne
 
         const duration = (this.lastFrameDuration as number) = Utils.now() - startTime,
             delay = this.delay - (this.fixDelay ? duration : 0);
-        this._timer = (this._usedRAF = delay <= Runner.RAFThreshold && this.allowRAF) ?
+        this._timer = (this._usedRAF = delay <= Timer.RAFThreshold && this.allowRAF) ?
             _window.requestAnimationFrame(this._tick) :
             _setTimeout(this._tick, _max(delay, 0));
 

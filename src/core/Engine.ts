@@ -1,5 +1,5 @@
 import { _assign, _null } from "../common/references";
-import { Runner } from "./Runner";
+import { Timer } from "./Timer";
 import { Renderer } from "../renderer/Renderer";
 import { Scene } from "./Scene";
 import { Inspector } from "./Inspector";
@@ -7,7 +7,7 @@ import { Utils } from "../common/Utils";
 import { Pointer } from "./Pointer";
 
 export type EngineOptions = Partial<{
-    runner: Runner;
+    timer: Timer;
     renderer: Renderer;
     pointer: Pointer;
     inspector: Inspector | null;
@@ -26,8 +26,8 @@ export class Engine implements Required<EngineOptions> {
     constructor(options: Readonly<EngineOptions> = Utils.Const.EMPTY_OBJECT) {
         _assign(this, Engine.defaults, options);
 
-        if (!options.runner) {
-            this.runner = new Runner();
+        if (!options.timer) {
+            this.timer = new Timer();
         }
         if (!options.renderer) {
             this.renderer = new Renderer();
@@ -36,12 +36,12 @@ export class Engine implements Required<EngineOptions> {
             this.pointer = new Pointer();
         }
 
-        this.runner.on('tick', this.tick = this.tick.bind(this));
+        this.timer.on('tick', this.tick = this.tick.bind(this));
         this.pointer.transform = this.renderer.outer2inner;
 
     }
 
-    runner!: Runner;
+    timer!: Timer;
     renderer!: Renderer;
     pointer!: Pointer;
     inspector: Inspector | null = _null;
@@ -55,7 +55,7 @@ export class Engine implements Required<EngineOptions> {
         }
         this.currentScene = scene;
         if (scene) {
-            const { runner } = this;
+            const { timer: runner } = this;
             runner.delay = scene.delay;
             if (!runner.isRunning) {
                 runner.start();
@@ -70,7 +70,7 @@ export class Engine implements Required<EngineOptions> {
         }
         const { currentScene, inspector, renderer } = this;
         if (currentScene) {
-            this.runner.delay = currentScene.delay;
+            this.timer.delay = currentScene.delay;
             currentScene.update(deltaTime / this.baseTime);
             currentScene.render(renderer);
         }
