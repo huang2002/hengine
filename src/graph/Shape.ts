@@ -1,7 +1,6 @@
 import { Body, BodyOptions } from "../physics/Body";
 import { Renderable, Renderer } from "../renderer/Renderer";
 import { _assign, _null } from "../common/references";
-import { Sprite } from "./Sprite";
 import { Style, StrokeStyle, CommonStyle, FillStyle } from "./Style";
 import { Utils } from "../common/Utils";
 
@@ -13,7 +12,7 @@ export type ShapeOptions = BodyOptions & Partial<{
     visible: boolean;
     fillFirst: boolean;
     closePath: boolean;
-    sprite: Sprite | null;
+    texture: Renderable | null;
 }>;
 
 export abstract class Shape extends Body implements Required<ShapeOptions>, Renderable {
@@ -22,6 +21,7 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
         visible: true,
         fillFirst: true,
         closePath: true,
+        texture: _null,
     };
 
     static defaultStyle: ShapeStyle = _assign(
@@ -46,7 +46,7 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
     visible!: boolean;
     fillFirst!: boolean;
     closePath!: boolean;
-    sprite: Sprite | null = _null;
+    texture!: Renderable | null;
 
     abstract path(context: CanvasRenderingContext2D): void;
     abstract updateBounds(): void;
@@ -57,7 +57,7 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
             return;
         }
 
-        const { style, fillFirst, position, sprite } = this,
+        const { style, fillFirst, position, texture: sprite } = this,
             { fillStyle } = style,
             { context } = renderer;
 
