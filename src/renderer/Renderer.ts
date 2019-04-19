@@ -129,6 +129,9 @@ export class Renderer implements Required<RendererOptions>{
         const originOffsetX = width * origin.x,
             originOffsetY = height * origin.y;
 
+        this._originOffsetX = originOffsetX / ratio;
+        this._originOffsetY = originOffsetY / ratio;
+
         this.context.setTransform(ratio, 0, 0, ratio, originOffsetX * ratio, originOffsetY * ratio);
         (this.top as number) = -originOffsetY;
         (this.right as number) = -originOffsetX + width;
