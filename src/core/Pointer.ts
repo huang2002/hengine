@@ -41,25 +41,25 @@ export class Pointer extends EventEmitter<PointerEvents> implements Required<Poi
         if (this.isTouchMode) {
             target.addEventListener('touchstart', this.startListener = ((event: TouchEvent) => {
                 const touchPoint = event.changedTouches[0];
-                this._start(touchPoint.identifier, touchPoint.clientX, touchPoint.clientY, event);
+                this._start(touchPoint.identifier, Vector.of(touchPoint.clientX, touchPoint.clientY), event);
             }) as EventListener);
             target.addEventListener('touchmove', this.moveListener = ((event: TouchEvent) => {
                 const touchPoint = event.changedTouches[0];
-                this._move(touchPoint.identifier, touchPoint.clientX, touchPoint.clientY, event);
+                this._move(touchPoint.identifier, Vector.of(touchPoint.clientX, touchPoint.clientY), event);
             }) as EventListener);
             target.addEventListener('touchend', this.endListener = ((event: TouchEvent) => {
                 const touchPoint = event.changedTouches[0];
-                this._end(touchPoint.identifier, touchPoint.clientX, touchPoint.clientY, event);
+                this._end(touchPoint.identifier, Vector.of(touchPoint.clientX, touchPoint.clientY), event);
             }) as EventListener);
         } else {
             target.addEventListener('mousedown', this.startListener = ((event: MouseEvent) => {
-                this._start(-1, event.clientX, event.clientY, event);
+                this._start(-1, Vector.of(event.clientX, event.clientY), event);
             }) as EventListener);
             target.addEventListener('mousemove', this.moveListener = ((event: MouseEvent) => {
-                this._move(-1, event.clientX, event.clientY, event);
+                this._move(-1, Vector.of(event.clientX, event.clientY), event);
             }) as EventListener);
             target.addEventListener('mouseup', this.endListener = ((event: MouseEvent) => {
-                this._end(-1, event.clientX, event.clientY, event);
+                this._end(-1, Vector.of(event.clientX, event.clientY), event);
             }) as EventListener);
         }
 
@@ -82,32 +82,32 @@ export class Pointer extends EventEmitter<PointerEvents> implements Required<Poi
     transform!: null | PointerTransform;
     radius!: number;
 
-    private _setPosition(x: number, y: number) {
-        this.position.set(x, y);
-        const { bounds, radius } = this;
-        bounds.left = x - radius;
-        bounds.right = x + radius;
-        bounds.top = y - radius;
-        bounds.bottom = y + radius;
+    private _setPosition(rawPosition: VectorLike) {
+        const { bounds, radius, position } = this;
+        position.setVector(this.transform ? this.transform(rawPosition) : rawPosition);
+        bounds.left = position.x - radius;
+        bounds.right = position.x + radius;
+        bounds.top = position.y - radius;
+        bounds.bottom = position.y + radius;
     }
 
-    private _start(id: number, x: number, y: number, event: Event) {
+    private _start(id: number, rawPosition: VectorLike, event: Event) {
         (this.isHolding as boolean) = true;
         this.startTimeStamps.set(id, event.timeStamp);
-        this._setPosition(x, y);
+        this._setPosition(rawPosition);
         this.emit('start', this.position, id, event);
     }
 
-    private _move(id: number, x: number, y: number, event: Event) {
+    private _move(id: number, rawPosition: VectorLike, event: Event) {
         if (this.holdOnly && !this.isHolding) {
             return;
         }
-        this._setPosition(x, y);
+        this._setPosition(rawPosition);
         this.emit('move', this.position, id, event);
     }
 
-    private _end(id: number, x: number, y: number, event: Event) {
-        this._setPosition(x, y);
+    private _end(id: number, rawPosition: VectorLike, event: Event) {
+        this._setPosition(rawPosition);
         (this.isHolding as boolean) = false;
         const { startTimeStamps } = this,
             startTimeStamp = startTimeStamps.get(id)!;
