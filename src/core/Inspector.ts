@@ -20,6 +20,10 @@ export class Inspector implements Required<InspectorOptions> {
             engine => `Frame Duration: ${engine.timer.lastFrameDuration.toFixed(3)}`,
             engine => `Objects: ${engine.currentScene ? engine.currentScene.objects.length : 0}`,
             engine => `Attachments: ${engine.currentScene ? engine.currentScene.attachments.length : 0}`,
+            engine => {
+                const { pointer: { position } } = engine;
+                return `Pointer Position: ${position.x.toFixed()},${position.y.toFixed()}`;
+            }
         ],
     };
 
@@ -34,6 +38,7 @@ export class Inspector implements Required<InspectorOptions> {
                     font: '10px Consolas',
                     textAlign: 'left',
                     textBaseline: 'top',
+                    fillStyle: '#0ff',
                     strokeStyle: '#00f',
                 },
             });
