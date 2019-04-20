@@ -42,7 +42,7 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
         }
         if (vertices.length > 1) {
             const { clockwise, adjustment } = this,
-                { normalPrecision: NormalPrecision } = Body,
+                { normalPrecision } = Body,
                 areas = new Array<number>(),
                 normals = new Array<Vector>(),
                 centers = new Array<Vector>(),
@@ -53,7 +53,7 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
                     const area = Vector.cross(vertex1, vertex2) / 2;
                     totalArea += area;
                     const normal = Vector.minus(vertex2, vertex1).turn(clockwise),
-                        tangent = (normal.y / normal.x).toFixed(NormalPrecision);
+                        tangent = (normal.y / normal.x).toFixed(normalPrecision);
                     if (!tangents.has(tangent)) {
                         tangents.add(tangent);
                         normals.push(normal.normalize());
