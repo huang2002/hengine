@@ -1,7 +1,7 @@
 import { _assign, _null } from "../common/references";
 import { Timer } from "./Timer";
 import { Renderer } from "../renderer/Renderer";
-import { Scene } from "./Scene";
+import { Scene, SceneOptions } from "./Scene";
 import { Inspector } from "./Inspector";
 import { Utils } from "../common/Utils";
 import { Pointer } from "./Pointer";
@@ -49,16 +49,22 @@ export class Engine implements Required<EngineOptions> {
     maxDelay!: number;
     currentScene: Scene | null = _null;
 
+    createScene(options?: SceneOptions) {
+        return new Scene(_assign({ pointer: this.pointer }, options));
+    }
+
     enter(scene: Scene | null) {
         if (this.currentScene) {
             this.currentScene.emit('exit');
         }
         this.currentScene = scene;
         if (scene) {
-            const { timer: runner } = this;
-            runner.delay = scene.delay;
-            if (!runner.isRunning) {
-                runner.start();
+            const { timer } = this;
+            if (scene.delay) {
+                timer.delay = scene.delay;
+            }
+            if (!timer.isRunning) {
+                timer.start();
             }
             scene.emit('enter');
         }
