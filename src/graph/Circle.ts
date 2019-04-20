@@ -22,8 +22,12 @@ export class Circle extends Shape implements Required<CircleOptions>, Renderable
 
     updateBounds() {
         const { bounds, position: { x, y }, radius, rotation } = this,
-            halfWidth = _abs(radius * this.scaleX * _cos(rotation)),
-            halfHeight = _abs(radius * this.scaleY * -_sin(rotation));
+            cos = _cos(rotation),
+            sin = -_sin(rotation),
+            a = radius * this.scaleX,
+            b = radius * this.scaleY,
+            halfWidth = _abs(a * cos - b * sin),
+            halfHeight = _abs(a * sin + b * cos);
         bounds.left = x - halfWidth;
         bounds.right = x + halfWidth;
         bounds.top = y - halfHeight;
