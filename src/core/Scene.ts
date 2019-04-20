@@ -80,8 +80,8 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     }
 
     set pointer(pointer: Pointer | null) {
-        if (this.pointer) {
-            this.pointer.off('click', this._onPointerClick);
+        if (this._pointer) {
+            this._pointer.off('click', this._onPointerClick);
         }
         if (this._pointer = pointer) {
             pointer!.on('click', this._onPointerClick);
