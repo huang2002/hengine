@@ -49,6 +49,8 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     constructor(options: SceneOptions = Utils.Const.EMPTY_OBJECT) {
         super();
 
+        this._onPointerClick = this._onPointerClick.bind(this);
+
         _assign(this, Scene.defaults, options);
 
         if (!options.objects) {
@@ -57,8 +59,6 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         if (!options.attachments) {
             this.attachments = [];
         }
-
-        this._onPointerClick = this._onPointerClick.bind(this);
 
     }
 
