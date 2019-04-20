@@ -115,10 +115,10 @@ export class Renderer implements Required<RendererOptions>{
                 styleHeight = size.styleHeight;
                 this._offsetX = rect.left + size.left;
                 this._offsetY = rect.top + size.top;
-                this._scale = size.scale * ratio;
+                this._scale = size.scale;
             }
         } else {
-            this._scale = ratio;
+            this._scale = 1;
         }
 
         canvas.width = width * ratio;
@@ -126,11 +126,8 @@ export class Renderer implements Required<RendererOptions>{
         style.width = styleWidth + 'px';
         style.height = styleHeight + 'px';
 
-        const originOffsetX = width * origin.x,
-            originOffsetY = height * origin.y;
-
-        this._originOffsetX = originOffsetX / ratio;
-        this._originOffsetY = originOffsetY / ratio;
+        const originOffsetX = this._originOffsetX = width * origin.x,
+            originOffsetY = this._originOffsetY = height * origin.y;
 
         this.context.setTransform(ratio, 0, 0, ratio, originOffsetX * ratio, originOffsetY * ratio);
         (this.top as number) = -originOffsetY;
