@@ -16,23 +16,23 @@ export class EventEmitter<E extends object = any> {
         this.clearEvents = this.clearEvents.bind(this);
     }
 
-    private _recordMap = new _Map<keyof E, EventListenerRecord<any>[]>();
+    private _listenerMap = new _Map<keyof E, EventListenerRecord<any>[]>();
 
     on<T extends keyof E>(event: T, listener: EventListener<E[T]>, once?: boolean) {
-        const { _recordMap } = this;
-        if (_recordMap.has(event)) {
-            _recordMap.get(event)!.push([listener, !once]);
+        const { _listenerMap } = this;
+        if (_listenerMap.has(event)) {
+            _listenerMap.get(event)!.push([listener, !once]);
         } else {
-            _recordMap.set(event, [[listener, !once]]);
+            _listenerMap.set(event, [[listener, !once]]);
         }
         return this;
     }
 
     off<T extends keyof E>(event: T, listener: EventListener<E[T]>, once?: boolean) {
         once = !!once;
-        const { _recordMap } = this;
-        if (_recordMap.has(event)) {
-            const records = _recordMap.get(event)!,
+        const { _listenerMap } = this;
+        if (_listenerMap.has(event)) {
+            const records = _listenerMap.get(event)!,
                 index = records.findIndex(
                     record =>
                         record[0] === listener &&
@@ -50,11 +50,11 @@ export class EventEmitter<E extends object = any> {
     }
 
     emit<T extends keyof E>(event: T, ...args: Utils.ToArray<E[T]>) {
-        const { _recordMap } = this;
-        if (_recordMap.has(event)) {
-            const records = _recordMap.get(event)!;
+        const { _listenerMap } = this;
+        if (_listenerMap.has(event)) {
+            const records = _listenerMap.get(event)!;
             if (records.length) {
-                _recordMap.set(event, records.filter(record => {
+                _listenerMap.set(event, records.filter(record => {
                     record[0].apply(_undefined, args);
                     return record[1];
                 }));
@@ -65,12 +65,12 @@ export class EventEmitter<E extends object = any> {
     }
 
     clearEvent<T extends keyof E>(event: T) {
-        this._recordMap.delete(event);
+        this._listenerMap.delete(event);
         return this;
     }
 
     clearEvents() {
-        this._recordMap.clear();
+        this._listenerMap.clear();
         return this;
     }
 
