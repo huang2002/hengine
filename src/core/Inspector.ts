@@ -27,7 +27,7 @@ export class Inspector implements Required<InspectorOptions> {
             engine => `Attachments: ${engine.currentScene ? engine.currentScene.attachments.length : 0}`,
             engine => `Pointer Position: ${engine.pointer.position}`,
         ],
-        boundsStroke: '#0f0',
+        boundsStroke: 'rgba(0,255,0,0.6)',
         boundsWidth: 1,
     };
 
