@@ -13,6 +13,7 @@ export type ShapeOptions = BodyOptions & Partial<{
     fillFirst: boolean;
     closePath: boolean;
     texture: Renderable | null;
+    attachments: Renderable[];
 }>;
 
 export abstract class Shape extends Body implements Required<ShapeOptions>, Renderable {
@@ -39,7 +40,12 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
 
     constructor(options: Readonly<ShapeOptions> = Utils.Const.EMPTY_OBJECT) {
         super(_assign({}, Shape.defaults, options));
+
         this.style = _assign({}, Shape.defaultStyle, options.style);
+        if (!options.attachments) {
+            this.attachments = [];
+        }
+
     }
 
     style!: ShapeStyle;
@@ -47,6 +53,7 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
     fillFirst!: boolean;
     closePath!: boolean;
     texture!: Renderable | null;
+    attachments!: Renderable[];
 
     abstract path(context: CanvasRenderingContext2D): void;
     abstract updateBounds(): void;
@@ -57,14 +64,14 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
             return;
         }
 
-        const { style, fillFirst, position, texture: sprite } = this,
+        const { style, fillFirst, position, texture, attachments } = this,
             { fillStyle } = style,
             { context } = renderer;
 
         context.translate(position.x, position.y);
 
-        if (sprite) {
-            return sprite.render(renderer);
+        if (texture) {
+            return texture.render(renderer);
         }
 
         Shape.applyStyle(renderer, style);
@@ -85,6 +92,12 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
         }
         if (!fillFirst && fillStyle) {
             context.fill();
+        }
+
+        if (attachments.length) {
+            attachments.forEach(attachment => {
+                attachment.render(renderer);
+            });
         }
 
         context.translate(-position.x, -position.y);
