@@ -48,6 +48,10 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
         this._lastTickTime = startTime;
         this.emit('tick', deltaTime);
 
+        if (!this.isRunning) {
+            return;
+        }
+
         const duration = (this.lastFrameDuration as number) = Utils.now() - startTime,
             delay = this.delay - (this.fixDelay ? duration : 0);
         this._timer = (this._usedRAF = delay <= Timer.RAFThreshold && this.allowRAF) ?
