@@ -65,7 +65,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
 
     static defaults: BodyOptions = {
         category: 0,
-        collisionFilter: Category.FULL_FILTER,
+        collisionFilter: Category.FULL_MASK,
         sensorFilter: 0,
         isCircle: false,
         active: false,
