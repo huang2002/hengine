@@ -54,8 +54,10 @@ export class Engine implements Required<EngineOptions> {
     }
 
     enter(scene: Scene | null) {
-        if (this.currentScene) {
-            this.currentScene.emit('exit');
+        const { currentScene } = this;
+        if (currentScene) {
+            currentScene.active = false;
+            currentScene.emit('exit');
         }
         this.currentScene = scene;
         if (scene) {
@@ -66,6 +68,7 @@ export class Engine implements Required<EngineOptions> {
             if (!timer.isRunning) {
                 timer.start();
             }
+            scene.active = true;
             scene.emit('enter');
         }
     }

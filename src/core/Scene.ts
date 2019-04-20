@@ -62,6 +62,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
 
     }
 
+    active = false;
     delay!: number;
     timeScale!: number;
     background!: RenderingStyle | null;
@@ -92,6 +93,9 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     }
 
     private _onPointerClick(position: Vector, id: number, event: Event) {
+        if (!this.active) {
+            return;
+        }
         const { pointerChecker } = this;
         if (!pointerChecker) {
             return;
