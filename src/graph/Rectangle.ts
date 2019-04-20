@@ -75,16 +75,16 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
             dy1 = dx0 * sin + dy0 * cos,
             dx2 = dx0 * cos - -dy0 * sin,
             dy2 = dx0 * sin + -dy0 * cos,
-            closet = Vertices.findClosest(target, Vertices.fromArray([
+            closest = Vertices.findClosest(target, Vertices.fromArray([
                 x + dx1, y + dy1,
                 x + dx2, y + dy2,
                 x - dx1, y - dy1,
                 x - dx2, y - dy2
             ]));
         if (radius > 0) {
-            closet.grow(radius);
+            closest.grow(radius);
         }
-        return closet;
+        return closest;
     }
 
     project(direction: Vector) {
