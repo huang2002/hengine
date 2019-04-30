@@ -22,7 +22,6 @@ export type ConstraintOptions = Partial<{
 export class Constraint implements Required<ConstraintOptions>, Renderable {
 
     static defaults: ConstraintOptions = {
-        minLength: 0,
         strength: 1,
     };
 
