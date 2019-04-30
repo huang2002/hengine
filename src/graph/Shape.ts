@@ -41,8 +41,8 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
     constructor(options: Readonly<ShapeOptions> = Utils.Const.EMPTY_OBJECT) {
         super(_assign({}, Shape.defaults, options));
 
-        this.style = _assign({}, Shape.defaultStyle, options.style);
-        if (!options.attachments) {
+        this.style = _assign({}, Shape.defaultStyle, this.style);
+        if (!this.attachments) {
             this.attachments = [];
         }
 

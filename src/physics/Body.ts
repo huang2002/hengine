@@ -43,6 +43,7 @@ export type BodyOptions = Partial<{
     stiffness: number;
     elasticity: number;
     roughness: number;
+    airFriction: number;
     scaleX: number;
     scaleY: number;
     rotation: number;
@@ -72,11 +73,12 @@ export abstract class Body extends EventEmitter<BodyEvents>
         interactive: false,
         maxSpeed: 100,
         maxAngularSpeed: 0,
-        gravity: Vector.of(0, 5),
+        gravity: Vector.of(0, 10),
         density: .01,
-        stiffness: .9,
+        stiffness: 1,
         elasticity: .5,
-        roughness: .6,
+        roughness: .1,
+        airFriction: 0,
         fixRotation: true,
         radius: 0,
     };
@@ -86,24 +88,28 @@ export abstract class Body extends EventEmitter<BodyEvents>
 
         _assign(this, Body.defaults, options);
 
-        if (!options.position) {
+        if (!this.position) {
             this.position = new Vector();
         }
-        if (!options.velocity) {
+        if (!this.velocity) {
             this.velocity = new Vector();
         }
-        if (!options.acceleration) {
+        if (!this.acceleration) {
             this.acceleration = new Vector();
         }
 
-        if (options.category) {
-            this.tag = Category.tagFor(options.category) || '';
-        } else if (options.tag) {
-            this.category = Category.for(options.tag);
+        if (this.category) {
+            this.tag = Category.tagFor(this.category) || '';
+        } else if (this.tag) {
+            this.category = Category.for(this.tag);
         }
 
-        if (options.scaleX !== _undefined || options.scaleY !== _undefined) {
-            this.scale(this.scaleX, this.scaleY);
+        const { scaleX, scaleY, rotation } = this;
+        if (scaleX !== _undefined || scaleY !== _undefined) {
+            this.scale(scaleX, scaleY);
+        }
+        if (rotation) {
+            this.rotate(rotation);
         }
 
     }
@@ -133,6 +139,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
     stiffness!: number;
     elasticity!: number;
     roughness!: number;
+    airFriction!: number;
     fixRotation!: boolean;
     radius!: number;
 
@@ -230,18 +237,31 @@ export abstract class Body extends EventEmitter<BodyEvents>
         return this;
     }
 
+    move(deltaX: number, deltaY: number) {
+        this.position.plus(deltaX, deltaY);
+        this.bounds.move(deltaX, deltaY);
+    }
+
+    moveVector(vector: VectorLike, scale?: number) {
+        this.position.plusVector(vector, scale);
+        this.bounds.moveVector(vector, scale);
+    }
+
     update(timeScale: number) {
         this.emit('willUpdate', timeScale);
         if (this.active) {
-            const { velocity, maxSpeed, angularSpeed, maxAngularSpeed } = this;
+            const { velocity, maxSpeed, maxAngularSpeed } = this,
+                airSpeedScale = 1 - this.airFriction,
+                angularSpeed = this.angularSpeed *= airSpeedScale;
             velocity.plusVector(this.acceleration, timeScale)
-                .plusVector(this.gravity, timeScale);
+                .plusVector(this.gravity, timeScale)
+                .scale(airSpeedScale);
             const speed = velocity.getModulus();
             if (speed > maxSpeed) {
                 velocity.scale(maxSpeed / speed);
             }
             this.position.plusVector(velocity, timeScale);
-            this.bounds.moveVector(velocity);
+            this.bounds.moveVector(velocity, timeScale);
             if (angularSpeed > maxAngularSpeed) {
                 (this.rotation as number) += (this.angularSpeed = maxAngularSpeed);
             } else {

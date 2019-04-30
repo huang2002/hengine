@@ -105,9 +105,14 @@ export class Vector {
         return this;
     }
 
-    plusVector(vector: VectorLike, scale = 1) {
-        this.x += vector.x;
-        this.y += vector.y;
+    plusVector(vector: VectorLike, scale?: number) {
+        if (scale) {
+            this.x += vector.x * scale;
+            this.y += vector.y * scale;
+        } else {
+            this.x += vector.x;
+            this.y += vector.y;
+        }
         return this;
     }
 
@@ -117,9 +122,14 @@ export class Vector {
         return this;
     }
 
-    minusVector(vector: VectorLike, scale = 1) {
-        this.x -= vector.x;
-        this.y -= vector.y;
+    minusVector(vector: VectorLike, scale?: number) {
+        if (scale) {
+            this.x -= vector.x * scale;
+            this.y -= vector.y * scale;
+        } else {
+            this.x -= vector.x;
+            this.y -= vector.y;
+        }
         return this;
     }
 

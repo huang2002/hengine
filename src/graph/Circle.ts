@@ -26,8 +26,8 @@ export class Circle extends Shape implements Required<CircleOptions>, Renderable
             sin = -_sin(rotation),
             a = radius * this.scaleX,
             b = radius * this.scaleY,
-            halfWidth = _abs(a * cos - b * sin),
-            halfHeight = _abs(a * sin + b * cos);
+            halfWidth = _sqrt(Utils.quadraticSum(a * cos, b * sin)),
+            halfHeight = _sqrt(Utils.quadraticSum(b * cos, a * sin));
         bounds.left = x - halfWidth;
         bounds.right = x + halfWidth;
         bounds.top = y - halfHeight;
@@ -45,12 +45,7 @@ export class Circle extends Shape implements Required<CircleOptions>, Renderable
             angle = rotation - direction.getAngle(),
             cos = _cos(angle),
             sin = _sin(angle),
-            halfLength = radius * _sqrt(
-                Utils.quadraticSum(
-                    cos * scaleX - sin * scaleY,
-                    sin * scaleX + cos * scaleY
-                )
-            );
+            halfLength = radius * _sqrt(Utils.quadraticSum(cos * scaleX, sin * scaleY));
         return {
             min: positionProjection - halfLength,
             max: positionProjection + halfLength

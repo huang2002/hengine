@@ -1,4 +1,4 @@
-import { _assign } from "../common/references";
+import { _assign, _null } from "../common/references";
 import { Renderer } from "../renderer/Renderer";
 import { Paragraph } from "../graph/Paragraph";
 import { Utils } from "../common/Utils";
@@ -13,7 +13,7 @@ export type InspectorCallback = Utils.Callback<void, Engine, string>;
 export type InspectorOptions = Partial<{
     paragraph: Paragraph;
     callbacks: InspectorCallback[];
-    boundsStroke: RenderingStyle;
+    boundsStroke: RenderingStyle | null;
     boundsWidth: number;
 }>;
 
@@ -27,14 +27,14 @@ export class Inspector implements Required<InspectorOptions> {
             engine => `Attachments: ${engine.currentScene ? engine.currentScene.attachments.length : 0}`,
             engine => `Pointer Position: ${engine.pointer.position}`,
         ],
-        boundsStroke: 'rgba(0,255,0,0.6)',
+        boundsStroke: _null,
         boundsWidth: 1,
     };
 
     constructor(options: InspectorOptions = Utils.Const.EMPTY_OBJECT) {
         _assign(this, Inspector.defaults, options);
 
-        if (!options.paragraph) {
+        if (!this.paragraph) {
             this.paragraph = new Paragraph({
                 position: Vector.of(-230, -150),
                 lineHeight: 15,
@@ -52,7 +52,7 @@ export class Inspector implements Required<InspectorOptions> {
 
     readonly paragraph!: Paragraph;
     callbacks!: InspectorCallback[];
-    boundsStroke!: RenderingStyle;
+    boundsStroke!: RenderingStyle | null;
     boundsWidth!: number;
     private _boundaries?: Bounds[] | null;
 

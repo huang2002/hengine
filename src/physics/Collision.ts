@@ -25,7 +25,6 @@ export const Collision: CollisionObject = {
             const body1 = bodies[i],
                 { category: category1,
                     velocity: v1,
-                    position: p1,
                     active: active1,
                     sensorFilter: sensorFilter1,
                     elasticity: elasticity1,
@@ -38,53 +37,59 @@ export const Collision: CollisionObject = {
                     continue;
                 }
 
-                const separatingVector = checker(body1, body2);
-                if (!separatingVector) {
+                const overlapVector = checker(body1, body2);
+                if (!overlapVector) {
                     continue;
                 }
 
-                body1.emit('collision', body2, separatingVector);
-                body2.emit('collision', body1, separatingVector);
+                body1.emit('collision', body2, overlapVector.clone().reverse());
+                body2.emit('collision', body1, overlapVector);
 
                 if (category1 & body2.sensorFilter || sensorFilter1 & body2.category) {
                     continue;
                 }
 
-                const { velocity: v2, position: p2 } = body2,
+                const { velocity: v2, stiffness: stiffness2 } = body2,
                     elasticity = _min(elasticity1, body2.elasticity),
                     roughness = _min(roughness1, body2.roughness),
-                    edgeVector = separatingVector.clone().turn();
+                    edgeVector = overlapVector.clone().turn();
                 if (active1) {
                     if (body2.active) {
-                        Vector.distribute(separatingVector, p1, p2, -stiffness1, body2.stiffness);
+                        const stiffnessSum = stiffness1 + stiffness2;
+                        body1.moveVector(overlapVector, -stiffness1 / stiffnessSum);
+                        body2.moveVector(overlapVector, stiffness2 / stiffnessSum);
+                        const relativeVelocity = Vector.minus(v2, v1);
                         if (elasticity) {
-                            Vector.distribute(separatingVector, v1, v2, -elasticity, elasticity);
+                            const bounceVelocity =
+                                Vector.projectVector(relativeVelocity, overlapVector).scale(elasticity);
+                            v1.plusVector(bounceVelocity);
+                            v2.minusVector(bounceVelocity);
                         }
                         if (roughness) {
-                            const relativeVelocity = Vector.minus(v2, v1),
-                                relativeEdgeVelocity = Vector.projectVector(relativeVelocity, edgeVector)
-                            v1.minusVector(relativeEdgeVelocity, roughness);
-                            v2.minusVector(relativeEdgeVelocity, roughness);
+                            const relativeEdgeVelocity =
+                                Vector.projectVector(relativeVelocity, edgeVector).scale(elasticity);
+                            v1.plusVector(relativeEdgeVelocity);
+                            v2.minusVector(relativeEdgeVelocity);
                         }
                         // TODO: solve the rotations of body1 & body2 here
                     } else {
-                        p1.minusVector(separatingVector, (stiffness1 + body2.stiffness) / 2);
+                        body1.moveVector(overlapVector, (stiffness1 + stiffness2) / 2);
                         if (elasticity) {
-                            v1.minusVector(separatingVector, elasticity);
+                            v1.minusVector(Vector.projectVector(v1, overlapVector), elasticity);
                         }
                         if (roughness) {
-                            v1.minusVector(Vector.projectVector(v1, separatingVector), roughness);
+                            v1.minusVector(Vector.projectVector(v1, edgeVector), roughness);
                         }
                         // TODO: solve the rotation of body1 here
                     }
                 } else {
                     if (body2.active) {
-                        p2.plusVector(separatingVector, (stiffness1 + body2.stiffness) / 2);
+                        body2.moveVector(overlapVector, (stiffness1 + stiffness2) / 2);
                         if (elasticity) {
-                            v2.plusVector(separatingVector, elasticity);
+                            v2.minusVector(Vector.projectVector(v2, overlapVector), elasticity);
                         }
                         if (roughness) {
-                            v2.plusVector(Vector.projectVector(v2, separatingVector), roughness);
+                            v2.minusVector(Vector.projectVector(v2, edgeVector), roughness);
                         }
                         // TODO: solve the rotation of body2 here
                     }
@@ -102,28 +107,36 @@ export const Collision: CollisionObject = {
             let delta = bounds1.right - bounds2.left,
                 min = delta,
                 x = delta, y = 0;
+
             if (delta < 0) {
                 return _null;
             }
-            if ((delta = bounds1.left - bounds2.right) < 0) {
+
+            delta = bounds1.left - bounds2.right;
+            if (delta > 0) {
                 return _null;
             } else if (-delta < min) {
                 min = -delta;
                 x = delta;
             }
             x = 0;
-            if ((delta = bounds1.bottom - bounds2.top) < 0) {
+
+            delta = bounds1.bottom - bounds2.top;
+            if (delta < 0) {
                 return _null;
             } else if (delta < min) {
                 min = delta;
                 y = delta;
             }
-            if ((delta = bounds1.top - bounds2.bottom) < 0) {
+
+            delta = bounds1.top - bounds2.bottom;
+            if (delta > 0) {
                 return _null;
             } else if (-delta < min) {
                 min = -delta;
                 y = delta;
             }
+
             return Vector.of(x, y);
         },
 
@@ -152,10 +165,8 @@ export const Collision: CollisionObject = {
                 if (projection1.min > projection2.max || projection1.max < projection2.min) {
                     return _null;
                 }
-                const delta1 = projection1.max - projection2.min,
-                    delta2 = projection1.min - projection2.max,
-                    overlap1 = _abs(delta1),
-                    overlap2 = _abs(delta2);
+                const overlap1 = _abs(projection1.max - projection2.min),
+                    overlap2 = _abs(projection1.min - projection2.max);
                 if (overlap1 < overlap2) {
                     if (overlap1 < minOverlap) {
                         minOverlap = overlap1;
@@ -169,14 +180,14 @@ export const Collision: CollisionObject = {
                 }
             }
 
-            return minDirection && minDirection.clone().scale(minOverlap);
+            return minDirection && minDirection.clone().scale(-minOverlap);
 
         },
 
         Distance(body1, body2) {
             const offset = Vector.minus(body2.position, body1.position),
                 delta = offset.getModulus() - body1.radius - body2.radius;
-            return delta < 0 ? _null : offset.setModulus(delta);
+            return delta < 0 ? offset.setModulus(-delta) : _null;
         },
 
         Smart(body1, body2) {

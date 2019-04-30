@@ -29,11 +29,11 @@ export class Sprite implements Required<SpriteOptions>, Renderable {
     constructor(options: Readonly<SpriteOptions> = Utils.Const.EMPTY_OBJECT) {
         _assign(this, options);
 
-        if (!options.position) {
+        if (!this.position) {
             this.position = new Vector();
         }
 
-        this.style = _assign({}, Sprite.defaultStyle, options.style);
+        this.style = _assign({}, Sprite.defaultStyle, this.style);
 
     }
 

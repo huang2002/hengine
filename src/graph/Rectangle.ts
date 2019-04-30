@@ -22,6 +22,15 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
     constructor(options: Readonly<RectangleOptions> = Utils.Const.EMPTY_OBJECT) {
         super(_assign({}, Rectangle.defaults, options));
         this.updateBounds();
+
+        const { rotation } = this,
+            cos = _cos(rotation),
+            sin = _sin(rotation);
+        (this.normals as Vector[]) = [
+            Vector.of(cos, sin),
+            Vector.of(-sin, cos)
+        ];
+
     }
 
     width!: number;
@@ -31,6 +40,22 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
     protected _scale(scaleX: number, scaleY: number, origin?: VectorLike) {
         this.width *= scaleX;
         this.height *= scaleY;
+        const { position: { x: x0, y: y0 }, bounds } = this,
+            x = origin ? origin.x + (x0 - origin.x) * scaleX : x0,
+            y = origin ? origin.y + (y0 - origin.y) * scaleY : y0,
+            dx = (bounds.right - x) * scaleX,
+            dy = (bounds.bottom - y) * scaleY;
+        bounds.left = x - dx;
+        bounds.right = x + dx;
+        bounds.top = y - dy;
+        bounds.bottom = y + dy;
+    }
+
+    protected _rotate(rotation: number, origin?: VectorLike) {
+        const { normals } = this;
+        normals[0].rotate(rotation);
+        normals[1].rotate(rotation);
+        this.updateBounds();
     }
 
     updateBounds() {
@@ -88,30 +113,21 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
     }
 
     project(direction: Vector) {
-        const { rotation, radius } = this;
-        let { width, height } = this;
+        const { radius } = this,
+            angle = this.rotation - direction.getAngle(),
+            cos = _cos(angle),
+            sin = _sin(angle);
+        let x0 = this.width / 2,
+            y0 = this.height / 2;
         if (radius > 0) {
-            width -= radius;
-            height -= radius;
+            x0 -= radius;
+            y0 -= radius;
         }
-        const positionProjection = Vector.project(this.position, direction),
-            cos = _cos(rotation),
-            sin = _sin(rotation);
-        let halfLength = _sqrt(
-            _max(
-                Utils.quadraticSum(
-                    cos * width - sin * height,
-                    sin * width + cos * height
-                ),
-                Utils.quadraticSum(
-                    cos * width - sin * -height,
-                    sin * width + cos * -height
-                )
-            )
-        );
+        let halfLength = _max(_abs(x0 * cos - y0 * sin), _abs(x0 * cos + y0 * sin));
         if (radius > 0) {
             halfLength += radius;
         }
+        const positionProjection = Vector.project(this.position, direction);
         return {
             min: positionProjection - halfLength,
             max: positionProjection + halfLength

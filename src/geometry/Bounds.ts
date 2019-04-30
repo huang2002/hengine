@@ -22,11 +22,18 @@ export class Bounds {
         this.bottom += deltaY;
     }
 
-    moveVector(vector: VectorLike) {
-        this.left += vector.x;
-        this.right += vector.x;
-        this.top += vector.y;
-        this.bottom += vector.y;
+    moveVector(vector: VectorLike, scale?: number) {
+        if (scale) {
+            this.left += vector.x * scale;
+            this.right += vector.x * scale;
+            this.top += vector.y * scale;
+            this.bottom += vector.y * scale;
+        } else {
+            this.left += vector.x;
+            this.right += vector.x;
+            this.top += vector.y;
+            this.bottom += vector.y;
+        }
     }
 
     overlaps(bounds: Bounds) {

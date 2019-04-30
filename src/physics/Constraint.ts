@@ -22,10 +22,8 @@ export type ConstraintOptions = Partial<{
 export class Constraint implements Required<ConstraintOptions>, Renderable {
 
     static defaults: ConstraintOptions = {
-        originOffset: new Vector(),
-        targetOffset: new Vector(),
         minLength: 0,
-        strength: .8,
+        strength: 1,
     };
 
     static defaultStyle: ConstraintStyle = _assign(
@@ -36,7 +34,14 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
 
     constructor(options: ConstraintOptions = Utils.Const.EMPTY_OBJECT) {
         _assign(this, Constraint.defaults, options);
-        this.style = _assign({}, Constraint.defaultStyle, options.style);
+        this.style = _assign({}, Constraint.defaultStyle, this.style);
+
+        if (!this.originOffset) {
+            this.originOffset = new Vector();
+        }
+        if (!this.targetOffset) {
+            this.targetOffset = new Vector();
+        }
 
         if (this.maxLength === _undefined) {
             const { origin, target } = options;
@@ -46,6 +51,9 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
                     target.position
                 );
             }
+        }
+        if (this.minLength === _undefined) {
+            this.minLength = this.maxLength;
         }
 
     }
@@ -57,7 +65,7 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
     minLength!: number;
     maxLength!: number;
     strength!: number;
-    style: ConstraintStyle;
+    style!: ConstraintStyle;
 
     set length(length: number) {
         this.minLength = this.maxLength = length;
@@ -67,32 +75,37 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
         const { origin, target, minLength, maxLength } = this,
             { position: targetPosition } = target,
             originPosition = (origin as Body).position || origin,
-            offsetVector = Vector.minus(originPosition, targetPosition)
-                .plusVector(this.originOffset)
-                .minusVector(this.targetOffset),
+            offsetVector = Vector.minus(targetPosition, originPosition)
+                .minusVector(this.originOffset)
+                .plusVector(this.targetOffset),
             offset = offsetVector.getModulus(),
-            delta = offset > maxLength ? maxLength - offset :
-                offset < minLength ? minLength - offset : 0;
+            delta = offset > maxLength ? offset - maxLength :
+                offset < minLength ? offset - minLength : 0,
+            offsetScale = this.strength * timeScale;
         if (!delta) {
             return;
         }
-        offsetVector.setModulus(delta * this.strength * timeScale);
+        offsetVector.setModulus(delta);
         const originIsActive = originPosition !== origin && (origin as Body).active;
         if (originIsActive) {
             if (target.active) {
+                (origin as Body).moveVector(offsetVector);
+                target.move(-offsetVector.x, -offsetVector.y);
                 Vector.distribute(
-                    offsetVector,
+                    offsetVector.scale(offsetScale),
                     (origin as Body).velocity, target.velocity,
-                    -target.mass, (origin as Body).mass
+                    target.mass, -(origin as Body).mass
                 );
                 // TODO: solve the rotations of origin & target here
             } else {
-                (origin as Body).velocity.minusVector(offsetVector);
+                (origin as Body).moveVector(offsetVector);
+                (origin as Body).velocity.plusVector(offsetVector, offsetScale);
                 // TODO: solve the rotation of origin here
             }
         } else {
             if (target.active) {
-                target.velocity.plusVector(offsetVector);
+                target.move(-offsetVector.x, -offsetVector.y);
+                target.velocity.minusVector(offsetVector, offsetScale);
                 // TODO: solve the rotation of target here
             }
         }

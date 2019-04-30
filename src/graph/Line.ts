@@ -18,12 +18,44 @@ export class Line extends Shape implements Required<LineOptions>, Renderable {
 
     constructor(options: Readonly<LineOptions> = Utils.Const.EMPTY_OBJECT) {
         super(_assign({}, Line.defaults, options));
-        this.updateBounds();
+        if (!this.start) {
+            this.start = new Vector();
+        }
+        if (!this.end) {
+            this.end = new Vector();
+        }
+        this.updateVertices();
     }
 
-    start!: Vector;
-    end!: Vector;
+    readonly start!: Vector;
+    readonly end!: Vector;
     noWidth!: boolean;
+
+    protected _scale(scaleX: number, scaleY: number, origin?: VectorLike) {
+        this.start.scale(scaleX, scaleY, origin);
+        this.end.scale(scaleX, scaleY, origin);
+        this.updateVertices();
+    }
+
+    protected _rotate(rotation: number, origin?: VectorLike) {
+        this.start.rotate(rotation, origin);
+        this.end.rotate(rotation, origin);
+        this.updateVertices();
+    }
+
+    updateVertices(start?: Vector, end?: Vector) {
+        if (start) {
+            (this.start as Vector) = start;
+        }
+        if (end) {
+            (this.end as Vector) = end;
+        }
+        const deltaVector = Vector.minus(this.end, this.start);
+        (this.normals as Vector[]) = [
+            deltaVector,
+            Vector.of(-deltaVector.y, deltaVector.x)
+        ];
+    }
 
     updateBounds() {
         const { start: { x: x1, y: y1 }, end: { x: x2, y: y2 }, bounds } = this;

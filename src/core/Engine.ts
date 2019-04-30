@@ -19,20 +19,20 @@ export type EngineOptions = Partial<{
 export class Engine implements Required<EngineOptions> {
 
     static defaults: EngineOptions = {
-        baseTime: 100,
+        baseTime: 25,
         maxDelay: 2000,
     };
 
     constructor(options: Readonly<EngineOptions> = Utils.Const.EMPTY_OBJECT) {
         _assign(this, Engine.defaults, options);
 
-        if (!options.timer) {
+        if (!this.timer) {
             this.timer = new Timer();
         }
-        if (!options.renderer) {
+        if (!this.renderer) {
             this.renderer = new Renderer();
         }
-        if (!options.pointer) {
+        if (!this.pointer) {
             this.pointer = new Pointer();
         }
 

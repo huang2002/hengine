@@ -22,7 +22,7 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
     constructor(options: Readonly<PolygonOptions> = Utils.Const.EMPTY_OBJECT) {
         super(_assign({}, Polygon.defaults, options));
 
-        if (options.vertices) {
+        if (this.vertices) {
             this.updateVertices();
         } else {
             this.vertices = [];

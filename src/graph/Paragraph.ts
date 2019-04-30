@@ -28,11 +28,11 @@ export class Paragraph implements Required<ParagraphOptions>, Renderable {
     constructor(options: ParagraphOptions = Utils.Const.EMPTY_OBJECT) {
         _assign(this, Paragraph.defaults, options);
 
-        if (!options.position) {
+        if (!this.position) {
             this.position = new Vector();
         }
 
-        this.style = _assign({}, Paragraph.defaultStyle, options.style);
+        this.style = _assign({}, Paragraph.defaultStyle, this.style);
 
     }
 

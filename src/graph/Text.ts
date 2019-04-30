@@ -40,11 +40,11 @@ export class Text implements Required<TextOptions>, Renderable {
     constructor(options: TextOptions = Utils.Const.EMPTY_OBJECT) {
         _assign(this, Text.defaults, options);
 
-        if (!options.position) {
+        if (!this.position) {
             this.position = new Vector();
         }
 
-        this.style = _assign({}, Text.defaultStyle, options.style);
+        this.style = _assign({}, Text.defaultStyle, this.style);
 
     }
 

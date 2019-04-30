@@ -53,10 +53,10 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
 
         _assign(this, Scene.defaults, options);
 
-        if (!options.objects) {
+        if (!this.objects) {
             this.objects = [];
         }
-        if (!options.attachments) {
+        if (!this.attachments) {
             this.attachments = [];
         }
 

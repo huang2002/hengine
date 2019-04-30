@@ -54,7 +54,7 @@ export class Renderer implements Required<RendererOptions>{
             this.parent.appendChild(canvas);
         }
 
-        this.context = canvas.getContext('2d', options.settings)!;
+        this.context = canvas.getContext('2d', this.settings)!;
 
         const { resizeListener } = this;
         this.resizeEvents.forEach(event => {
