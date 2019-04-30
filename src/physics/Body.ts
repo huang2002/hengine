@@ -75,7 +75,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
         interactive: false,
         draggable: false,
         maxSpeed: 100,
-        maxAngularSpeed: 0,
+        maxAngularSpeed: 100,
         gravity: Vector.of(0, 10),
         density: .01,
         stiffness: 1,
