@@ -8,9 +8,9 @@ import { StrokeStyle, Style, CommonStyle } from "../graph/Style";
 export type ConstraintStyle = CommonStyle & StrokeStyle;
 
 export type ConstraintOptions = Partial<{
-    origin: Vector | Body;
+    origin: Vector | Body | null;
     originOffset: Vector;
-    target: Body;
+    target: Body | null;
     targetOffset: Vector;
     minLength: number;
     maxLength: number;
@@ -22,6 +22,8 @@ export type ConstraintOptions = Partial<{
 export class Constraint implements Required<ConstraintOptions>, Renderable {
 
     static defaults: ConstraintOptions = {
+        origin: _null,
+        target: _null,
         strength: 1,
     };
 
@@ -54,9 +56,9 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
 
     }
 
-    origin!: Vector | Body;
+    origin!: Vector | Body | null;
     originOffset!: Vector;
-    target!: Body;
+    target!: Body | null;
     targetOffset!: Vector;
     minLength!: number;
     maxLength!: number;
@@ -68,7 +70,11 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
     }
 
     update(timeScale: number) {
-        const { origin, target, minLength, maxLength } = this,
+        const { origin, target } = this;
+        if (!target || !origin) {
+            return;
+        }
+        const { minLength, maxLength } = this,
             { position: targetPosition } = target,
             originPosition = (origin as Body).position || origin,
             offsetVector = Vector.minus(targetPosition, originPosition)
@@ -108,11 +114,12 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
     }
 
     render(renderer: Renderer) {
-        const { style } = this;
-        if (!style.strokeStyle) {
+        const { style, origin, target } = this;
+        if (!style.strokeStyle || !origin || !target) {
             return;
         }
-        const { origin, originOffset, target: { position: targetPosition }, targetOffset } = this,
+        const { originOffset, targetOffset } = this,
+            { position: targetPosition } = target,
             originPosition = (origin as Body).position || origin,
             { context } = renderer;
         Style.Common.apply(renderer, style);
