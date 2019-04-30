@@ -44,12 +44,9 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
 
         if (this.maxLength === _undefined) {
             const { origin, target } = options;
-            if (origin && target) {
-                this.maxLength = Vector.distance(
-                    (origin as Body).position || origin,
-                    target.position
-                );
-            }
+            this.maxLength = origin && target ?
+                Vector.distance((origin as Body).position || origin, target.position) :
+                0;
         }
         if (this.minLength === _undefined) {
             this.minLength = this.maxLength;
