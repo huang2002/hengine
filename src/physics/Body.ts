@@ -31,6 +31,7 @@ export type BodyOptions = Partial<{
     isCircle: boolean;
     active: boolean;
     interactive: boolean;
+    draggable: boolean;
     position: Vector;
     acceleration: Vector;
     velocity: Vector;
@@ -56,7 +57,8 @@ export interface BodyEvents {
     didUpdate: number;
     collision: [Body, CollisionInfo];
     click: PointerEventParameters;
-    // TODO: add drag events
+    dragStart: PointerEventParameters;
+    dragEnd: PointerEventParameters | [];
 }
 
 export abstract class Body extends EventEmitter<BodyEvents>
@@ -71,6 +73,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
         isCircle: false,
         active: false,
         interactive: false,
+        draggable: false,
         maxSpeed: 100,
         maxAngularSpeed: 0,
         gravity: Vector.of(0, 10),
@@ -112,6 +115,10 @@ export abstract class Body extends EventEmitter<BodyEvents>
             this.rotate(rotation);
         }
 
+        if (this.draggable) {
+            this.interactive = true;
+        }
+
     }
 
     readonly tag: CategoryTag = '';
@@ -126,6 +133,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
     readonly mass = 0;
     active!: boolean;
     interactive!: boolean;
+    draggable!: boolean;
     collisionFilter!: number;
     sensorFilter!: number;
     isCircle!: boolean;

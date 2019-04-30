@@ -1,5 +1,5 @@
 import { Renderable, Renderer } from "../renderer/Renderer";
-import { _assign, _null } from "../common/references";
+import { _assign, _null, _undefined } from "../common/references";
 import { EventEmitter } from "../common/EventEmitter";
 import { RenderingStyle } from "../graph/Style";
 import { Utils } from "../common/Utils";
@@ -7,6 +7,7 @@ import { Body } from "../physics/Body";
 import { Collision, CollisionChecker } from "../physics/Collision";
 import { Pointer } from "./Pointer";
 import { Vector } from "../geometry/Vector";
+import { Constraint } from "../physics/Constraint";
 
 // TODO: add drag events
 
@@ -23,6 +24,7 @@ export type SceneOptions = Partial<{
     attachments: SceneObject[];
     collisionChecker: CollisionChecker | null;
     pointerChecker: CollisionChecker | null;
+    pointerConstraint: Constraint | null;
 }>;
 
 export interface SceneEvents {
@@ -50,6 +52,12 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         super();
 
         this._onPointerClick = this._onPointerClick.bind(this);
+        this._onPointerStart = this._onPointerStart.bind(this);
+        this._onPointerEnd = this._onPointerEnd.bind(this);
+
+        this.pointerConstraint = options.pointerConstraint !== _undefined ?
+            options.pointerConstraint :
+            new Constraint();
 
         _assign(this, Scene.defaults, options);
 
@@ -69,8 +77,9 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     clean!: boolean;
     objects!: SceneObject[];
     attachments!: SceneObject[];
-    collisionChecker!: CollisionChecker;
-    pointerChecker!: CollisionChecker;
+    collisionChecker!: CollisionChecker | null;
+    pointerChecker!: CollisionChecker | null;
+    pointerConstraint!: Constraint | null;
     private _pointer!: Pointer | null;
 
     set fps(fps: number) {
@@ -81,11 +90,22 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     }
 
     set pointer(pointer: Pointer | null) {
-        if (this._pointer) {
-            this._pointer.off('click', this._onPointerClick);
+        const { pointerConstraint, _pointer } = this;
+        if (_pointer) {
+            _pointer.off('click', this._onPointerClick);
+            _pointer.off('start', this._onPointerStart);
+            _pointer.off('end', this._onPointerEnd);
+            if (!pointer && pointerConstraint && pointerConstraint.target) {
+                pointerConstraint.target.emit('dragEnd');
+            }
         }
         if (this._pointer = pointer) {
             pointer!.on('click', this._onPointerClick);
+            pointer!.on('start', this._onPointerStart);
+            pointer!.on('end', this._onPointerEnd);
+        }
+        if (pointerConstraint) {
+            pointerConstraint.origin = pointer && pointer.position;
         }
     }
     get pointer() {
@@ -100,15 +120,34 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         if (!pointerChecker) {
             return;
         }
-        const { pointer } = this,
-            interactiveBodies = this.objects.concat(this.attachments)
-                .filter(object => (object as Body).interactive) as Body[];
-        for (let i = interactiveBodies.length; i--;) {
-            const body = interactiveBodies[i];
-            if (pointerChecker(pointer!, body)) {
-                body.emit('click', position, id, event);
-                return;
-            }
+        const focus = this.getFocus();
+        if (focus) {
+            focus.emit('click', position, id, event);
+        }
+    }
+
+    private _onPointerStart(position: Vector, id: number, event: Event) {
+        const { pointerConstraint } = this;
+        if (!pointerConstraint) {
+            return;
+        }
+        if (pointerConstraint.target) {
+            pointerConstraint.target.emit('dragEnd', position, id, event);
+        }
+        const focus = this.getFocus(body => body.draggable);
+        if (focus) {
+            pointerConstraint.target = focus;
+            focus.emit('dragStart', position, id, event);
+        } else {
+            pointerConstraint.target = _null;
+        }
+    }
+
+    private _onPointerEnd(position: Vector, id: number, event: Event) {
+        const { pointerConstraint } = this;
+        if (pointerConstraint && pointerConstraint.target) {
+            pointerConstraint.target.emit('dragEnd', position, id, event);
+            pointerConstraint.target = _null;
         }
     }
 
@@ -126,24 +165,48 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         return this;
     }
 
-    attach(renderable: SceneObject) {
-        this.attachments.push(renderable);
+    attach(object: SceneObject) {
+        this.attachments.push(object);
         return this;
     }
 
-    detach(renderable: SceneObject) {
+    detach(object: SceneObject) {
         const { attachments } = this,
-            index = attachments.indexOf(renderable);
+            index = attachments.indexOf(object);
         if (~index) {
             Utils.removeIndex(attachments, index);
         }
         return this;
     }
 
+    getFocus(filterCallback?: Utils.Callback<void, Body, any>) {
+        const { pointerChecker } = this;
+        if (!pointerChecker) {
+            return;
+        }
+        const { _pointer } = this,
+            bodies = this.objects.concat(this.attachments)
+                .filter(object =>
+                    (object as Body).interactive &&
+                    (!filterCallback || filterCallback(object as Body))
+                ) as Body[];
+        for (let i = bodies.length; i--;) {
+            const body = bodies[i];
+            if (pointerChecker(_pointer!, body)) {
+                return body;
+            }
+        }
+        return _null;
+    }
+
     update(timeScale: number) {
         timeScale *= this.timeScale;
 
         this.emit('willUpdate', timeScale);
+
+        if (this.pointerConstraint) {
+            this.pointerConstraint.update(timeScale);
+        }
 
         const collidableBodies = new Array<Body>();
 
