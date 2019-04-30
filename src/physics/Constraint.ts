@@ -2,7 +2,6 @@ import { _assign, _undefined, _null } from "../common/references";
 import { Renderable, Renderer } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { Body } from "./Body";
-import { Utils } from "../common/Utils";
 import { StrokeStyle, Style, CommonStyle } from "../graph/Style";
 
 export type ConstraintStyle = CommonStyle & StrokeStyle;
@@ -33,7 +32,7 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
         Style.Stroke.defaults
     );
 
-    constructor(options: ConstraintOptions = Utils.Const.EMPTY_OBJECT) {
+    constructor(options?: ConstraintOptions) {
         _assign(this, Constraint.defaults, options);
         this.style = _assign({}, Constraint.defaultStyle, this.style);
 
@@ -45,7 +44,7 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
         }
 
         if (this.maxLength === _undefined) {
-            const { origin, target } = options;
+            const { origin, target } = this;
             this.maxLength = origin && target ?
                 Vector.distance((origin as Body).position || origin, target.position) :
                 0;

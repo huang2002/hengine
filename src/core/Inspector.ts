@@ -31,7 +31,7 @@ export class Inspector implements Required<InspectorOptions> {
         boundsWidth: 1,
     };
 
-    constructor(options: InspectorOptions = Utils.Const.EMPTY_OBJECT) {
+    constructor(options?: InspectorOptions) {
         _assign(this, Inspector.defaults, options);
 
         if (!this.paragraph) {

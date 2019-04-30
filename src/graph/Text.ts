@@ -37,7 +37,7 @@ export class Text implements Required<TextOptions>, Renderable {
         context.direction = textStyle.direction;
     }
 
-    constructor(options: TextOptions = Utils.Const.EMPTY_OBJECT) {
+    constructor(options?: TextOptions) {
         _assign(this, Text.defaults, options);
 
         if (!this.position) {
