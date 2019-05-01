@@ -15,7 +15,7 @@ export type ConstraintOptions = Partial<{
     maxLength: number;
     length: number;
     strength: number;
-    style: ConstraintStyle;
+    style: Partial<ConstraintStyle>;
 }>;
 
 export class Constraint implements Required<ConstraintOptions>, Renderable {
