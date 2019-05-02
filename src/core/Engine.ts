@@ -19,7 +19,7 @@ export type EngineOptions = Partial<{
 export class Engine implements Required<EngineOptions> {
 
     static defaults: EngineOptions = {
-        baseTime: 25,
+        baseTime: 100,
         maxDelay: 2000,
     };
 

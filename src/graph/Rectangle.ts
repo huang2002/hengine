@@ -1,6 +1,6 @@
 import { Renderable } from "../renderer/Renderer";
 import { Vector, VectorLike } from "../geometry/Vector";
-import { _abs, _assign, _cos, _sin, _max, _sqrt } from "../common/references";
+import { _abs, _assign, _cos, _sin, _max, _sqrt, _undefined } from "../common/references";
 import { Shape, ShapeOptions } from "./Shape";
 import { Utils } from "../common/Utils";
 import { Vertices } from "../geometry/Vertices";
@@ -31,6 +31,8 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
             Vector.of(-sin, cos)
         ];
 
+        this.updateSize();
+
     }
 
     width!: number;
@@ -58,6 +60,23 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
         this.updateBounds();
     }
 
+    updateSize(width: number, height: number): void;
+    updateSize(): void;
+    updateSize(width?: number, height?: number) {
+        if (width === _undefined) {
+            width = this.width;
+        } else {
+            this.width = width;
+        }
+        if (height === _undefined) {
+            height = this.height;
+        } else {
+            this.height = height;
+        }
+        this._setArea(width * height);
+        this.updateBounds();
+    }
+
     updateBounds() {
         const { bounds, rotation, radius, width, height, position: { x, y } } = this;
         let dx0 = width / 2,
@@ -79,10 +98,7 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
             x - dx2, y - dy2
         ]));
         if (radius > 0) {
-            bounds.left -= radius;
-            bounds.right += radius;
-            bounds.top -= radius;
-            bounds.bottom += radius;
+            bounds.grow(radius);
         }
     }
 

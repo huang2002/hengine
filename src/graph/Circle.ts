@@ -1,6 +1,6 @@
 import { Renderable } from "../renderer/Renderer";
 import { Vector, VectorLike } from "../geometry/Vector";
-import { _abs, _assign, _cos, _sin, _sqrt } from "../common/references";
+import { _abs, _assign, _cos, _sin, _sqrt, _PI, _undefined } from "../common/references";
 import { Shape, ShapeOptions } from "./Shape";
 import { Utils } from "../common/Utils";
 
@@ -14,11 +14,23 @@ export class Circle extends Shape implements Required<CircleOptions>, Renderable
 
     constructor(options: Readonly<CircleOptions> = Utils.Const.EMPTY_OBJECT) {
         super(_assign({}, Circle.defaults, options));
-        this.updateBounds();
+        if (this.radius) {
+            this.updateRadius();
+        }
     }
 
     readonly isCircle = true;
     radius!: number;
+
+    updateRadius(radius?: number) {
+        if (radius === _undefined) {
+            radius = this.radius;
+        } else {
+            this.radius = radius;
+        }
+        this._setArea(radius * radius * _PI);
+        this.updateBounds();
+    }
 
     updateBounds() {
         const { bounds, position: { x, y }, radius, rotation } = this,
@@ -34,6 +46,7 @@ export class Circle extends Shape implements Required<CircleOptions>, Renderable
         bounds.bottom = y + halfHeight;
     }
 
+    // TODO: fix this
     getClosest(target: VectorLike) {
         const { position } = this;
         return Vector.minus(target, position).setModulus(this.radius).plusVector(position);

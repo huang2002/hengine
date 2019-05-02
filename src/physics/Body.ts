@@ -74,13 +74,13 @@ export abstract class Body extends EventEmitter<BodyEvents>
         active: false,
         interactive: false,
         draggable: false,
-        maxSpeed: 100,
+        maxSpeed: 200,
         maxAngularSpeed: 100,
-        gravity: Vector.of(0, 10),
+        gravity: Vector.of(0, 5),
         density: .01,
         stiffness: 1,
-        elasticity: .5,
-        roughness: .1,
+        elasticity: .4,
+        roughness: .05,
         airFriction: 0,
         fixRotation: true,
         radius: 0,
@@ -150,6 +150,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
     airFriction!: number;
     fixRotation!: boolean;
     radius!: number;
+    impulse = new Vector();
 
     setDensity(density: number) {
         (this.density as number) = density;
@@ -165,6 +166,11 @@ export abstract class Body extends EventEmitter<BodyEvents>
         }
         (this.density as number) = mass / this.area;
         return this;
+    }
+
+    protected _setArea(area: number) {
+        (this.area as number) = area;
+        (this.mass as number) = this.density * area;
     }
 
     activate(active = true) {
@@ -248,15 +254,18 @@ export abstract class Body extends EventEmitter<BodyEvents>
     move(deltaX: number, deltaY: number) {
         this.position.plus(deltaX, deltaY);
         this.bounds.move(deltaX, deltaY);
+        return this;
     }
 
     moveVector(vector: VectorLike, scale?: number) {
         this.position.plusVector(vector, scale);
         this.bounds.moveVector(vector, scale);
+        return this;
     }
 
     update(timeScale: number) {
         this.emit('willUpdate', timeScale);
+        const { impulse, bounds, position } = this;
         if (this.active) {
             const { velocity, maxSpeed, maxAngularSpeed } = this,
                 airSpeedScale = 1 - this.airFriction,
@@ -268,8 +277,8 @@ export abstract class Body extends EventEmitter<BodyEvents>
             if (speed > maxSpeed) {
                 velocity.scale(maxSpeed / speed);
             }
-            this.position.plusVector(velocity, timeScale);
-            this.bounds.moveVector(velocity, timeScale);
+            position.plusVector(velocity, timeScale);
+            bounds.moveVector(velocity, timeScale);
             if (angularSpeed > maxAngularSpeed) {
                 (this.rotation as number) += (this.angularSpeed = maxAngularSpeed);
             } else {
@@ -279,8 +288,10 @@ export abstract class Body extends EventEmitter<BodyEvents>
                 (this.rotation as number) %= Utils.Const.DOUBLE_PI;
             }
         }
+        position.plusVector(impulse);
+        bounds.moveVector(impulse);
+        impulse.set(0, 0);
         this.emit('didUpdate', timeScale);
-        return this;
     }
 
 }

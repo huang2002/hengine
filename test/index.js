@@ -9,7 +9,7 @@ const renderer = new HE.Renderer({
 });
 
 const inspector = new HE.Inspector({
-    boundsStroke: 'rgba(0,255,0,.4)',
+    // boundsStroke: 'rgba(0,255,0,.4)',
 });
 
 const engine = new HE.Engine({ inspector, renderer });
@@ -91,23 +91,22 @@ const slope = new HE.Polygon({
     roughness: 0,
     clockwise: false,
     vertices: HE.Vertices.fromArray([
-        -5, -80,
+        -10, -80,
         -20, -80,
         -20, 75,
         60, 75,
     ]),
     style: {
         strokeStyle: '#060',
-        fillStyle: '#0f0'
+        fillStyle: '#0f0',
     },
 });
 mainScene.add(slope);
 
-HE.Body.defaults.gravity.y = 1;
-
 const createBall = (x, y, strokeStyle) => new HE.Circle({
     tag: 'ball',
     active: true,
+    draggable: true,
     position: Vector.of(x, y),
     radius: 18,
     style: {
@@ -116,32 +115,90 @@ const createBall = (x, y, strokeStyle) => new HE.Circle({
     },
 });
 
-const ball1 = createBall(-170, -200, '#f60');
-mainScene.add(ball1.on('didUpdate', () => {
-    ball1.style.strokeStyle = '#f60';
-}).on('collision', () => {
-    ball1.style.strokeStyle = '#f00';
-}).once('collision', (...args) => {
-    console.log('Ball collision:', ...args);
-}));
+const ball1 = createBall(-170, -150, '#f60');
+mainScene.add(
+    ball1.on('didUpdate', () => {
+        ball1.style.strokeStyle = '#0c0';
+    }).on('collision', () => {
+        ball1.style.strokeStyle = '#f00';
+    }).once('collision', (...args) => {
+        // console.log('Ball1 collision:', ...args);
+    })
+);
 
 const ball2 = createBall(-60, -150, '#c00');
 mainScene.add(ball2);
 
+const ball3 = createBall(-170, -200, '#f50');
+mainScene.add(ball3);
+
+const ball4 = createBall(-170, -250, '#f50');
+mainScene.add(ball4);
+
+mainScene.add(new HE.Constraint({
+    origin: ball3,
+    target: ball4,
+    minLength: 0,
+    style: {
+        strokeStyle: '#0f0'
+    },
+}));
+
+const box1 = new HE.Rectangle({
+    tag: 'box',
+    active: true,
+    draggable: true,
+    position: Vector.of(-50, -200),
+    width: 35,
+    height: 35,
+    density: 10,
+    style: {
+        fillStyle: '#960',
+        strokeStyle: '#603',
+    },
+});
+mainScene.add(box1);
+
+const box2 = new HE.Rectangle({
+    tag: 'box',
+    draggable: true,
+    position: Vector.of(70, -150),
+    width: 35,
+    height: 35,
+    style: {
+        fillStyle: '#960',
+        strokeStyle: '#630',
+    },
+});
+mainScene.add(box2);
+
+mainScene.add(new HE.Constraint({
+    origin: box2,
+    target: ball2,
+    minLength: 0,
+    style: {
+        strokeStyle: '#0f0'
+    },
+}));
+
 const cradle = new HE.Circle({
     tag: 'cradle',
     active: true,
-    position: Vector.of(250, 0),
-    radius: 20,
+    draggable: true,
+    position: Vector.of(160, 50),
+    radius: 22,
     style: {
-        fillStyle: '#f60',
+        fillStyle: '#f80',
     },
 });
 mainScene.add(cradle);
 
 const stick = new HE.Constraint({
-    origin: Vector.of(150, -100),
+    origin: Vector.of(160, -100),
     target: cradle,
+    style: {
+        strokeStyle: '#0f0',
+    },
 });
 mainScene.add(stick);
 

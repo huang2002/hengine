@@ -36,6 +36,13 @@ export class Bounds {
         }
     }
 
+    grow(delta: number) {
+        this.left -= delta;
+        this.right += delta;
+        this.top -= delta;
+        this.bottom += delta;
+    }
+
     overlaps(bounds: Bounds) {
         return !(
             bounds.right < this.left ||

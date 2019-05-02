@@ -79,9 +79,14 @@ export class Vector {
         return this;
     }
 
-    setVector(vector: VectorLike) {
-        this.x = vector.x;
-        this.y = vector.y;
+    setVector(vector: VectorLike, scale?: number) {
+        if (scale) {
+            this.x = vector.x * scale;
+            this.y = vector.y * scale;
+        } else {
+            this.x = vector.x;
+            this.y = vector.y;
+        }
         return this;
     }
 
@@ -189,11 +194,11 @@ export class Vector {
     turn(clockwise?: boolean) {
         const { x, y } = this;
         if (clockwise) {
-            this.x = -y;
-            this.y = x;
-        } else {
             this.x = y;
             this.y = -x;
+        } else {
+            this.x = -y;
+            this.y = x;
         }
         return this;
     }

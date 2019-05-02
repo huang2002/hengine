@@ -24,6 +24,7 @@ export interface PointerEvents {
     click: PointerEventParameters;
 }
 
+// TODO: improve multi-points handling
 export class Pointer extends EventEmitter<PointerEvents> implements Required<PointerOptions>, BodyLike {
 
     static defaults: PointerOptions = {
@@ -69,6 +70,7 @@ export class Pointer extends EventEmitter<PointerEvents> implements Required<Poi
     readonly isTouchMode!: boolean;
     readonly isCircle = true;
     readonly position = new Vector();
+    readonly velocity = new Vector();
     readonly bounds = new Bounds();
     readonly normals: [] = [];
     readonly active: boolean = true;
@@ -83,8 +85,10 @@ export class Pointer extends EventEmitter<PointerEvents> implements Required<Poi
     radius!: number;
 
     private _setPosition(rawPosition: VectorLike) {
-        const { bounds, radius, position } = this;
-        position.setVector(this.transform ? this.transform(rawPosition) : rawPosition);
+        const { bounds, radius, position } = this,
+            newPosition = this.transform ? this.transform(rawPosition) : rawPosition;
+        this.velocity.setVector(newPosition).minusVector(position);
+        position.setVector(newPosition);
         bounds.left = position.x - radius;
         bounds.right = position.x + radius;
         bounds.top = position.y - radius;
@@ -109,6 +113,9 @@ export class Pointer extends EventEmitter<PointerEvents> implements Required<Poi
     private _end(id: number, rawPosition: VectorLike, event: Event) {
         this._setPosition(rawPosition);
         (this.isHolding as boolean) = false;
+        if (this.holdOnly) {
+            this.velocity.set(0, 0);
+        }
         const { startTimeStamps } = this,
             startTimeStamp = startTimeStamps.get(id)!;
         startTimeStamps.delete(id);

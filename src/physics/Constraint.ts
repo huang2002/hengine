@@ -11,6 +11,7 @@ export type ConstraintOptions = Partial<{
     originOffset: Vector;
     target: Body | null;
     targetOffset: Vector;
+    force: boolean;
     minLength: number;
     maxLength: number;
     length: number;
@@ -23,7 +24,8 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
     static defaults: ConstraintOptions = {
         origin: _null,
         target: _null,
-        strength: 1,
+        strength: .9,
+        force: true,
     };
 
     static defaultStyle: ConstraintStyle = _assign(
@@ -62,6 +64,7 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
     minLength!: number;
     maxLength!: number;
     strength!: number;
+    force!: boolean;
     style!: ConstraintStyle;
 
     set length(length: number) {
@@ -73,7 +76,7 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
         if (!target || !origin) {
             return;
         }
-        const { minLength, maxLength } = this,
+        const { minLength, maxLength, strength } = this,
             { position: targetPosition } = target,
             originPosition = (origin as Body).position || origin,
             offsetVector = Vector.minus(targetPosition, originPosition)
@@ -81,8 +84,7 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
                 .plusVector(this.targetOffset),
             offset = offsetVector.getModulus(),
             delta = offset > maxLength ? offset - maxLength :
-                offset < minLength ? offset - minLength : 0,
-            offsetScale = this.strength * timeScale;
+                offset < minLength ? offset - minLength : 0;
         if (!delta) {
             return;
         }
@@ -90,23 +92,34 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
         const originIsActive = originPosition !== origin && (origin as Body).active;
         if (originIsActive) {
             if (target.active) {
-                (origin as Body).moveVector(offsetVector);
-                target.move(-offsetVector.x, -offsetVector.y);
+                const relativeVelocity = Vector.minus(target.velocity, (origin as Body).velocity),
+                    bounceVelocity = Vector.projectVector(relativeVelocity, offsetVector)
+                        .scale(strength / 2);
+                (origin as Body).impulse.plusVector(offsetVector);
+                target.impulse.plus(-offsetVector.x, -offsetVector.y);
+                (origin as Body).velocity.plusVector(bounceVelocity);
+                target.velocity.minusVector(bounceVelocity);
                 Vector.distribute(
-                    offsetVector.scale(offsetScale),
+                    offsetVector.scale(strength),
                     (origin as Body).velocity, target.velocity,
                     target.mass, -(origin as Body).mass
                 );
                 // TODO: solve the rotations of origin & target here
             } else {
-                (origin as Body).moveVector(offsetVector);
-                (origin as Body).velocity.plusVector(offsetVector, offsetScale);
+                (origin as Body).impulse.plusVector(offsetVector);
+                (origin as Body).velocity
+                    .minusVector(Vector.projectVector((origin as Body).velocity, offsetVector), strength);
+                // .minusVector(Vector.projectVector((origin as Body).velocity, offsetVector), strength)
+                // .plusVector(offsetVector, strength);
                 // TODO: solve the rotation of origin here
             }
         } else {
-            if (target.active) {
-                target.move(-offsetVector.x, -offsetVector.y);
-                target.velocity.minusVector(offsetVector, offsetScale);
+            if (target.active || this.force) {
+                target.impulse.plus(-offsetVector.x, -offsetVector.y);
+                target.velocity
+                    .minusVector(Vector.projectVector(target.velocity, offsetVector), strength);
+                // .minusVector(Vector.projectVector(target.velocity, offsetVector), strength)
+                // .minusVector(offsetVector, strength);
                 // TODO: solve the rotation of target here
             }
         }

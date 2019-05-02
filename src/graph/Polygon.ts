@@ -78,11 +78,10 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
             if (clockwise) {
                 totalArea = -totalArea;
             }
-            (this.area as number) = totalArea;
             (this.normals as Vector[]) = normals;
-            (this.mass as number) = totalArea * this.density;
+            this._setArea(totalArea);
         } else {
-            (this.area as number) = (this.mass as number) = 0;
+            this._setArea(0);
         }
         this.updateBounds();
         return this;

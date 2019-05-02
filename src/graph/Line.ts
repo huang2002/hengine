@@ -55,6 +55,8 @@ export class Line extends Shape implements Required<LineOptions>, Renderable {
             deltaVector,
             Vector.of(-deltaVector.y, deltaVector.x)
         ];
+        this._setArea(deltaVector.getModulus());
+        this.updateBounds();
     }
 
     updateBounds() {
@@ -73,6 +75,9 @@ export class Line extends Shape implements Required<LineOptions>, Renderable {
             bounds.top = y1;
             bounds.bottom = y2;
         }
+        if (!this.noWidth) {
+            bounds.grow(this.style.lineWidth / 2);
+        }
     }
 
     getClosest(target: VectorLike) {
@@ -80,14 +85,14 @@ export class Line extends Shape implements Required<LineOptions>, Renderable {
             result = Utils.quadraticSum(start.x - target.x, start.y - target.y) <
                 Utils.quadraticSum(end.x - target.x, end.y - target.y) ?
                 start : end;
-        return this.noWidth ? result : result.clone().grow(this.style.lineWidth);
+        return this.noWidth ? result : result.clone().grow(this.style.lineWidth / 2);
     }
 
     project(direction: Vector) {
         const { start, end } = this,
             startProjection = Vector.project(start, direction),
             endProjection = Vector.project(end, direction),
-            width = this.noWidth ? 0 : this.style.lineWidth;
+            width = this.noWidth ? 0 : this.style.lineWidth / 2;
         return startProjection < endProjection ?
             { min: startProjection - width, max: endProjection + width } :
             { min: endProjection - width, max: startProjection + width };

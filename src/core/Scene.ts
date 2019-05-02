@@ -36,6 +36,7 @@ export interface SceneEvents {
     exit: [];
 }
 
+// TODO: add `active` flag
 export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOptions> {
 
     static defaults: SceneOptions = {
@@ -137,6 +138,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         const focus = this.getFocus(body => body.draggable);
         if (focus) {
             pointerConstraint.target = focus;
+            pointerConstraint.targetOffset.setVector(position).minusVector(focus.position);
             focus.emit('dragStart', position, id, event);
         } else {
             pointerConstraint.target = _null;
@@ -204,8 +206,14 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
 
         this.emit('willUpdate', timeScale);
 
-        if (this.pointerConstraint) {
-            this.pointerConstraint.update(timeScale);
+        const { pointerConstraint } = this;
+
+        if (pointerConstraint && pointerConstraint.target && this._pointer) {
+            pointerConstraint.update(timeScale);
+            const { target } = pointerConstraint;
+            target.velocity.setVector(this._pointer.velocity);
+            target.moveVector(target.impulse);
+            target.impulse.set(0, 0);
         }
 
         const collidableBodies = new Array<Body>();
