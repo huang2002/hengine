@@ -19,7 +19,7 @@ export interface CollisionObject {
 
 export const Collision: CollisionObject = {
 
-    // TODO: fix bounce
+    // TODO: fix friction
     check(bodies, checker) {
         const bodiesCount = bodies.length;
         for (let i = 0; i < bodiesCount; i++) {
@@ -63,23 +63,25 @@ export const Collision: CollisionObject = {
                         body2.impulse.plusVector(overlapVector, stiffness);
                         const deltaMass = m1 - m2,
                             totalMass = m1 + m2,
-                            velocityScale = 1 - elasticity;
-                        v1.plusVector(_v1, deltaMass * velocityScale - 1)
-                            .plusVector(_v2, 2 * m2 * velocityScale)
+                            oneMinusElasticity = 1 - elasticity;
+                        v1.plusVector(_v1, deltaMass * oneMinusElasticity - 1)
+                            .plusVector(_v2, 2 * m2 * oneMinusElasticity)
                             .shrink(totalMass);
-                        v2.plusVector(_v2, -deltaMass * velocityScale - 1)
-                            .plusVector(_v1, 2 * m1 * velocityScale)
+                        v2.plusVector(_v2, -deltaMass * oneMinusElasticity - 1)
+                            .plusVector(_v1, 2 * m1 * oneMinusElasticity)
                             .shrink(totalMass);
                         const relativeVelocity = Vector.minus(_v2, _v1);
                         if (elasticity) {
-                            const bounceVector =
-                                Vector.projectVector(relativeVelocity, overlapVector).scale(elasticity / 2);
-                            v1.plusVector(bounceVector);
-                            v2.minusVector(bounceVector);
+                            Vector.distribute(
+                                relativeVelocity,
+                                v1, v2,
+                                m2, -m1,
+                                elasticity
+                            );
                         }
                         if (roughness) {
                             const relativeEdgeVelocity =
-                                Vector.projectVector(relativeVelocity, edgeVector).scale(roughness / 2);
+                                Vector.projectVector(relativeVelocity, edgeVector).scale(roughness);
                             v1.plusVector(relativeEdgeVelocity);
                             v2.minusVector(relativeEdgeVelocity);
                         }
