@@ -12,15 +12,15 @@ export type EngineOptions = Partial<{
     pointer: Pointer;
     inspector: Inspector | null;
     baseTime: number;
-    maxDelay: number;
+    maxTimeScale: number;
     currentScene: Scene | null;
 }>;
 
 export class Engine implements Required<EngineOptions> {
 
     static defaults: EngineOptions = {
-        baseTime: 100,
-        maxDelay: 2000,
+        baseTime: 50,
+        maxTimeScale: 2,
     };
 
     constructor(options: Readonly<EngineOptions> = Utils.Const.EMPTY_OBJECT) {
@@ -46,7 +46,7 @@ export class Engine implements Required<EngineOptions> {
     pointer!: Pointer;
     inspector: Inspector | null = _null;
     baseTime!: number;
-    maxDelay!: number;
+    maxTimeScale!: number;
     currentScene: Scene | null = _null;
 
     createScene(options?: SceneOptions) {
@@ -74,13 +74,14 @@ export class Engine implements Required<EngineOptions> {
     }
 
     tick(deltaTime: number) {
-        if (deltaTime > this.maxDelay) {
+        const timeScale = deltaTime / this.baseTime;
+        if (timeScale > this.maxTimeScale) {
             return;
         }
         const { currentScene, inspector, renderer } = this;
         if (currentScene) {
             this.timer.delay = currentScene.delay;
-            currentScene.update(deltaTime / this.baseTime);
+            currentScene.update(timeScale);
             currentScene.render(renderer);
         }
         if (inspector) {

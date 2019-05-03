@@ -146,10 +146,15 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     }
 
     private _onPointerEnd(position: Vector, id: number, event: Event) {
-        const { pointerConstraint } = this;
-        if (pointerConstraint && pointerConstraint.target) {
-            pointerConstraint.target.emit('dragEnd', position, id, event);
-            pointerConstraint.target = _null;
+        const { pointerConstraint } = this,
+            target = pointerConstraint && pointerConstraint.target;
+        if (target) {
+            pointerConstraint!.target = _null;
+            target.emit('dragEnd', position, id, event);
+            if (!target.active) {
+                target._v.set(0, 0);
+                target.velocity.set(0, 0);
+            }
         }
     }
 
@@ -208,24 +213,34 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
 
         const { pointerConstraint } = this;
 
-        if (pointerConstraint && pointerConstraint.target && this._pointer) {
+        if (pointerConstraint) {
             pointerConstraint.update(timeScale);
-            const { target } = pointerConstraint;
-            target.velocity.setVector(this._pointer.velocity);
-            target.moveVector(target.impulse);
-            target.impulse.set(0, 0);
         }
 
-        const collidableBodies = new Array<Body>();
+        const collidableBodies = new Array<Body>(),
+            deferredObjects = new Array<SceneObject>();
 
         this.objects.forEach(object => {
             if (object.update) {
-                object.update(timeScale);
+                if (object.defer) {
+                    deferredObjects.push(object);
+                } else {
+                    object.update!(timeScale);
+                }
                 if ((object as Body).category && (object as Body).collisionFilter) {
                     collidableBodies.push(object as Body);
                 }
             }
         });
+
+        deferredObjects.forEach(object => {
+            object.update!(timeScale);
+        });
+
+        const target = pointerConstraint && pointerConstraint.target;
+        if (target && this._pointer) {
+            target._v.setVector(target.velocity.setVector(this._pointer.velocity));
+        }
 
         const { collisionChecker } = this;
         if (collisionChecker) {

@@ -21,8 +21,7 @@ export const Collision: CollisionObject = {
 
     // TODO: fix bounce
     check(bodies, checker) {
-        const bodiesCount = bodies.length,
-            velocities = bodies.map(body => body.velocity.clone());
+        const bodiesCount = bodies.length;
         for (let i = 0; i < bodiesCount; i++) {
             const body1 = bodies[i],
                 { category: category1,
@@ -32,8 +31,8 @@ export const Collision: CollisionObject = {
                     mass: m1,
                     elasticity: elasticity1,
                     stiffness: stiffness1,
-                    roughness: roughness1 } = body1,
-                _v1 = velocities[i];
+                    roughness: roughness1,
+                    _v: _v1 } = body1;
             for (let j = i + 1; j < bodiesCount; j++) {
                 const body2 = bodies[j];
 
@@ -53,28 +52,28 @@ export const Collision: CollisionObject = {
                     continue;
                 }
 
-                const { velocity: v2, stiffness: stiffness2, mass: m2 } = body2,
-                    _v2 = velocities[j],
+                const { velocity: v2, _v: _v2, stiffness: stiffness2, mass: m2, active: active2 } = body2,
                     elasticity = _min(elasticity1, body2.elasticity),
                     roughness = _min(roughness1, body2.roughness),
                     edgeVector = overlapVector.clone().turn();
                 if (active1) {
-                    if (body2.active) {
+                    if (active2) {
                         const stiffness = _max(stiffness1, stiffness2) / 2;
                         body1.impulse.plusVector(overlapVector, -stiffness);
                         body2.impulse.plusVector(overlapVector, stiffness);
                         const deltaMass = m1 - m2,
-                            totalMass = m1 + m2;
-                        v1.scale(deltaMass * elasticity)
-                            .plusVector(_v2, 2 * m2)
+                            totalMass = m1 + m2,
+                            velocityScale = 1 - elasticity;
+                        v1.plusVector(_v1, deltaMass * velocityScale - 1)
+                            .plusVector(_v2, 2 * m2 * velocityScale)
                             .shrink(totalMass);
-                        v2.scale(-deltaMass * elasticity)
-                            .plusVector(_v1, 2 * m1)
+                        v2.plusVector(_v2, -deltaMass * velocityScale - 1)
+                            .plusVector(_v1, 2 * m1 * velocityScale)
                             .shrink(totalMass);
                         const relativeVelocity = Vector.minus(_v2, _v1);
                         if (elasticity) {
                             const bounceVector =
-                                Vector.projectVector(relativeVelocity, overlapVector).scale(elasticity);
+                                Vector.projectVector(relativeVelocity, overlapVector).scale(elasticity / 2);
                             v1.plusVector(bounceVector);
                             v2.minusVector(bounceVector);
                         }
@@ -98,7 +97,7 @@ export const Collision: CollisionObject = {
                         // TODO: solve the rotation of body1 here
                     }
                 } else {
-                    if (body2.active) {
+                    if (active2) {
                         body2.impulse.plusVector(overlapVector, (stiffness1 + stiffness2) / 2);
                         const edgeVelocity = Vector.projectVector(_v2, edgeVector);
                         v2.setVector(edgeVelocity);

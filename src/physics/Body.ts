@@ -32,6 +32,7 @@ export type BodyOptions = Partial<{
     active: boolean;
     interactive: boolean;
     draggable: boolean;
+    defer: boolean;
     position: Vector;
     acceleration: Vector;
     velocity: Vector;
@@ -74,9 +75,10 @@ export abstract class Body extends EventEmitter<BodyEvents>
         active: false,
         interactive: false,
         draggable: false,
+        defer: false,
         maxSpeed: 200,
         maxAngularSpeed: 100,
-        gravity: Vector.of(0, 5),
+        gravity: Vector.of(0, 2),
         density: .01,
         stiffness: 1,
         elasticity: .4,
@@ -137,6 +139,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
     collisionFilter!: number;
     sensorFilter!: number;
     isCircle!: boolean;
+    defer!: boolean;
     position!: Vector;
     acceleration!: Vector;
     velocity!: Vector;
@@ -151,6 +154,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
     fixRotation!: boolean;
     radius!: number;
     impulse = new Vector();
+    _v = new Vector();
 
     setDensity(density: number) {
         (this.density as number) = density;
@@ -265,14 +269,15 @@ export abstract class Body extends EventEmitter<BodyEvents>
 
     update(timeScale: number) {
         this.emit('willUpdate', timeScale);
-        const { impulse, bounds, position } = this;
+        const { velocity, impulse, bounds, position } = this;
         if (this.active) {
-            const { velocity, maxSpeed, maxAngularSpeed } = this,
+            const { maxSpeed, maxAngularSpeed, acceleration } = this,
                 airSpeedScale = 1 - this.airFriction,
                 angularSpeed = this.angularSpeed *= airSpeedScale;
-            velocity.plusVector(this.acceleration, timeScale)
+            velocity.plusVector(acceleration, timeScale)
                 .plusVector(this.gravity, timeScale)
                 .scale(airSpeedScale);
+            acceleration.set(0, 0);
             const speed = velocity.getModulus();
             if (speed > maxSpeed) {
                 velocity.scale(maxSpeed / speed);
@@ -291,6 +296,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
         position.plusVector(impulse);
         bounds.moveVector(impulse);
         impulse.set(0, 0);
+        this._v.setVector(velocity);
         this.emit('didUpdate', timeScale);
     }
 

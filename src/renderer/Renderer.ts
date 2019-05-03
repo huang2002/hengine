@@ -4,9 +4,12 @@ import { Vector, VectorLike } from "../geometry/Vector";
 import { Utils } from "../common/Utils";
 
 export interface Renderable {
+    defer?: boolean;
     update?(timeScale: number): void;
     render(renderer: Renderer): void;
 }
+
+// TODO: add interface `RendererLike`
 
 export type RendererOptions = Partial<{
     canvas: HTMLCanvasElement;
