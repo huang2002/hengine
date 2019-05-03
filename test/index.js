@@ -9,7 +9,8 @@ const renderer = new HE.Renderer({
 });
 
 const inspector = new HE.Inspector({
-    // boundsStroke: 'rgba(0,255,0,.4)',
+    // boundsStroke: '#f00',
+    velocityStroke: '#00f',
 });
 
 const engine = new HE.Engine({ inspector, renderer });
@@ -74,7 +75,7 @@ const mainScene = engine.createScene({
 const ground = new HE.Rectangle({
     tag: 'ground',
     position: Vector.of(0, 100),
-    width: 400,
+    width: 420,
     height: 50,
     style: {
         fillStyle: '#ccc',
@@ -86,7 +87,7 @@ mainScene.add(ground);
 const slope = new HE.Polygon({
     tag: 'wall',
     collisionFilter: HE.Category.FULL_MASK ^ ground.category,
-    position: Vector.of(-180, 0),
+    position: Vector.of(-190, 0),
     adjustment: false,
     roughness: 0,
     clockwise: false,
@@ -144,33 +145,44 @@ mainScene.add(new HE.Constraint({
     },
 }));
 
+const boxStyle = {
+    fillStyle: '#960',
+    strokeStyle: '#603',
+};
+
 const box1 = new HE.Rectangle({
     tag: 'box',
     active: true,
     draggable: true,
-    position: Vector.of(-50, -200),
-    width: 35,
-    height: 35,
-    density: 10,
-    style: {
-        fillStyle: '#960',
-        strokeStyle: '#603',
-    },
+    position: Vector.of(-60, -200),
+    width: 36,
+    height: 36,
+    style: boxStyle,
 });
 mainScene.add(box1);
 
 const box2 = new HE.Rectangle({
     tag: 'box',
     draggable: true,
-    position: Vector.of(70, -150),
-    width: 35,
-    height: 35,
-    style: {
-        fillStyle: '#960',
-        strokeStyle: '#630',
-    },
+    position: Vector.of(90, -150),
+    width: 40,
+    height: 40,
+    radius: 6,
+    style: boxStyle,
 });
 mainScene.add(box2);
+
+const box3 = new HE.Rectangle({
+    tag: 'box',
+    active: true,
+    draggable: true,
+    position: Vector.of(-60, -260),
+    width: 32,
+    height: 32,
+    density: 1,
+    style: boxStyle,
+});
+mainScene.add(box3);
 
 mainScene.add(new HE.Constraint({
     origin: box2,
