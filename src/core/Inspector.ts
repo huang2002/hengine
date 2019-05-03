@@ -5,8 +5,8 @@ import { Utils } from "../common/Utils";
 import { Vector } from "../geometry/Vector";
 import { Engine } from "./Engine";
 import { RenderingStyle } from "../graph/Style";
-import { BodyLike } from "../physics/Body";
-import { Bounds } from "../geometry/Bounds";
+import { Body } from "../physics/Body";
+import { SceneObject } from "./Scene";
 
 export type InspectorCallback = Utils.Callback<void, Engine, string>;
 
@@ -14,7 +14,10 @@ export type InspectorOptions = Partial<{
     paragraph: Paragraph;
     callbacks: InspectorCallback[];
     boundsStroke: RenderingStyle | null;
-    boundsWidth: number;
+    boundsStrokeWidth: number;
+    velocityStroke: RenderingStyle | null;
+    velocityStrokeWidth: number;
+    velocityStrokeScale: number;
 }>;
 
 export class Inspector implements Required<InspectorOptions> {
@@ -28,7 +31,10 @@ export class Inspector implements Required<InspectorOptions> {
             engine => `Pointer Position: ${engine.pointer.position}`,
         ],
         boundsStroke: _null,
-        boundsWidth: 1,
+        boundsStrokeWidth: 1,
+        velocityStroke: _null,
+        velocityStrokeWidth: 1,
+        velocityStrokeScale: 1,
     };
 
     constructor(options?: InspectorOptions) {
@@ -53,27 +59,54 @@ export class Inspector implements Required<InspectorOptions> {
     readonly paragraph!: Paragraph;
     callbacks!: InspectorCallback[];
     boundsStroke!: RenderingStyle | null;
-    boundsWidth!: number;
-    private _boundaries?: Bounds[] | null;
+    boundsStrokeWidth!: number;
+    private _objects?: SceneObject[] | null;
+    velocityStroke!: RenderingStyle | null;
+    velocityStrokeWidth!: number;
+    velocityStrokeScale!: number;
 
     update(engine: Engine) {
         const { currentScene } = engine;
-        this._boundaries = currentScene && currentScene.objects
-            .concat(currentScene.attachments)
-            .map(object => (object as BodyLike).bounds)
-            .filter(Boolean) as Bounds[];
+        this._objects = currentScene && currentScene.objects
+            .concat(currentScene.attachments);
         this.paragraph.lines = this.callbacks.map(callback => callback(engine));
     }
 
     render(renderer: Renderer) {
-        const { _boundaries } = this;
-        if (this.boundsStroke && _boundaries && _boundaries.length) {
-            const { context } = renderer;
-            context.strokeStyle = this.boundsStroke;
-            context.lineWidth = this.boundsWidth;
-            _boundaries.forEach(bounds => {
-                context.strokeRect(bounds.left, bounds.top, bounds.width, bounds.height);
-            });
+        const { _objects } = this,
+            { context } = renderer;
+        if (_objects) {
+            if (this.boundsStroke && _objects.length) {
+                context.beginPath();
+                _objects.forEach(object => {
+                    const { bounds } = object as Body;
+                    if (bounds) {
+                        context.rect(bounds.left, bounds.top, bounds.width, bounds.height);
+                    }
+                });
+                context.strokeStyle = this.boundsStroke;
+                context.lineWidth = this.boundsStrokeWidth;
+                context.stroke();
+            }
+            if (this.velocityStroke) {
+                const { velocityStrokeScale } = this;
+                context.beginPath();
+                _objects.forEach(object => {
+                    const { velocity } = object as Body;
+                    if (velocity) {
+                        const { position } = object as Body,
+                            { x, y } = position;
+                        context.moveTo(x, y);
+                        context.lineTo(
+                            x + velocity.x * velocityStrokeScale,
+                            y + velocity.y * velocityStrokeScale
+                        );
+                    }
+                });
+                context.strokeStyle = this.velocityStroke;
+                context.lineWidth = this.velocityStrokeWidth;
+                context.stroke();
+            }
         }
         renderer.render(this.paragraph);
     }
