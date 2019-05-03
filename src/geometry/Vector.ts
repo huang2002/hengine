@@ -1,4 +1,4 @@
-import { _sqrt, _pow, _cos, _sin, _PI, _abs, _Math } from "../common/references";
+import { _sqrt, _pow, _cos, _sin, _PI, _abs, _Math, _undefined } from "../common/references";
 import { Utils } from "../common/Utils";
 
 export interface VectorLike {
@@ -51,8 +51,16 @@ export class Vector {
         return Utils.distance(vector1.x, vector1.y, vector2.x, vector2.y);
     }
 
-    static distribute(vector0: VectorLike, vector1: VectorLike, vector2: VectorLike, k1: number, k2: number) {
-        const sum = _abs(k1) + _abs(k2);
+    static distribute(
+        vector0: VectorLike,
+        vector1: VectorLike, vector2: VectorLike,
+        k1: number, k2: number,
+        scale?: number
+    ) {
+        let sum = _abs(k1) + _abs(k2);
+        if (scale !== _undefined) {
+            sum /= scale;
+        }
         k1 /= sum;
         k2 /= sum;
         vector1.x += vector0.x * k1;
@@ -80,13 +88,18 @@ export class Vector {
     }
 
     setVector(vector: VectorLike, scale?: number) {
-        if (scale) {
+        if (scale !== _undefined) {
             this.x = vector.x * scale;
             this.y = vector.y * scale;
         } else {
             this.x = vector.x;
             this.y = vector.y;
         }
+        return this;
+    }
+
+    reset() {
+        this.x = this.y = 0;
         return this;
     }
 
@@ -111,7 +124,7 @@ export class Vector {
     }
 
     plusVector(vector: VectorLike, scale?: number) {
-        if (scale) {
+        if (scale !== _undefined) {
             this.x += vector.x * scale;
             this.y += vector.y * scale;
         } else {
@@ -128,7 +141,7 @@ export class Vector {
     }
 
     minusVector(vector: VectorLike, scale?: number) {
-        if (scale) {
+        if (scale !== _undefined) {
             this.x -= vector.x * scale;
             this.y -= vector.y * scale;
         } else {

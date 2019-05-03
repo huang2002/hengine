@@ -152,8 +152,8 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
             pointerConstraint!.target = _null;
             target.emit('dragEnd', position, id, event);
             if (!target.active) {
-                target._v.set(0, 0);
-                target.velocity.set(0, 0);
+                target._v.reset();
+                target.velocity.reset();
             }
         }
     }

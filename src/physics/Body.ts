@@ -79,7 +79,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
         maxSpeed: 200,
         maxAngularSpeed: 100,
         gravity: Vector.of(0, 2),
-        density: .01,
+        density: 1,
         stiffness: 1,
         elasticity: .4,
         roughness: .05,
@@ -277,7 +277,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
             velocity.plusVector(acceleration, timeScale)
                 .plusVector(this.gravity, timeScale)
                 .scale(airSpeedScale);
-            acceleration.set(0, 0);
+            acceleration.reset();
             const speed = velocity.getModulus();
             if (speed > maxSpeed) {
                 velocity.scale(maxSpeed / speed);
@@ -295,7 +295,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
         }
         position.plusVector(impulse);
         bounds.moveVector(impulse);
-        impulse.set(0, 0);
+        impulse.reset();
         this._v.setVector(velocity);
         this.emit('didUpdate', timeScale);
     }

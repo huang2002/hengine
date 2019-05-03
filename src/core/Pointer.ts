@@ -114,7 +114,7 @@ export class Pointer extends EventEmitter<PointerEvents> implements Required<Poi
         this._setPosition(rawPosition);
         (this.isHolding as boolean) = false;
         if (this.holdOnly) {
-            this.velocity.set(0, 0);
+            this.velocity.reset();
         }
         const { startTimeStamps } = this,
             startTimeStamp = startTimeStamps.get(id)!;
