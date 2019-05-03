@@ -27,6 +27,7 @@ export type RendererOptions = Partial<{
     restoration: boolean;
 }>;
 
+// TODO: add `renderer.bounds`
 export class Renderer implements Required<RendererOptions>{
 
     static defaults: RendererOptions = {
