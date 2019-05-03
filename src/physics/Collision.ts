@@ -1,14 +1,24 @@
 import { Body, BodyLike } from "./Body";
 import { Vector } from "../geometry/Vector";
-import { _null, _Infinity, _min, _max } from "../common/references";
+import { _null, _Infinity, _min, _max, _assign } from "../common/references";
 
-// TODO: interface CollisionInfo { point: Vector; vector: Vector; }
-export type CollisionInfo = Vector;
+export interface CollisionResult {
+    overlap: number;
+    overlapVector: Vector;
+    // TODO: point: Vector;
+}
 
-export type CollisionChecker = (body1: BodyLike, body2: BodyLike) => CollisionInfo | null;
+export interface CollisionInfo extends CollisionResult {
+    body1: Body;
+    body2: Body;
+    edgeVector: Vector;
+}
+
+export type CollisionChecker = (body1: BodyLike, body2: BodyLike) => CollisionResult | null;
 
 export interface CollisionObject {
     check(bodies: Body[], checker: CollisionChecker): void;
+    find(bodies: Body[], checker: CollisionChecker): CollisionInfo[];
     Checker: {
         AABB: CollisionChecker;
         SAT: CollisionChecker;
@@ -19,102 +29,98 @@ export interface CollisionObject {
 
 export const Collision: CollisionObject = {
 
-    // TODO: fix friction
     check(bodies, checker) {
-        const bodiesCount = bodies.length;
+
+        const collisionInfoArray = Collision.find(bodies, checker);
+
+        collisionInfoArray.forEach(collisionInfo => {
+
+            const { body1, body2, overlapVector } = collisionInfo,
+                { velocity: v1, stiffness: stiffness1, mass: m1, _v: _v1 } = body1;
+
+            overlapVector.reverse();
+            body1.emit('collision', body2, collisionInfo);
+            overlapVector.reverse();
+            body2.emit('collision', body1, collisionInfo);
+
+            if (body1.category & body2.sensorFilter || body1.sensorFilter & body2.category) {
+                return;
+            }
+
+            const { velocity: v2, _v: _v2, mass: m2, stiffness: stiffness2 } = body2,
+                elasticity = _min(body1.elasticity, body2.elasticity),
+                { edgeVector } = collisionInfo;
+            if (body1.active) {
+                if (body2.active) {
+                    const stiffness = _max(stiffness1, stiffness2) / 2;
+                    body1.impulse.plusVector(overlapVector, -stiffness);
+                    body2.impulse.plusVector(overlapVector, stiffness);
+                    const deltaMass = m1 - m2,
+                        totalMass = m1 + m2,
+                        oneMinusElasticity = 1 - elasticity;
+                    v1.plusVector(_v1, deltaMass * oneMinusElasticity - 1)
+                        .plusVector(_v2, 2 * m2 * oneMinusElasticity)
+                        .shrink(totalMass);
+                    v2.plusVector(_v2, -deltaMass * oneMinusElasticity - 1)
+                        .plusVector(_v1, 2 * m1 * oneMinusElasticity)
+                        .shrink(totalMass);
+                    if (elasticity) {
+                        Vector.distribute(Vector.minus(_v2, _v1), v1, v2, m2, -m1, elasticity);
+                    }
+                } else {
+                    body1.impulse.plusVector(overlapVector, -(stiffness1 + stiffness2) / 2);
+                    const edgeVelocity = Vector.projectVector(_v1, edgeVector);
+                    v1.setVector(edgeVelocity);
+                    if (elasticity) {
+                        v1.minusVector(Vector.projectVector(_v1, overlapVector), elasticity);
+                    }
+                }
+            } else {
+                if (body2.active) {
+                    body2.impulse.plusVector(overlapVector, (stiffness1 + stiffness2) / 2);
+                    const edgeVelocity = Vector.projectVector(_v2, edgeVector);
+                    v2.setVector(edgeVelocity);
+                    if (elasticity) {
+                        v2.minusVector(Vector.projectVector(_v2, overlapVector), elasticity);
+                    }
+                }
+            }
+
+        });
+
+        collisionInfoArray.forEach(collisionInfo => {
+            // TODO: solve rotation
+            const { body1, body2, overlapVector, overlap, edgeVector } = collisionInfo,
+                { velocity: v1 } = body1,
+                { velocity: v2 } = body2,
+                roughness = _min(body1.roughness, body2.roughness);
+            // TODO: solve friction
+        });
+
+    },
+
+    find(bodies, checker) {
+        const results = new Array<CollisionInfo>(),
+            bodiesCount = bodies.length;
         for (let i = 0; i < bodiesCount; i++) {
             const body1 = bodies[i],
-                { category: category1,
-                    velocity: v1,
-                    active: active1,
-                    sensorFilter: sensorFilter1,
-                    mass: m1,
-                    elasticity: elasticity1,
-                    stiffness: stiffness1,
-                    roughness: roughness1,
-                    _v: _v1 } = body1;
+                { category: category1 } = body1;
             for (let j = i + 1; j < bodiesCount; j++) {
                 const body2 = bodies[j];
-
                 if (!(category1 & body2.collisionFilter && body1.collisionFilter & body2.category)) {
                     continue;
                 }
-
-                const overlapVector = checker(body1, body2);
-                if (!overlapVector) {
+                const collisionInfo = checker(body1, body2);
+                if (!collisionInfo) {
                     continue;
                 }
-
-                body1.emit('collision', body2, overlapVector.clone().reverse());
-                body2.emit('collision', body1, overlapVector);
-
-                if (category1 & body2.sensorFilter || sensorFilter1 & body2.category) {
-                    continue;
-                }
-
-                const { velocity: v2, _v: _v2, stiffness: stiffness2, mass: m2, active: active2 } = body2,
-                    elasticity = _min(elasticity1, body2.elasticity),
-                    roughness = _min(roughness1, body2.roughness),
-                    edgeVector = overlapVector.clone().turn();
-                if (active1) {
-                    if (active2) {
-                        const stiffness = _max(stiffness1, stiffness2) / 2;
-                        body1.impulse.plusVector(overlapVector, -stiffness);
-                        body2.impulse.plusVector(overlapVector, stiffness);
-                        const deltaMass = m1 - m2,
-                            totalMass = m1 + m2,
-                            oneMinusElasticity = 1 - elasticity;
-                        v1.plusVector(_v1, deltaMass * oneMinusElasticity - 1)
-                            .plusVector(_v2, 2 * m2 * oneMinusElasticity)
-                            .shrink(totalMass);
-                        v2.plusVector(_v2, -deltaMass * oneMinusElasticity - 1)
-                            .plusVector(_v1, 2 * m1 * oneMinusElasticity)
-                            .shrink(totalMass);
-                        const relativeVelocity = Vector.minus(_v2, _v1);
-                        if (elasticity) {
-                            Vector.distribute(
-                                relativeVelocity,
-                                v1, v2,
-                                m2, -m1,
-                                elasticity
-                            );
-                        }
-                        if (roughness) {
-                            const relativeEdgeVelocity =
-                                Vector.projectVector(relativeVelocity, edgeVector).scale(roughness);
-                            v1.plusVector(relativeEdgeVelocity);
-                            v2.minusVector(relativeEdgeVelocity);
-                        }
-                        // TODO: solve the rotations of body1 & body2 here
-                    } else {
-                        body1.impulse.plusVector(overlapVector, -(stiffness1 + stiffness2) / 2);
-                        const edgeVelocity = Vector.projectVector(_v1, edgeVector);
-                        v1.setVector(edgeVelocity);
-                        if (elasticity) {
-                            v1.minusVector(Vector.projectVector(_v1, overlapVector), elasticity);
-                        }
-                        if (roughness) {
-                            v1.minusVector(edgeVelocity, roughness);
-                        }
-                        // TODO: solve the rotation of body1 here
-                    }
-                } else {
-                    if (active2) {
-                        body2.impulse.plusVector(overlapVector, (stiffness1 + stiffness2) / 2);
-                        const edgeVelocity = Vector.projectVector(_v2, edgeVector);
-                        v2.setVector(edgeVelocity);
-                        if (elasticity) {
-                            v2.minusVector(Vector.projectVector(_v2, overlapVector), elasticity);
-                        }
-                        if (roughness) {
-                            v2.minusVector(edgeVelocity, roughness);
-                        }
-                        // TODO: solve the rotation of body2 here
-                    }
-                }
-
+                results.push(_assign(collisionInfo, {
+                    body1, body2,
+                    edgeVector: collisionInfo.overlapVector.clone().turn()
+                }));
             }
         }
+        return results;
     },
 
     Checker: {
@@ -156,7 +162,10 @@ export const Collision: CollisionObject = {
                 y = delta;
             }
 
-            return Vector.of(x, y);
+            return {
+                overlap: min,
+                overlapVector: Vector.of(x, y)
+            };
         },
 
         // TODO: fix this
@@ -167,7 +176,7 @@ export const Collision: CollisionObject = {
             if (body2.isCircle && !body1.isCircle) {
                 const result = Collision.Checker.SAT(body2, body1);
                 if (result) {
-                    result.reverse();
+                    result.overlapVector.reverse();
                 }
                 return result;
             }
@@ -204,18 +213,20 @@ export const Collision: CollisionObject = {
                 }
             }
 
-            /* if (minDirection && normals.indexOf(minDirection) < body2.normals.length) {
-                minDirection.reverse();
-            } */
-
-            return minDirection && minDirection.clone().scale(minOverlap);
+            return minDirection && {
+                overlap: minOverlap,
+                overlapVector: minDirection.clone().scale(minOverlap)
+            };
 
         },
 
         Distance(body1, body2) {
             const offset = Vector.minus(body2.position, body1.position),
-                delta = offset.getModulus() - body1.radius - body2.radius;
-            return delta > 0 ? _null : offset.setModulus(-delta);
+                delta = body1.radius + body2.radius - offset.getModulus();
+            return delta < 0 ? _null : {
+                overlap: delta,
+                overlapVector: offset.setModulus(delta)
+            };
         },
 
         // TODO: fix this
