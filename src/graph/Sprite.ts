@@ -7,6 +7,7 @@ import { Style, CommonStyle } from "./Style";
 export type ImageLike = Exclude<CanvasImageSource, SVGImageElement>;
 
 export type SpriteOptions = Partial<{
+    visible: boolean;
     position: Vector;
     image: ImageLike;
     style: Partial<CommonStyle>;
@@ -19,6 +20,10 @@ export type SpriteOptions = Partial<{
 }>;
 
 export class Sprite implements Required<SpriteOptions>, Renderable {
+
+    static defaults: SpriteOptions = {
+        visible: true,
+    };
 
     static defaultStyle: CommonStyle = _assign({} as CommonStyle, Style.Common.defaults);
 
@@ -37,6 +42,7 @@ export class Sprite implements Required<SpriteOptions>, Renderable {
 
     }
 
+    visible!: boolean;
     position!: Vector;
     image!: ImageLike;
     style!: CommonStyle;
@@ -64,6 +70,9 @@ export class Sprite implements Required<SpriteOptions>, Renderable {
     }
 
     render(renderer: Renderer) {
+        if (!this.visible) {
+            return;
+        }
         const { image } = this;
         if (image) {
             const { position } = this,
