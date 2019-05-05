@@ -14,6 +14,7 @@ export class Line extends Shape implements Required<LineOptions>, Renderable {
 
     static defaults: LineOptions = {
         noWidth: false,
+        closePath: false,
     };
 
     constructor(options: Readonly<LineOptions> = Utils.Const.EMPTY_OBJECT) {
