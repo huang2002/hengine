@@ -49,8 +49,8 @@ export class Sprite implements Required<SpriteOptions>, Renderable {
 
     load(
         src: string,
-        onSuccess?: Utils.Callback<unknown, Event, void>,
-        onFailure?: Utils.Callback<unknown, [Event | string], void>
+        onSuccess?: Utils.Callback<GlobalEventHandlers, Event, void>,
+        onFailure?: Utils.Callback<GlobalEventHandlers, [Event | string], void>
     ) {
         const image = this.image = _document.createElement('img');
         image.src = src;
