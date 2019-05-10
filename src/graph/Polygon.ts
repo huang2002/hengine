@@ -75,7 +75,7 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
                     vertex.minusVector(offset);
                 });
             }
-            if (clockwise) {
+            if (!clockwise) {
                 totalArea = -totalArea;
             }
             (this.normals as Vector[]) = normals;
