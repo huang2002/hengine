@@ -44,7 +44,8 @@ export type BodyOptions = Partial<{
     mass: number;
     stiffness: number;
     elasticity: number;
-    roughness: number;
+    friction: number;
+    staticFriction: number;
     airFriction: number;
     scaleX: number;
     scaleY: number;
@@ -66,6 +67,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
     implements Required<BodyOptions>, BodyLike, Renderable {
 
     static normalPrecision = 3;
+    static maxStaticSpeed = 1;
 
     static defaults: BodyOptions = {
         category: 0,
@@ -77,12 +79,14 @@ export abstract class Body extends EventEmitter<BodyEvents>
         draggable: false,
         defer: false,
         maxSpeed: 200,
+        angularSpeed: 0,
         maxAngularSpeed: 100,
         gravity: Vector.of(0, 2),
         density: 1,
         stiffness: 1,
         elasticity: .4,
-        roughness: .05,
+        friction: .2,
+        staticFriction: .3,
         airFriction: 0,
         fixRotation: true,
         radius: 0,
@@ -121,18 +125,24 @@ export abstract class Body extends EventEmitter<BodyEvents>
             this.interactive = true;
         }
 
+        if (this.friction > this.staticFriction) {
+            this.friction = this.staticFriction;
+        }
+
     }
 
     readonly tag: CategoryTag = '';
     readonly category!: number;
     readonly bounds = new Bounds();
-    readonly area = 0;
+    readonly area: number = 0;
     readonly normals: ReadonlyArray<Vector> = [];
-    readonly scaleX = 1;
-    readonly scaleY = 1;
-    readonly rotation = 0;
+    readonly scaleX: number = 1;
+    readonly scaleY: number = 1;
+    readonly rotation: number = 0;
     readonly density!: number;
-    readonly mass = 0;
+    readonly mass: number = 0;
+    readonly isStatic!: boolean;
+    readonly speed: number = 0;
     active!: boolean;
     interactive!: boolean;
     draggable!: boolean;
@@ -144,12 +154,13 @@ export abstract class Body extends EventEmitter<BodyEvents>
     acceleration!: Vector;
     velocity!: Vector;
     maxSpeed!: number;
-    angularSpeed = 0;
+    angularSpeed !: number;
     maxAngularSpeed!: number;
     gravity!: Vector;
     stiffness!: number;
     elasticity!: number;
-    roughness!: number;
+    friction!: number;
+    staticFriction!: number;
     airFriction!: number;
     fixRotation!: boolean;
     radius!: number;
@@ -278,12 +289,14 @@ export abstract class Body extends EventEmitter<BodyEvents>
                 .plusVector(this.gravity, timeScale)
                 .scale(airSpeedScale);
             acceleration.reset();
-            const speed = velocity.getModulus();
+            let speed = velocity.getModulus();
             if (speed > maxSpeed) {
                 velocity.scale(maxSpeed / speed);
+                speed = maxSpeed;
             }
             position.plusVector(velocity, timeScale);
             bounds.moveVector(velocity, timeScale);
+            (this.isStatic as boolean) = ((this.speed as number) = speed) <= Body.maxStaticSpeed;
             if (angularSpeed > maxAngularSpeed) {
                 (this.rotation as number) += (this.angularSpeed = maxAngularSpeed);
             } else {
@@ -292,6 +305,8 @@ export abstract class Body extends EventEmitter<BodyEvents>
             if (this.fixRotation) {
                 (this.rotation as number) %= Utils.Const.DOUBLE_PI;
             }
+        } else {
+            (this.isStatic as boolean) = false;
         }
         position.plusVector(impulse);
         bounds.moveVector(impulse);

@@ -10,7 +10,7 @@ export const _window = window,
     _Set = Set,
     _Math = Math,
     { sqrt: _sqrt, pow: _pow, sin: _sin, cos: _cos, PI: _PI,
-        max: _max, min: _min, abs: _abs } = _Math,
+        max: _max, min: _min, abs: _abs, sign: _sign } = _Math,
     { now: _now } = Date,
     _setTimeout = setTimeout,
     _clearTimeout = clearTimeout;

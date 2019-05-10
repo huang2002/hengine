@@ -1,6 +1,6 @@
 import { Body, BodyLike } from "./Body";
 import { Vector } from "../geometry/Vector";
-import { _null, _Infinity, _min, _max, _assign } from "../common/references";
+import { _null, _Infinity, _min, _max, _assign, _abs, _Set, _sign } from "../common/references";
 
 export interface CollisionResult {
     overlap: number;
@@ -11,7 +11,7 @@ export interface CollisionResult {
 export interface CollisionInfo extends CollisionResult {
     body1: Body;
     body2: Body;
-    edgeVector: Vector;
+    edgeVector: Vector | null;
 }
 
 export type CollisionChecker = (body1: BodyLike, body2: BodyLike) => CollisionResult | null;
@@ -31,9 +31,10 @@ export const Collision: CollisionObject = {
 
     check(bodies, checker) {
 
-        const collisionInfoArray = Collision.find(bodies, checker);
+        const { maxStaticSpeed } = Body,
+            collisionBodies = new _Set<Body>();
 
-        collisionInfoArray.forEach(collisionInfo => {
+        const collisions = Collision.find(bodies, checker).filter(collisionInfo => {
 
             const { body1, body2, overlapVector } = collisionInfo,
                 { velocity: v1, stiffness: stiffness1, mass: m1, _v: _v1 } = body1;
@@ -44,7 +45,7 @@ export const Collision: CollisionObject = {
             body2.emit('collision', body1, collisionInfo);
 
             if (body1.category & body2.sensorFilter || body1.sensorFilter & body2.category) {
-                return;
+                return false;
             }
 
             const { velocity: v2, _v: _v2, mass: m2, stiffness: stiffness2 } = body2,
@@ -69,32 +70,92 @@ export const Collision: CollisionObject = {
                     }
                 } else {
                     body1.impulse.plusVector(overlapVector, -(stiffness1 + stiffness2) / 2);
-                    const edgeVelocity = Vector.projectVector(_v1, edgeVector);
-                    v1.setVector(edgeVelocity);
-                    if (elasticity) {
-                        v1.minusVector(Vector.projectVector(_v1, overlapVector), elasticity);
+                    if (edgeVector) {
+                        v1.minusVector(Vector.projectVector(_v1, overlapVector));
+                        if (elasticity) {
+                            v1.minusVector(Vector.projectVector(_v1, overlapVector), elasticity);
+                        }
                     }
                 }
             } else {
                 if (body2.active) {
                     body2.impulse.plusVector(overlapVector, (stiffness1 + stiffness2) / 2);
-                    const edgeVelocity = Vector.projectVector(_v2, edgeVector);
-                    v2.setVector(edgeVelocity);
-                    if (elasticity) {
-                        v2.minusVector(Vector.projectVector(_v2, overlapVector), elasticity);
+                    if (edgeVector) {
+                        v2.minusVector(Vector.projectVector(_v2, overlapVector));
+                        if (elasticity) {
+                            v2.minusVector(Vector.projectVector(_v2, overlapVector), elasticity);
+                        }
                     }
+                } else {
+                    return false;
                 }
             }
 
+            collisionBodies.add(body1).add(body2);
+
+            return edgeVector;
+
         });
 
-        collisionInfoArray.forEach(collisionInfo => {
+        collisionBodies.forEach(body => {
+            body._v.setVector(body.velocity);
+        });
+
+        collisions.forEach(collisionInfo => {
             // TODO: solve rotation
-            const { body1, body2, overlapVector, overlap, edgeVector } = collisionInfo,
-                { velocity: v1 } = body1,
-                { velocity: v2 } = body2,
-                roughness = _min(body1.roughness, body2.roughness);
-            // TODO: solve friction
+            // TODO: fix friction
+            const { body1, body2, overlap, overlapVector, edgeVector } =
+                collisionInfo as CollisionInfo & { edgeVector: Vector },
+                { velocity: v1, _v: _v1 } = body1,
+                { velocity: v2, _v: _v2 } = body2,
+                friction = _min(body1.friction, body2.friction),
+                staticFriction = _min(body1.staticFriction, body2.staticFriction);
+            if (body1.active) {
+                if (body2.active) {
+                    const relativeEdgeSpeed = Vector.project(Vector.minus(_v2, _v1), edgeVector),
+                        absRelativeEdgeSpeed = _abs(relativeEdgeSpeed);
+                    if (
+                        absRelativeEdgeSpeed < maxStaticSpeed &&
+                        overlap * staticFriction >= absRelativeEdgeSpeed ||
+                        overlap * friction >= absRelativeEdgeSpeed
+                    ) {
+                        v1.setVector(Vector.projectVector(_v1, overlapVector));
+                        v2.setVector(Vector.projectVector(_v2, overlapVector));
+                    } else {
+                        const frictionScale = overlap * friction * _sign(relativeEdgeSpeed) / 2;
+                        v1.plusVector(edgeVector, frictionScale);
+                        v2.minusVector(edgeVector, frictionScale);
+                    }
+                } else {
+                    const edgeSpeed = Vector.project(_v1, edgeVector),
+                        absEdgeSpeed = _abs(edgeSpeed);
+                    if (
+                        absEdgeSpeed < maxStaticSpeed &&
+                        overlap * staticFriction >= absEdgeSpeed ||
+                        overlap * friction >= absEdgeSpeed
+                    ) {
+                        v1.setVector(Vector.projectVector(_v1, overlapVector));
+                    } else {
+                        v1.minusVector(edgeVector, overlap * friction * _sign(edgeSpeed));
+                    }
+                }
+            } else {
+                const edgeSpeed = Vector.project(_v2, edgeVector),
+                    absEdgeSpeed = _abs(edgeSpeed);
+                if (
+                    absEdgeSpeed < maxStaticSpeed &&
+                    overlap * staticFriction >= absEdgeSpeed ||
+                    overlap * friction >= absEdgeSpeed
+                ) {
+                    v2.setVector(Vector.projectVector(_v2, overlapVector));
+                } else {
+                    v2.minusVector(edgeVector, overlap * friction * _sign(edgeSpeed));
+                }
+            }
+        });
+
+        collisionBodies.forEach(body => {
+            (body.speed as number) = body.velocity.getModulus();
         });
 
     },
@@ -114,9 +175,10 @@ export const Collision: CollisionObject = {
                 if (!collisionInfo) {
                     continue;
                 }
+                const { overlapVector } = collisionInfo;
                 results.push(_assign(collisionInfo, {
                     body1, body2,
-                    edgeVector: collisionInfo.overlapVector.clone().turn()
+                    edgeVector: overlapVector.isZero() ? _null : overlapVector.clone().turn().normalize()
                 }));
             }
         }
