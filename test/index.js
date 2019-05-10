@@ -89,7 +89,8 @@ const slope = new HE.Polygon({
     collisionFilter: HE.Category.FULL_MASK ^ ground.category,
     position: Vector.of(-190, 0),
     adjustment: false,
-    roughness: 0,
+    staticFriction: 0,
+    elasticity: 0,
     clockwise: false,
     vertices: HE.Vertices.fromArray([
         -10, -80,
@@ -116,14 +117,16 @@ const createBall = (x, y, strokeStyle) => new HE.Circle({
     },
 });
 
-const ball1 = createBall(-170, -150, '#f60');
+const ball1 = Object.assign(createBall(-170, -150, '#f60'), {
+    elasticity: 0,
+});
 mainScene.add(
     ball1.on('didUpdate', () => {
         ball1.style.strokeStyle = '#0c0';
     }).on('collision', () => {
         ball1.style.strokeStyle = '#f00';
     }).once('collision', (...args) => {
-        // console.log('Ball1 collision:', ...args);
+        console.log('Ball1 collision:', ...args);
     })
 );
 
