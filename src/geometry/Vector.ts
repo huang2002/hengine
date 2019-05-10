@@ -229,6 +229,10 @@ export class Vector {
         return this;
     }
 
+    isZero() {
+        return this.x === 0 && this.y === 0;
+    }
+
     toString(fractionDigits?: number) {
         return this.x.toFixed(fractionDigits) + ',' + this.y.toFixed(fractionDigits);
     }
