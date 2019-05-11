@@ -7,13 +7,11 @@ import { Utils } from "../common/Utils";
 export type LineOptions = ShapeOptions & Partial<{
     start: Vector;
     end: Vector;
-    noWidth: boolean;
 }>;
 
 export class Line extends Shape implements Required<LineOptions>, Renderable {
 
     static defaults: LineOptions = {
-        noWidth: false,
         closePath: false,
     };
 
@@ -30,7 +28,6 @@ export class Line extends Shape implements Required<LineOptions>, Renderable {
 
     readonly start!: Vector;
     readonly end!: Vector;
-    noWidth!: boolean;
 
     protected _scale(scaleX: number, scaleY: number, origin?: VectorLike) {
         this.start.scale(scaleX, scaleY, origin);
@@ -76,27 +73,22 @@ export class Line extends Shape implements Required<LineOptions>, Renderable {
             bounds.top = y1;
             bounds.bottom = y2;
         }
-        if (!this.noWidth) {
-            bounds.grow(this.style.lineWidth / 2);
-        }
     }
 
     getClosest(target: VectorLike) {
-        const { start, end } = this,
-            result = Utils.quadraticSum(start.x - target.x, start.y - target.y) <
-                Utils.quadraticSum(end.x - target.x, end.y - target.y) ?
-                start : end;
-        return this.noWidth ? result : result.clone().grow(this.style.lineWidth / 2);
+        const { start, end } = this;
+        return Utils.quadraticSum(start.x - target.x, start.y - target.y) <
+            Utils.quadraticSum(end.x - target.x, end.y - target.y) ?
+            start : end;
     }
 
     project(direction: Vector) {
         const { start, end } = this,
             startProjection = Vector.project(start, direction),
-            endProjection = Vector.project(end, direction),
-            width = this.noWidth ? 0 : this.style.lineWidth / 2;
+            endProjection = Vector.project(end, direction);
         return startProjection < endProjection ?
-            { min: startProjection - width, max: endProjection + width } :
-            { min: endProjection - width, max: startProjection + width };
+            { min: startProjection, max: endProjection } :
+            { min: endProjection, max: startProjection };
     }
 
     path(context: CanvasRenderingContext2D) {
