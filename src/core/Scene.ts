@@ -82,6 +82,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     pointerChecker!: CollisionChecker | null;
     pointerConstraint!: Constraint | null;
     private _pointer!: Pointer | null;
+    private _pointerPosition = new Vector();
 
     set fps(fps: number) {
         this.delay = 1000 / fps;
@@ -132,6 +133,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         if (!pointerConstraint) {
             return;
         }
+        this._pointerPosition.setVector(position);
         if (pointerConstraint.target) {
             pointerConstraint.target.emit('dragEnd', position, id, event);
         }
@@ -237,9 +239,12 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
             object.update!(timeScale);
         });
 
-        const target = pointerConstraint && pointerConstraint.target;
-        if (target && this._pointer) {
-            target._v.setVector(target.velocity.setVector(this._pointer.velocity));
+        const target = pointerConstraint && pointerConstraint.target,
+            { _pointer } = this;
+        if (target && _pointer) {
+            const { position } = _pointer;
+            target._v.setVector(target.velocity.setVector(position).minusVector(this._pointerPosition));
+            this._pointerPosition.setVector(position);
         }
 
         const { collisionChecker } = this;

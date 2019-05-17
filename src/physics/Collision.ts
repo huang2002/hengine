@@ -56,35 +56,28 @@ export const Collision: CollisionObject = {
                     const stiffness = _max(stiffness1, stiffness2) / 2;
                     body1.impulse.plusVector(overlapVector, -stiffness);
                     body2.impulse.plusVector(overlapVector, stiffness);
-                    const deltaMass = m1 - m2,
-                        totalMass = m1 + m2,
-                        oneMinusElasticity = 1 - elasticity;
-                    v1.plusVector(_v1, deltaMass * oneMinusElasticity - 1)
-                        .plusVector(_v2, 2 * m2 * oneMinusElasticity)
-                        .shrink(totalMass);
-                    v2.plusVector(_v2, -deltaMass * oneMinusElasticity - 1)
-                        .plusVector(_v1, 2 * m1 * oneMinusElasticity)
-                        .shrink(totalMass);
-                    if (elasticity) {
-                        Vector.distribute(Vector.minus(_v2, _v1), v1, v2, m2, -m1, elasticity);
+                    if (edgeVector) {
+                        const relativeVelocity = Vector.minus(_v2, _v1);
+                        if (Vector.dot(relativeVelocity, overlapVector) < 0) {
+                            Vector.distribute(
+                                Vector.projectVector(relativeVelocity, overlapVector),
+                                v1, v2,
+                                m2, -m1,
+                                elasticity * 2
+                            );
+                        }
                     }
                 } else {
                     body1.impulse.plusVector(overlapVector, -(stiffness1 + stiffness2) / 2);
                     if (edgeVector) {
-                        v1.minusVector(Vector.projectVector(_v1, overlapVector));
-                        if (elasticity) {
-                            v1.minusVector(Vector.projectVector(_v1, overlapVector), elasticity);
-                        }
+                        v1.minusVector(Vector.projectVector(_v1, overlapVector), elasticity * 2);
                     }
                 }
             } else {
                 if (body2.active) {
                     body2.impulse.plusVector(overlapVector, (stiffness1 + stiffness2) / 2);
                     if (edgeVector) {
-                        v2.minusVector(Vector.projectVector(_v2, overlapVector));
-                        if (elasticity) {
-                            v2.minusVector(Vector.projectVector(_v2, overlapVector), elasticity);
-                        }
+                        v2.minusVector(Vector.projectVector(_v2, overlapVector), elasticity * 2);
                     }
                 } else {
                     return false;
@@ -110,6 +103,9 @@ export const Collision: CollisionObject = {
                 { velocity: v2, _v: _v2 } = body2,
                 friction = _min(body1.friction, body2.friction),
                 staticFriction = _min(body1.staticFriction, body2.staticFriction);
+            if (!staticFriction) {
+                return;
+            }
             if (body1.active) {
                 if (body2.active) {
                     const relativeEdgeSpeed = Vector.project(Vector.minus(_v2, _v1), edgeVector),
@@ -121,10 +117,13 @@ export const Collision: CollisionObject = {
                     ) {
                         v1.setVector(Vector.projectVector(_v1, overlapVector));
                         v2.setVector(Vector.projectVector(_v2, overlapVector));
-                    } else {
-                        const frictionScale = overlap * friction * _sign(relativeEdgeSpeed) / 2;
-                        v1.plusVector(edgeVector, frictionScale);
-                        v2.minusVector(edgeVector, frictionScale);
+                    } else if (friction) {
+                        Vector.distribute(
+                            edgeVector,
+                            v1, v2,
+                            body2.mass, -body1.mass,
+                            overlap * friction * _sign(relativeEdgeSpeed) * 2
+                        );
                     }
                 } else {
                     const edgeSpeed = Vector.project(_v1, edgeVector),
@@ -135,7 +134,7 @@ export const Collision: CollisionObject = {
                         overlap * friction >= absEdgeSpeed
                     ) {
                         v1.setVector(Vector.projectVector(_v1, overlapVector));
-                    } else {
+                    } else if (friction) {
                         v1.minusVector(edgeVector, overlap * friction * _sign(edgeSpeed));
                     }
                 }
@@ -148,7 +147,7 @@ export const Collision: CollisionObject = {
                     overlap * friction >= absEdgeSpeed
                 ) {
                     v2.setVector(Vector.projectVector(_v2, overlapVector));
-                } else {
+                } else if (friction) {
                     v2.minusVector(edgeVector, overlap * friction * _sign(edgeSpeed));
                 }
             }

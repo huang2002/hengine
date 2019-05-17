@@ -63,6 +63,7 @@ export interface BodyEvents {
     dragEnd: PointerEventParameters | [];
 }
 
+// TODO: add `slop`
 export abstract class Body extends EventEmitter<BodyEvents>
     implements Required<BodyOptions>, BodyLike, Renderable {
 
@@ -83,10 +84,10 @@ export abstract class Body extends EventEmitter<BodyEvents>
         maxAngularSpeed: 100,
         gravity: Vector.of(0, 2),
         density: 1,
-        stiffness: 1,
-        elasticity: .4,
-        friction: .2,
-        staticFriction: .3,
+        stiffness: .9,
+        elasticity: .8,
+        friction: .5,
+        staticFriction: .6,
         airFriction: 0,
         fixRotation: true,
         radius: 0,
@@ -282,20 +283,20 @@ export abstract class Body extends EventEmitter<BodyEvents>
         this.emit('willUpdate', timeScale);
         const { velocity, impulse, bounds, position } = this;
         if (this.active) {
+            position.plusVector(velocity, timeScale);
+            bounds.moveVector(velocity, timeScale);
             const { maxSpeed, maxAngularSpeed, acceleration } = this,
                 airSpeedScale = 1 - this.airFriction,
                 angularSpeed = this.angularSpeed *= airSpeedScale;
-            velocity.plusVector(acceleration, timeScale)
+            let speed = velocity.plusVector(acceleration, timeScale)
                 .plusVector(this.gravity, timeScale)
-                .scale(airSpeedScale);
+                .scale(airSpeedScale)
+                .getModulus();
             acceleration.reset();
-            let speed = velocity.getModulus();
             if (speed > maxSpeed) {
                 velocity.scale(maxSpeed / speed);
                 speed = maxSpeed;
             }
-            position.plusVector(velocity, timeScale);
-            bounds.moveVector(velocity, timeScale);
             (this.isStatic as boolean) = ((this.speed as number) = speed) <= Body.maxStaticSpeed;
             if (angularSpeed > maxAngularSpeed) {
                 (this.rotation as number) += (this.angularSpeed = maxAngularSpeed);
