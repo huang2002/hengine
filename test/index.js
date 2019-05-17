@@ -74,8 +74,8 @@ const mainScene = engine.createScene({
 
 const ground = new HE.Rectangle({
     tag: 'ground',
-    position: Vector.of(0, 100),
-    width: 420,
+    position: Vector.of(-10, 100),
+    width: 400,
     height: 50,
     style: {
         fillStyle: '#ccc',
@@ -85,7 +85,7 @@ const ground = new HE.Rectangle({
 mainScene.add(ground);
 
 const slope = new HE.Polygon({
-    tag: 'wall',
+    tag: 'slope',
     collisionFilter: HE.Category.FULL_MASK ^ ground.category,
     position: Vector.of(-190, 0),
     adjustment: false,
@@ -105,6 +105,19 @@ const slope = new HE.Polygon({
 });
 mainScene.add(slope);
 
+const wall = new HE.Rectangle({
+    tag: 'wall',
+    collisionFilter: HE.Category.FULL_MASK ^ ground.category,
+    position: Vector.of(200, 0),
+    width: 20,
+    height: 250,
+    style: {
+        strokeStyle: '#444',
+        fillStyle: '#999',
+    },
+});
+mainScene.add(wall);
+
 const createBall = (x, y, strokeStyle) => new HE.Circle({
     tag: 'ball',
     active: true,
@@ -117,14 +130,10 @@ const createBall = (x, y, strokeStyle) => new HE.Circle({
     },
 });
 
-const ball1 = Object.assign(createBall(-170, -150, '#f60'), {
-    elasticity: 0,
-});
+const ball1 = createBall(-170, -150, '#f60');
 mainScene.add(
     ball1.on('didUpdate', () => {
-        ball1.style.strokeStyle = '#0c0';
-    }).on('collision', () => {
-        ball1.style.strokeStyle = '#f00';
+        ball1.style.strokeStyle = ball1.isStatic ? '#f00' : '#0c0';
     }).once('collision', (...args) => {
         console.log('Ball1 collision:', ...args);
     })
@@ -200,7 +209,7 @@ const cradle = new HE.Circle({
     tag: 'cradle',
     active: true,
     draggable: true,
-    position: Vector.of(160, 50),
+    position: Vector.of(150, 50),
     radius: 22,
     style: {
         fillStyle: '#f80',
@@ -209,7 +218,7 @@ const cradle = new HE.Circle({
 mainScene.add(cradle);
 
 const stick = new HE.Constraint({
-    origin: Vector.of(160, -100),
+    origin: Vector.of(150, -100),
     target: cradle,
     style: {
         strokeStyle: '#0f0',
