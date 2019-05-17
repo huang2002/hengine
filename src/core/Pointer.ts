@@ -120,7 +120,7 @@ export class Pointer extends EventEmitter<PointerEvents> implements Required<Poi
     }
 
     getClosest(target: VectorLike) {
-        return Vector.minus(target, this.position).setModulus(this.radius);
+        return Vector.minus(target, this.position).setNorm(this.radius);
     }
 
     project(direction: Vector) {

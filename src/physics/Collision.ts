@@ -154,7 +154,7 @@ export const Collision: CollisionObject = {
         });
 
         collisionBodies.forEach(body => {
-            (body.speed as number) = body.velocity.getModulus();
+            (body.speed as number) = body.velocity.getNorm();
         });
 
     },
@@ -283,10 +283,10 @@ export const Collision: CollisionObject = {
 
         Distance(body1, body2) {
             const offset = Vector.minus(body2.position, body1.position),
-                delta = body1.radius + body2.radius - offset.getModulus();
+                delta = body1.radius + body2.radius - offset.getNorm();
             return delta < 0 ? _null : {
                 overlap: delta,
-                overlapVector: offset.setModulus(delta)
+                overlapVector: offset.setNorm(delta)
             };
         },
 

@@ -31,7 +31,7 @@ export const Vertices = {
         const angle = Utils.Const.DOUBLE_PI / edges,
             results = [];
         for (let i = 0; i < edges; i++) {
-            results.push(Vector.of(_cos(rotation), _sin(rotation)).setModulus(radius));
+            results.push(Vector.of(_cos(rotation), _sin(rotation)).setNorm(radius));
             rotation += angle;
         }
         return results;
@@ -44,9 +44,9 @@ export const Vertices = {
         const angle = _PI / angles,
             results = [];
         for (let i = 0; i < angles; i++) {
-            results.push(Vector.of(_cos(rotation), _sin(rotation)).setModulus(innerRadius));
+            results.push(Vector.of(_cos(rotation), _sin(rotation)).setNorm(innerRadius));
             rotation += angle;
-            results.push(Vector.of(_cos(rotation), _sin(rotation)).setModulus(outerRadius));
+            results.push(Vector.of(_cos(rotation), _sin(rotation)).setNorm(outerRadius));
             rotation += angle;
         }
         return results;

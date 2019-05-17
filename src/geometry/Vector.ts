@@ -39,12 +39,12 @@ export class Vector {
     }
 
     static project(sourceVector: VectorLike, directionVector: Vector) {
-        const dirVecMod = directionVector.getModulus();
+        const dirVecMod = directionVector.getNorm();
         return dirVecMod && Vector.dot(sourceVector, directionVector) / dirVecMod;
     }
 
     static projectVector(sourceVector: VectorLike, directionVector: Vector) {
-        return directionVector.clone().setModulus(Vector.project(sourceVector, directionVector));
+        return directionVector.clone().setNorm(Vector.project(sourceVector, directionVector));
     }
 
     static distance(vector1: VectorLike, vector2: VectorLike) {
@@ -103,14 +103,14 @@ export class Vector {
         return this;
     }
 
-    getModulus() {
+    getNorm() {
         return _sqrt(_pow(this.x, 2) + _pow(this.y, 2));
     }
 
-    setModulus(modulus: number) {
-        const currentModulus = this.getModulus();
-        if (currentModulus) {
-            const scale = modulus / currentModulus;
+    setNorm(norm: number) {
+        const currentNorm = this.getNorm();
+        if (currentNorm) {
+            const scale = norm / currentNorm;
             this.x *= scale;
             this.y *= scale;
         }
@@ -174,9 +174,9 @@ export class Vector {
     }
 
     grow(delta: number) {
-        const modulus = this.getModulus();
-        if (modulus) {
-            const scale = (modulus + delta) / modulus;
+        const norm = this.getNorm();
+        if (norm) {
+            const scale = (norm + delta) / norm;
             this.x *= scale;
             this.y *= scale;
         }
@@ -223,9 +223,9 @@ export class Vector {
     }
 
     normalize() {
-        const modulus = this.getModulus();
-        this.x /= modulus;
-        this.y /= modulus;
+        const norm = this.getNorm();
+        this.x /= norm;
+        this.y /= norm;
         return this;
     }
 

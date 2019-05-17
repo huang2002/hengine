@@ -86,13 +86,13 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
             offsetVector = Vector.minus(targetPosition, originPosition)
                 .minusVector(this.originOffset)
                 .plusVector(this.targetOffset),
-            offset = offsetVector.getModulus(),
+            offset = offsetVector.getNorm(),
             delta = offset > maxLength ? offset - maxLength :
                 offset < minLength ? offset - minLength : 0;
         if (!delta) {
             return;
         }
-        offsetVector.setModulus(delta);
+        offsetVector.setNorm(delta);
         const originIsActive = originPosition !== origin && (origin as Body).active,
             { velocity: targetVelocity, _v: _targetVelocity } = target;
         if (originIsActive) {

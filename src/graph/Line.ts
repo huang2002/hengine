@@ -53,7 +53,7 @@ export class Line extends Shape implements Required<LineOptions>, Renderable {
             deltaVector,
             Vector.of(-deltaVector.y, deltaVector.x)
         ];
-        this._setArea(deltaVector.getModulus());
+        this._setArea(deltaVector.getNorm());
         this.updateBounds();
     }
 

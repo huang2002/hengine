@@ -291,7 +291,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
             let speed = velocity.plusVector(acceleration, timeScale)
                 .plusVector(this.gravity, timeScale)
                 .scale(airSpeedScale)
-                .getModulus();
+                .getNorm();
             acceleration.reset();
             if (speed > maxSpeed) {
                 velocity.scale(maxSpeed / speed);
