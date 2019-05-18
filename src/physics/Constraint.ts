@@ -98,15 +98,21 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
         if (originIsActive) {
             const { velocity: originVelocity, _v: _originVelocity } = origin as Body;
             if (target.active) {
-                (origin as Body).moveVector(offsetVector, .5);
-                target.moveVector(offsetVector, -.5);
-                const bounceVelocity = Vector.projectVector(
-                    Vector.minus(_targetVelocity, _originVelocity).scale(strength / 2),
-                    offsetVector
-                );
-                originVelocity.plusVector(bounceVelocity);
-                targetVelocity.minusVector(bounceVelocity);
-                // TODO: solve the rotations of origin & target here
+                const { mass: originMass } = origin as Body,
+                    { mass: targetMass } = target,
+                    originScale = originMass / (originMass + targetMass),
+                    targetScale = 1 - originScale;
+                (origin as Body).moveVector(offsetVector, originScale);
+                target.moveVector(offsetVector, -originScale);
+                const relativeVelocity = Vector.minus(_targetVelocity, _originVelocity);
+                if (Vector.dot(relativeVelocity, offsetVector)) {
+                    const bounceVelocity = Vector.projectVector(relativeVelocity, offsetVector)
+                        .plusVector(offsetVector)
+                        .scale(strength * 2);
+                    originVelocity.plusVector(bounceVelocity, originScale);
+                    targetVelocity.minusVector(bounceVelocity, targetScale);
+                    // TODO: solve the rotations of origin & target here
+                }
             } else {
                 (origin as Body).moveVector(offsetVector);
                 originVelocity.minusVector(
