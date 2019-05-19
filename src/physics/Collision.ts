@@ -68,15 +68,15 @@ export const Collision: CollisionObject = {
                         }
                     }
                 } else {
-                    body1.impulse.plusVector(overlapVector, -(stiffness1 + stiffness2) / 2);
-                    if (edgeVector) {
+                    body1.impulse.minusVector(overlapVector, (stiffness1 + stiffness2) / 2);
+                    if (edgeVector && Vector.dot(_v1, overlapVector) > 0) {
                         v1.minusVector(Vector.projectVector(_v1, overlapVector), elasticity * 2);
                     }
                 }
             } else {
                 if (body2.active) {
                     body2.impulse.plusVector(overlapVector, (stiffness1 + stiffness2) / 2);
-                    if (edgeVector) {
+                    if (edgeVector && Vector.dot(_v2, overlapVector) < 0) {
                         v2.minusVector(Vector.projectVector(_v2, overlapVector), elasticity * 2);
                     }
                 } else {
@@ -96,7 +96,6 @@ export const Collision: CollisionObject = {
 
         collisions.forEach(collisionInfo => {
             // TODO: solve rotation
-            // TODO: fix friction
             const { body1, body2, overlap, overlapVector, edgeVector } =
                 collisionInfo as CollisionInfo & { edgeVector: Vector },
                 { velocity: v1, _v: _v1 } = body1,
