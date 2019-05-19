@@ -29,6 +29,7 @@ export interface CollisionObject {
 
 export const Collision: CollisionObject = {
 
+    // TODO: fix bounce
     check(bodies, checker) {
 
         const { maxStaticSpeed } = Body,
@@ -49,7 +50,7 @@ export const Collision: CollisionObject = {
             }
 
             const { velocity: v2, _v: _v2, mass: m2, stiffness: stiffness2 } = body2,
-                elasticity = _min(body1.elasticity, body2.elasticity),
+                elasticity = _min(body1.elasticity, body2.elasticity) * 2 + 1,
                 { edgeVector } = collisionInfo;
             if (body1.active) {
                 if (body2.active) {
@@ -63,21 +64,21 @@ export const Collision: CollisionObject = {
                                 Vector.projectVector(relativeVelocity, overlapVector),
                                 v1, v2,
                                 m2, -m1,
-                                elasticity * 2
+                                elasticity
                             );
                         }
                     }
                 } else {
                     body1.impulse.minusVector(overlapVector, (stiffness1 + stiffness2) / 2);
                     if (edgeVector && Vector.dot(_v1, overlapVector) > 0) {
-                        v1.minusVector(Vector.projectVector(_v1, overlapVector), elasticity * 2);
+                        v1.minusVector(Vector.projectVector(_v1, overlapVector), elasticity);
                     }
                 }
             } else {
                 if (body2.active) {
                     body2.impulse.plusVector(overlapVector, (stiffness1 + stiffness2) / 2);
                     if (edgeVector && Vector.dot(_v2, overlapVector) < 0) {
-                        v2.minusVector(Vector.projectVector(_v2, overlapVector), elasticity * 2);
+                        v2.minusVector(Vector.projectVector(_v2, overlapVector), elasticity);
                     }
                 } else {
                     return false;

@@ -90,7 +90,7 @@ const slope = new HE.Polygon({
     position: Vector.of(-190, 0),
     adjustment: false,
     staticFriction: 0,
-    elasticity: .5,
+    elasticity: 0,
     clockwise: false,
     vertices: HE.Vertices.fromArray([
         -10, -80,
