@@ -85,7 +85,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
         gravity: Vector.of(0, 2),
         density: 1,
         stiffness: .9,
-        elasticity: .2,
+        elasticity: .5,
         friction: .5,
         staticFriction: .6,
         airFriction: 0,

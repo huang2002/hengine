@@ -50,7 +50,7 @@ export const Collision: CollisionObject = {
             }
 
             const { velocity: v2, _v: _v2, mass: m2, stiffness: stiffness2 } = body2,
-                elasticity = _min(body1.elasticity, body2.elasticity) * 2 + 1,
+                elasticity = _min(body1.elasticity, body2.elasticity) + 1,
                 { edgeVector } = collisionInfo;
             if (body1.active) {
                 if (body2.active) {
