@@ -56,7 +56,7 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
                 0;
         }
         if (this.minLength === _undefined) {
-            this.minLength = this.maxLength;
+            this.minLength = 0;
         }
 
     }

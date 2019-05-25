@@ -151,7 +151,6 @@ mainScene.add(ball4);
 const constraint = new HE.Constraint({
     origin: ball3,
     target: ball4,
-    minLength: 0,
     stiffness: .9,
     style: {
         strokeStyle: '#0f0'
