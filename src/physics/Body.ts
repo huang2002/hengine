@@ -213,7 +213,6 @@ export abstract class Body extends EventEmitter<BodyEvents>
         }
         (this.scaleX as number) = scaleX;
         (this.scaleY as number) = scaleY;
-        this.position.scale(deltaScaleX, deltaScaleY);
         return this;
     }
 
@@ -226,7 +225,9 @@ export abstract class Body extends EventEmitter<BodyEvents>
         }
         (this.scaleX as number) *= scaleX;
         (this.scaleY as number) *= scaleY;
-        this.position.scale(scaleX, scaleY, origin);
+        if (origin) {
+            this.position.scale(scaleX, scaleY, origin);
+        }
         return this;
     }
 
@@ -239,7 +240,9 @@ export abstract class Body extends EventEmitter<BodyEvents>
         }
         (this.scaleX as number) /= shrinkX;
         (this.scaleY as number) /= shrinkY;
-        this.position.shrink(shrinkX, shrinkY, origin);
+        if (origin) {
+            this.position.shrink(shrinkX, shrinkY, origin);
+        }
         return this;
     }
 
@@ -249,7 +252,9 @@ export abstract class Body extends EventEmitter<BodyEvents>
             this._rotate(deltaRotation, origin);
         }
         (this.rotation as number) = rotation;
-        this.position.rotate(deltaRotation, origin);
+        if (origin) {
+            this.position.rotate(deltaRotation, origin);
+        }
         return this;
     }
 
@@ -258,7 +263,9 @@ export abstract class Body extends EventEmitter<BodyEvents>
             this._rotate(rotation, origin);
         }
         (this.rotation as number) += rotation;
-        this.position.rotate(rotation, origin);
+        if (origin) {
+            this.position.rotate(rotation, origin);
+        }
         return this;
     }
 

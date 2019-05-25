@@ -71,33 +71,33 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
         context.translate(position.x, position.y);
 
         if (texture) {
-            return texture.render(renderer);
-        }
-
-        Shape.applyStyle(renderer, style);
-
-        context.beginPath();
-        this.path(context);
-        if (this.closePath) {
-            context.closePath();
-        }
-
-        if (fillFirst && fillStyle) {
-            context.fill();
-            context.shadowColor = Utils.Const.TRANSPARENT;
-        }
-        if (style.strokeStyle) {
-            context.stroke();
-            context.shadowColor = Utils.Const.TRANSPARENT;
-        }
-        if (!fillFirst && fillStyle) {
-            context.fill();
-        }
-
-        if (attachments.length) {
-            attachments.forEach(attachment => {
-                attachment.render(renderer);
-            });
+            const { rotation } = this;
+            context.rotate(rotation);
+            texture.render(renderer);
+            context.rotate(-rotation);
+        } else {
+            Shape.applyStyle(renderer, style);
+            context.beginPath();
+            this.path(context);
+            if (this.closePath) {
+                context.closePath();
+            }
+            if (fillFirst && fillStyle) {
+                context.fill();
+                context.shadowColor = Utils.Const.TRANSPARENT;
+            }
+            if (style.strokeStyle) {
+                context.stroke();
+                context.shadowColor = Utils.Const.TRANSPARENT;
+            }
+            if (!fillFirst && fillStyle) {
+                context.fill();
+            }
+            if (attachments.length) {
+                attachments.forEach(attachment => {
+                    attachment.render(renderer);
+                });
+            }
         }
 
         context.translate(-position.x, -position.y);
