@@ -16,7 +16,7 @@ export type ConstraintOptions = Partial<{
     minLength: number;
     maxLength: number;
     length: number;
-    strength: number;
+    elasticity: number;
     style: Partial<ConstraintStyle>;
 }>;
 
@@ -25,7 +25,7 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
     static defaults: ConstraintOptions = {
         origin: _null,
         target: _null,
-        strength: 1,
+        elasticity: 1,
         force: true,
         defer: true,
     };
@@ -66,7 +66,7 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
     targetOffset!: Vector;
     minLength!: number;
     maxLength!: number;
-    strength!: number;
+    elasticity!: number;
     force!: boolean;
     style!: ConstraintStyle;
 
@@ -80,7 +80,7 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
             return;
         }
         const { minLength, maxLength } = this,
-            strength = this.strength,
+            elasticity = this.elasticity,
             { position: targetPosition } = target,
             originPosition = (origin as Body).position || origin,
             offsetVector = Vector.minus(targetPosition, originPosition)
@@ -108,7 +108,7 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
                 if (Vector.dot(relativeVelocity, offsetVector)) {
                     const bounceVelocity = Vector.projectVector(relativeVelocity, offsetVector)
                         .plusVector(offsetVector)
-                        .scale(strength * 2);
+                        .scale(elasticity * 2);
                     originVelocity.plusVector(bounceVelocity, originScale);
                     targetVelocity.minusVector(bounceVelocity, targetScale);
                     // TODO: solve the rotations of origin & target here
@@ -117,7 +117,7 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
                 (origin as Body).moveVector(offsetVector);
                 originVelocity.minusVector(
                     Vector.projectVector(_originVelocity, offsetVector),
-                    strength
+                    elasticity
                 );
                 // TODO: solve the rotation of origin here
             }
@@ -126,7 +126,7 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
                 target.move(-offsetVector.x, -offsetVector.y);
                 targetVelocity.minusVector(
                     Vector.projectVector(_targetVelocity, offsetVector),
-                    strength
+                    elasticity
                 );
                 // TODO: solve the rotation of target here
             }
