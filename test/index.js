@@ -227,5 +227,4 @@ const stick = new HE.Constraint({
 });
 mainScene.add(stick);
 
-// engine.enter(menuScene);
-engine.enter(mainScene);
+engine.enter(menuScene);
