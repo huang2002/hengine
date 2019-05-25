@@ -288,20 +288,21 @@ export abstract class Body extends EventEmitter<BodyEvents>
         if (this.active) {
             position.plusVector(velocity, timeScale);
             bounds.moveVector(velocity, timeScale);
-            const { maxSpeed, acceleration } = this,
+            const { acceleration } = this,
                 maxAngularSpeed = this.maxAngularSpeed * timeScale,
+                maxSpeed = this.maxSpeed * timeScale,
                 airSpeedScale = 1 - this.airFriction,
-                angularSpeed = this.angularSpeed *= airSpeedScale;
+                angularSpeed = (this.angularSpeed *= airSpeedScale) * timeScale;
             let speed = velocity.plusVector(acceleration, timeScale)
                 .plusVector(this.gravity, timeScale)
                 .scale(airSpeedScale)
-                .getNorm() / timeScale;
+                .getNorm();
             acceleration.reset();
             if (speed > maxSpeed) {
                 velocity.scale(maxSpeed / speed);
                 speed = maxSpeed;
             }
-            (this.isStatic as boolean) = ((this.speed as number) = speed) <= Body.maxStaticSpeed;
+            (this.isStatic as boolean) = ((this.speed as number) = speed) <= Body.maxStaticSpeed * timeScale;
             if (angularSpeed > maxAngularSpeed) {
                 (this.rotation as number) += (this.angularSpeed = maxAngularSpeed);
             } else {
