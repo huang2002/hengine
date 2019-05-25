@@ -2,6 +2,7 @@ import { _document, _assign, _window, _undefined } from "../common/references";
 import { SizingFunction, Sizing } from "./Sizing";
 import { Vector, VectorLike } from "../geometry/Vector";
 import { Utils } from "../common/Utils";
+import { Bounds } from "../geometry/Bounds";
 
 export interface Renderable {
     render(renderer: Renderer): void;
@@ -23,7 +24,6 @@ export type RendererOptions = Partial<{
     restoration: boolean;
 }>;
 
-// TODO: add `renderer.bounds`
 export class Renderer implements Required<RendererOptions>{
 
     static defaults: RendererOptions = {
@@ -70,10 +70,7 @@ export class Renderer implements Required<RendererOptions>{
     readonly settings: CanvasRenderingContext2DSettings = Utils.Const.EMPTY_OBJECT;
     readonly parent!: Element | null;
     readonly resizeEvents!: string[];
-    readonly top!: number;
-    readonly right!: number;
-    readonly bottom!: number;
-    readonly left!: number;
+    readonly bounds = new Bounds();
     readonly resizeListener = Utils.debounce(this._resizeListener.bind(this));
     width!: number;
     height!: number;
@@ -142,10 +139,11 @@ export class Renderer implements Required<RendererOptions>{
             originOffsetX * ratio, originOffsetY * ratio
         );
 
-        (this.top as number) = -originOffsetY;
-        (this.right as number) = -originOffsetX + width;
-        (this.bottom as number) = -originOffsetY + height;
-        (this.left as number) = -originOffsetX;
+        const { bounds } = this;
+        bounds.top = -originOffsetY;
+        bounds.right = -originOffsetX + width;
+        bounds.bottom = -originOffsetY + height;
+        bounds.left = -originOffsetX;
 
     }
 
