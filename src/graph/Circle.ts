@@ -66,9 +66,12 @@ export class Circle extends Shape implements Required<CircleOptions>, Renderable
     }
 
     path(context: CanvasRenderingContext2D) {
-        context.rotate(this.rotation);
-        context.scale(this.scaleX, this.scaleY);
+        const { rotation, scaleX, scaleY } = this;
+        context.rotate(rotation);
+        context.scale(scaleX, scaleY);
         context.arc(0, 0, this.radius, 0, Utils.Const.DOUBLE_PI);
+        context.rotate(-rotation);
+        context.scale(1 / scaleX, 1 / scaleY);
     }
 
 }

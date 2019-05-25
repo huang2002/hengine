@@ -151,8 +151,8 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
     }
 
     path(context: CanvasRenderingContext2D) {
-        const { width, height, radius } = this;
-        context.rotate(this.rotation);
+        const { width, height, radius, rotation } = this;
+        context.rotate(rotation);
         if (radius > 0) {
             const halfWidth = width / 2,
                 halfHeight = height / 2,
@@ -170,6 +170,7 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
         } else {
             context.rect(-width / 2, -height / 2, width, height);
         }
+        context.rotate(-rotation);
     }
 
 }
