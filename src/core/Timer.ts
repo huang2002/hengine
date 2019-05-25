@@ -1,6 +1,5 @@
-import { _assign, _undefined, _clearTimeout, _setTimeout, _max, _window } from "../common/references";
+import { _assign, _undefined, _clearTimeout, _setTimeout, _max, _window, _now } from "../common/references";
 import { EventEmitter } from "../common/EventEmitter";
-import { Utils } from "../common/Utils";
 
 export type TimerOptions = Partial<{
     delay: number;
@@ -42,9 +41,11 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
     private _usedRAF?: boolean;
     private _lastTickTime!: number;
 
-    private _tick(startTime = Utils.now()) {
+    private _tick() {
 
-        const deltaTime = (this.lastFrameDelay as number) = startTime - this._lastTickTime;
+        const startTime = _now(),
+            deltaTime = (this.lastFrameDelay as number) = startTime - this._lastTickTime;
+
         this._lastTickTime = startTime;
         this.emit('tick', deltaTime);
 
@@ -52,17 +53,18 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
             return;
         }
 
-        const duration = (this.lastFrameDuration as number) = Utils.now() - startTime,
-            delay = this.delay - (this.fixDelay ? duration : 0);
+        const duration = (this.lastFrameDuration as number) = _now() - startTime,
+            delay = _max(this.delay - (this.fixDelay ? duration : 0), 0);
         this._timer = (this._usedRAF = delay <= Timer.RAFThreshold && this.allowRAF) ?
             _window.requestAnimationFrame(this._tick) :
-            _setTimeout(this._tick, _max(delay, 0));
+            _setTimeout(this._tick, _max(delay, 0)) as unknown as number;
 
     }
 
     start() {
         (this.isRunning as boolean) = true;
-        this._tick(this._lastTickTime = Utils.now());
+        this._lastTickTime = _now();
+        this._tick();
     }
 
     stop() {
