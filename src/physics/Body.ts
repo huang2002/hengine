@@ -85,7 +85,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
         maxAngularSpeed: 100,
         gravity: Vector.of(0, 2),
         density: 1,
-        stiffness: .9,
+        stiffness: 1,
         slop: .2,
         elasticity: .5,
         friction: .5,
