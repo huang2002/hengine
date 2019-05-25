@@ -38,7 +38,7 @@ export class Renderer implements Required<RendererOptions>{
         sizing: Sizing.Fit,
         resizeEvents: ['resize', 'orientationchange'],
         resizeDelay: 100,
-        restoration: true,
+        restoration: false,
     };
 
     constructor(options: Readonly<RendererOptions> = Utils.Const.EMPTY_OBJECT) {
