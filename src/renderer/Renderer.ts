@@ -4,8 +4,6 @@ import { Vector, VectorLike } from "../geometry/Vector";
 import { Utils } from "../common/Utils";
 
 export interface Renderable {
-    defer?: boolean;
-    update?(timeScale: number): void;
     render(renderer: Renderer): void;
 }
 
@@ -42,7 +40,7 @@ export class Renderer implements Required<RendererOptions>{
         sizing: Sizing.Fit,
         resizeEvents: ['resize', 'orientationchange'],
         resizeDelay: 100,
-        restoration: false,
+        restoration: true,
     };
 
     constructor(options: Readonly<RendererOptions> = Utils.Const.EMPTY_OBJECT) {
@@ -65,7 +63,7 @@ export class Renderer implements Required<RendererOptions>{
             _window.addEventListener(event, resizeListener);
         });
 
-        this._resize();
+        this._resize(true);
 
     }
 
@@ -78,7 +76,7 @@ export class Renderer implements Required<RendererOptions>{
     readonly right!: number;
     readonly bottom!: number;
     readonly left!: number;
-    readonly resizeListener = Utils.debounce(this._resize.bind(this));
+    readonly resizeListener = Utils.debounce(this._resizeListener.bind(this));
     width!: number;
     height!: number;
     margin!: number;
@@ -97,7 +95,7 @@ export class Renderer implements Required<RendererOptions>{
         this.resizeListener.delay = delay;
     }
 
-    private _resize() {
+    private _resize(force?: boolean) {
 
         const { canvas, ratio, origin } = this,
             { style } = canvas;
@@ -113,8 +111,10 @@ export class Renderer implements Required<RendererOptions>{
                     size = this.sizing(width, height, rect.width, rect.height, this.margin);
                 style.marginLeft = size.left + 'px';
                 style.marginTop = size.top + 'px';
-                width = this.width = size.width;
-                height = this.height = size.height;
+                if (force) {
+                    width = this.width = size.width;
+                    height = this.height = size.height;
+                }
                 styleWidth = size.styleWidth;
                 styleHeight = size.styleHeight;
                 this._offsetX = rect.left + size.left;
@@ -125,20 +125,34 @@ export class Renderer implements Required<RendererOptions>{
             this._scale = 1;
         }
 
-        canvas.width = width * ratio;
-        canvas.height = height * ratio;
         style.width = styleWidth + 'px';
         style.height = styleHeight + 'px';
+
+        if (!force) {
+            return;
+        }
+
+        canvas.width = width * ratio;
+        canvas.height = height * ratio;
 
         const originOffsetX = this._originOffsetX = width * origin.x,
             originOffsetY = this._originOffsetY = height * origin.y;
 
-        this.context.setTransform(ratio, 0, 0, ratio, originOffsetX * ratio, originOffsetY * ratio);
+        this.context.setTransform(
+            ratio, 0,
+            0, ratio,
+            originOffsetX * ratio, originOffsetY * ratio
+        );
+
         (this.top as number) = -originOffsetY;
         (this.right as number) = -originOffsetX + width;
         (this.bottom as number) = -originOffsetY + height;
         (this.left as number) = -originOffsetX;
 
+    }
+
+    private _resizeListener() {
+        this._resize();
     }
 
     resize(width: number, height: number, ratio?: number) {
@@ -147,7 +161,7 @@ export class Renderer implements Required<RendererOptions>{
         if (ratio) {
             this.ratio = ratio;
         }
-        this._resize();
+        this._resize(true);
         return this;
     }
 

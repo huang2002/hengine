@@ -82,11 +82,11 @@ export class Engine implements Required<EngineOptions> {
         if (currentScene) {
             this.timer.delay = currentScene.delay;
             currentScene.update(timeScale);
-            currentScene.render(renderer);
+            renderer.render(currentScene);
         }
         if (inspector) {
             inspector.update(this);
-            inspector.render(renderer);
+            renderer.render(inspector);
         }
     }
 

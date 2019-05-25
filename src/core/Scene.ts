@@ -11,7 +11,10 @@ import { Constraint } from "../physics/Constraint";
 
 // TODO: add drag events
 
-export type SceneObject = Body | Renderable;
+export type SceneObject = Body | Renderable & {
+    defer?: boolean;
+    update?(timeScale: number): void;
+};
 
 export type SceneOptions = Partial<{
     delay: number;
@@ -259,9 +262,6 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     render(renderer: Renderer) {
         const { context } = renderer;
         this.emit('willRender', context);
-        if (renderer.restoration) {
-            context.save();
-        }
         if (this.background) {
             context.fillStyle = this.background;
             context.fillRect(renderer.left, renderer.top, renderer.width, renderer.height);
@@ -269,11 +269,8 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
             context.clearRect(renderer.left, renderer.top, renderer.width, renderer.height);
         }
         this.objects.concat(this.attachments).forEach(renderable => {
-            renderable.render(renderer);
+            renderer.render(renderable);
         });
-        if (renderer.restoration) {
-            context.restore();
-        }
         this.emit('didRender', context);
     }
 

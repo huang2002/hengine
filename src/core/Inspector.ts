@@ -1,5 +1,5 @@
 import { _assign, _null } from "../common/references";
-import { Renderer } from "../renderer/Renderer";
+import { Renderer, Renderable } from "../renderer/Renderer";
 import { Paragraph } from "../graph/Paragraph";
 import { Utils } from "../common/Utils";
 import { Vector } from "../geometry/Vector";
@@ -20,7 +20,7 @@ export type InspectorOptions = Partial<{
     velocityStrokeScale: number;
 }>;
 
-export class Inspector implements Required<InspectorOptions> {
+export class Inspector implements Required<InspectorOptions>, Renderable {
 
     static defaults: InspectorOptions = {
         callbacks: [
