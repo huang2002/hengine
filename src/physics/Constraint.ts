@@ -17,6 +17,7 @@ export type ConstraintOptions = Partial<{
     maxLength: number;
     length: number;
     elasticity: number;
+    stiffness: number;
     style: Partial<ConstraintStyle>;
 }>;
 
@@ -26,6 +27,7 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
         origin: _null,
         target: _null,
         elasticity: 1,
+        stiffness: 1,
         force: true,
         defer: true,
     };
@@ -67,6 +69,7 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
     minLength!: number;
     maxLength!: number;
     elasticity!: number;
+    stiffness!: number;
     force!: boolean;
     style!: ConstraintStyle;
 
@@ -94,7 +97,8 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
         }
         offsetVector.setNorm(delta);
         const originIsActive = originPosition !== origin && (origin as Body).active,
-            { velocity: targetVelocity, _v: _targetVelocity } = target;
+            { velocity: targetVelocity, _v: _targetVelocity } = target,
+            { stiffness } = this;
         if (originIsActive) {
             const { velocity: originVelocity, _v: _originVelocity } = origin as Body;
             if (target.active) {
@@ -102,8 +106,8 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
                     { mass: targetMass } = target,
                     originScale = originMass / (originMass + targetMass),
                     targetScale = 1 - originScale;
-                (origin as Body).moveVector(offsetVector, originScale);
-                target.moveVector(offsetVector, -originScale);
+                (origin as Body).moveVector(offsetVector, originScale * stiffness);
+                target.moveVector(offsetVector, -targetScale * stiffness);
                 const relativeVelocity = Vector.minus(_targetVelocity, _originVelocity);
                 if (Vector.dot(relativeVelocity, offsetVector)) {
                     const bounceVelocity = Vector.projectVector(relativeVelocity, offsetVector)
