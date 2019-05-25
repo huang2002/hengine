@@ -69,7 +69,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
     implements Required<BodyOptions>, BodyLike, Renderable {
 
     static normalPrecision = 3;
-    static maxStaticSpeed = 1;
+    static maxStaticSpeed = .5;
 
     static defaults: BodyOptions = {
         category: 0,
@@ -87,9 +87,9 @@ export abstract class Body extends EventEmitter<BodyEvents>
         density: 1,
         stiffness: 1,
         slop: .2,
-        elasticity: .5,
+        elasticity: .4,
         friction: .5,
-        staticFriction: .6,
+        staticFriction: .5,
         airFriction: 0,
         fixRotation: true,
         radius: 0,
