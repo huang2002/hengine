@@ -29,7 +29,6 @@ export interface CollisionObject {
 
 export const Collision: CollisionObject = {
 
-    // TODO: fix bounce
     check(bodies, checker) {
 
         const { maxStaticSpeed } = Body,
@@ -239,7 +238,6 @@ export const Collision: CollisionObject = {
             };
         },
 
-        // TODO: fix this
         SAT(body1, body2) {
 
             const { position: position1 } = body1;
@@ -300,7 +298,6 @@ export const Collision: CollisionObject = {
             };
         },
 
-        // TODO: fix this
         Smart(body1, body2) {
             if (body1.bounds.overlaps(body2.bounds)) {
                 return (body1.isCircle && body2.isCircle) ?

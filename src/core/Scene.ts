@@ -9,8 +9,6 @@ import { Pointer } from "./Pointer";
 import { Vector } from "../geometry/Vector";
 import { Constraint } from "../physics/Constraint";
 
-// TODO: add drag events
-
 export type SceneObject = Body | Renderable & {
     defer?: boolean;
     update?(timeScale: number): void;
@@ -39,7 +37,6 @@ export interface SceneEvents {
     exit: [];
 }
 
-// TODO: add `active` flag
 export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOptions> {
 
     static defaults: SceneOptions = {

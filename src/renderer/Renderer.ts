@@ -7,8 +7,6 @@ export interface Renderable {
     render(renderer: Renderer): void;
 }
 
-// TODO: add interface `RendererLike`
-
 export type RendererOptions = Partial<{
     canvas: HTMLCanvasElement;
     settings: CanvasRenderingContext2DSettings;

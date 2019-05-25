@@ -64,7 +64,6 @@ export interface BodyEvents {
     dragEnd: PointerEventParameters | [];
 }
 
-// TODO: add `slop`
 export abstract class Body extends EventEmitter<BodyEvents>
     implements Required<BodyOptions>, BodyLike, Renderable {
 
