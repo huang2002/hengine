@@ -112,7 +112,7 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
                 if (Vector.dot(relativeVelocity, offsetVector)) {
                     const bounceVelocity = Vector.projectVector(relativeVelocity, offsetVector)
                         .plusVector(offsetVector)
-                        .scale(elasticity * 2);
+                        .scale(elasticity);
                     originVelocity.plusVector(bounceVelocity, originScale);
                     targetVelocity.minusVector(bounceVelocity, targetScale);
                     // TODO: solve the rotations of origin & target here

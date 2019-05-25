@@ -148,14 +148,16 @@ mainScene.add(ball3);
 const ball4 = createBall(-170, -250, '#f50');
 mainScene.add(ball4);
 
-mainScene.add(new HE.Constraint({
+const constraint = new HE.Constraint({
     origin: ball3,
     target: ball4,
     minLength: 0,
+    stiffness: .9,
     style: {
         strokeStyle: '#0f0'
     },
-}));
+});
+mainScene.add(constraint);
 
 const boxStyle = {
     fillStyle: '#960',
