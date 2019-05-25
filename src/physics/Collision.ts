@@ -39,7 +39,7 @@ export const Collision: CollisionObject = {
 
             const { body1, body2, overlap, overlapVector } = collisionInfo,
                 { velocity: v1, stiffness: stiffness1, slop: slop1,
-                    mass: m1, _v: _v1, impulse: impulse1 } = body1;
+                    mass: m1, _v: _v1, impulse: impulse1, elasticity: elasticity1 } = body1;
 
             overlapVector.reverse();
             body1.emit('collision', body2, collisionInfo);
@@ -52,7 +52,7 @@ export const Collision: CollisionObject = {
 
             const { velocity: v2, _v: _v2, mass: m2,
                 stiffness: stiffness2, impulse: impulse2 } = body2,
-                elasticity = _min(body1.elasticity, body2.elasticity) + 1,
+                elasticity = _min(elasticity1, body2.elasticity) + 1,
                 slop = slop1 + body2.slop,
                 impulseScale = overlap > slop ? (overlap - slop) / overlap : 0,
                 { edgeVector } = collisionInfo;
