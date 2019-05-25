@@ -302,7 +302,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
                 velocity.scale(maxSpeed / speed);
                 speed = maxSpeed;
             }
-            (this.isStatic as boolean) = ((this.speed as number) = speed) <= Body.maxStaticSpeed * timeScale;
+            (this.isStatic as boolean) = ((this.speed as number) = speed) <= Body.maxStaticSpeed;
             if (angularSpeed > maxAngularSpeed) {
                 (this.rotation as number) += (this.angularSpeed = maxAngularSpeed);
             } else {
