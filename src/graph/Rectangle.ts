@@ -78,7 +78,8 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
     }
 
     updateBounds() {
-        const { bounds, rotation, radius, width, height, position: { x, y } } = this;
+        const { bounds, rotation, radius, width, height, position } = this,
+            { x, y } = position;
         let dx0 = width / 2,
             dy0 = height / 2;
         if (radius > 0) {
@@ -103,7 +104,8 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
     }
 
     getClosest(target: VectorLike) {
-        const { rotation, radius, width, height, position: { x, y } } = this;
+        const { rotation, radius, width, height, position } = this,
+            { x, y } = position;
         let dx0 = width / 2,
             dy0 = height / 2;
         if (radius > 0) {
