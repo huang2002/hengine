@@ -141,7 +141,7 @@ export const Collision: CollisionObject = {
                             edgeVector,
                             v1, v2,
                             body2.mass, -body1.mass,
-                            overlap * friction * _sign(relativeEdgeSpeed) * 2
+                            overlap * friction * _sign(relativeEdgeSpeed)
                         );
                     }
                 } else {
