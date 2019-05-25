@@ -37,7 +37,7 @@ export const Collision: CollisionObject = {
 
         const collisions = Collision.find(bodies, checker).filter(collisionInfo => {
 
-            const { body1, body2, overlap, overlapVector } = collisionInfo,
+            const { body1, body2, overlapVector } = collisionInfo,
                 { velocity: v1, stiffness: stiffness1, slop: slop1,
                     mass: m1, _v: _v1, impulse: impulse1, elasticity: elasticity1 } = body1;
 
@@ -50,21 +50,18 @@ export const Collision: CollisionObject = {
                 return false;
             }
 
-            const { velocity: v2, _v: _v2, mass: m2,
-                stiffness: stiffness2, impulse: impulse2 } = body2,
+            const { velocity: v2, _v: _v2, mass: m2, impulse: impulse2 } = body2,
                 elasticity = _min(elasticity1, body2.elasticity) + 1,
                 slop = slop1 + body2.slop,
-                impulseScale = overlap > slop ? (overlap - slop) / overlap : 0,
+                impulse = collisionInfo.overlap * (stiffness1 + body2.stiffness) / 2,
+                impulseScale = impulse > slop ? (impulse - slop) / impulse : 0,
                 { edgeVector } = collisionInfo;
             if (body1.active) {
                 if (body2.active) {
                     if (impulseScale) {
-                        Vector.distribute(
-                            overlapVector,
-                            impulse1, impulse2,
-                            -stiffness1, stiffness2,
-                            impulseScale
-                        );
+                        const impulseVector = overlapVector.clone().scale(impulseScale);
+                        impulse1.minusVector(impulseVector);
+                        impulse2.plusVector(impulseVector);
                     }
                     if (edgeVector) {
                         const relativeVelocity = Vector.minus(_v2, _v1);
@@ -79,10 +76,7 @@ export const Collision: CollisionObject = {
                     }
                 } else {
                     if (impulseScale) {
-                        impulse1.minusVector(
-                            overlapVector,
-                            (stiffness1 + stiffness2) * impulseScale
-                        );
+                        impulse1.minusVector(overlapVector, impulseScale);
                     }
                     if (edgeVector && Vector.dot(_v1, overlapVector) > 0) {
                         v1.minusVector(Vector.projectVector(_v1, overlapVector), elasticity);
@@ -91,10 +85,7 @@ export const Collision: CollisionObject = {
             } else {
                 if (body2.active) {
                     if (impulseScale) {
-                        impulse2.plusVector(
-                            overlapVector,
-                            (stiffness1 + stiffness2) * impulseScale
-                        );
+                        impulse2.plusVector(overlapVector, impulseScale);
                     }
                     if (edgeVector && Vector.dot(_v2, overlapVector) < 0) {
                         v2.minusVector(Vector.projectVector(_v2, overlapVector), elasticity);
