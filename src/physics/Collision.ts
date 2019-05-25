@@ -116,7 +116,7 @@ export const Collision: CollisionObject = {
 
         collisions.forEach(collisionInfo => {
             // TODO: solve rotation
-            const { body1, body2, overlap, overlapVector, edgeVector } =
+            const { body1, body2, overlap, edgeVector } =
                 collisionInfo as CollisionInfo & { edgeVector: Vector },
                 { velocity: v1, _v: _v1 } = body1,
                 { velocity: v2, _v: _v2 } = body2,
@@ -134,8 +134,8 @@ export const Collision: CollisionObject = {
                         overlap * staticFriction >= absRelativeEdgeSpeed ||
                         overlap * friction >= absRelativeEdgeSpeed
                     ) {
-                        v1.setVector(Vector.projectVector(_v1, overlapVector));
-                        v2.setVector(Vector.projectVector(_v2, overlapVector));
+                        v1.minusVector(Vector.projectVector(_v1, edgeVector));
+                        v2.minusVector(Vector.projectVector(_v2, edgeVector));
                     } else if (friction) {
                         Vector.distribute(
                             edgeVector,
@@ -152,7 +152,7 @@ export const Collision: CollisionObject = {
                         overlap * staticFriction >= absEdgeSpeed ||
                         overlap * friction >= absEdgeSpeed
                     ) {
-                        v1.setVector(Vector.projectVector(_v1, overlapVector));
+                        v1.minusVector(Vector.projectVector(_v1, edgeVector));
                     } else if (friction) {
                         v1.minusVector(edgeVector, overlap * friction * _sign(edgeSpeed));
                     }
@@ -165,7 +165,7 @@ export const Collision: CollisionObject = {
                     overlap * staticFriction >= absEdgeSpeed ||
                     overlap * friction >= absEdgeSpeed
                 ) {
-                    v2.setVector(Vector.projectVector(_v2, overlapVector));
+                    v2.minusVector(Vector.projectVector(_v2, edgeVector));
                 } else if (friction) {
                     v2.minusVector(edgeVector, overlap * friction * _sign(edgeSpeed));
                 }
