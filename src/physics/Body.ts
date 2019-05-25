@@ -69,7 +69,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
     implements Required<BodyOptions>, BodyLike, Renderable {
 
     static normalPrecision = 3;
-    static maxStaticSpeed = .5;
+    static maxStaticSpeed = 1;
 
     static defaults: BodyOptions = {
         category: 0,
@@ -288,13 +288,14 @@ export abstract class Body extends EventEmitter<BodyEvents>
         if (this.active) {
             position.plusVector(velocity, timeScale);
             bounds.moveVector(velocity, timeScale);
-            const { maxSpeed, maxAngularSpeed, acceleration } = this,
+            const { maxSpeed, acceleration } = this,
+                maxAngularSpeed = this.maxAngularSpeed * timeScale,
                 airSpeedScale = 1 - this.airFriction,
                 angularSpeed = this.angularSpeed *= airSpeedScale;
             let speed = velocity.plusVector(acceleration, timeScale)
                 .plusVector(this.gravity, timeScale)
                 .scale(airSpeedScale)
-                .getNorm();
+                .getNorm() / timeScale;
             acceleration.reset();
             if (speed > maxSpeed) {
                 velocity.scale(maxSpeed / speed);
