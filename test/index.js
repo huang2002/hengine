@@ -171,6 +171,7 @@ const box1 = new HE.Rectangle({
     width: 50,
     height: 50,
     radius: 15,
+    elasticity: 1,
     style: boxStyle,
 });
 mainScene.add(box1);
@@ -190,10 +191,10 @@ const box3 = new HE.Rectangle({
     tag: 'box',
     active: true,
     draggable: true,
-    position: Vector.of(-60, -260),
+    position: Vector.of(-60, -400),
     width: 32,
     height: 32,
-    density: 1,
+    density: 2,
     style: boxStyle,
 });
 mainScene.add(box3);
