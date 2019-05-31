@@ -250,11 +250,13 @@ export const Collision: CollisionObject = {
                 return result;
             }
 
-            let normals = body2.normals.slice();
-            if (body1.isCircle) {
-                normals.push(Vector.minus(position1, body2.getClosest(position1)).normalize());
-            } else {
-                normals = normals.concat(body1.normals);
+            const normals = body1.normals.concat(
+                body2.normals,
+                Vector.minus(position1, body2.getClosest(position1)).normalize()
+            );
+            if (!body1.isCircle) {
+                const { position: position2 } = body2;
+                normals.push(Vector.minus(position2, body1.getClosest(position2)).normalize());
             }
 
             let minDirection: Vector | null = _null,
