@@ -154,7 +154,6 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
             pointerConstraint!.target = _null;
             target.emit('dragEnd', position, id, event);
             if (!target.active) {
-                target._v.reset();
                 target.velocity.reset();
             }
         }
@@ -243,7 +242,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
             { _pointer } = this;
         if (target && _pointer) {
             const { position } = _pointer;
-            target._v.setVector(target.velocity.setVector(position).minusVector(this._pointerPosition));
+            target.velocity.setVector(position).minusVector(this._pointerPosition);
             this._pointerPosition.setVector(position);
         }
 

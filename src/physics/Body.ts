@@ -86,7 +86,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
         density: 1,
         stiffness: 1,
         slop: .2,
-        elasticity: .2,
+        elasticity: .3,
         friction: .3,
         staticFriction: .5,
         airFriction: 0,
@@ -168,7 +168,6 @@ export abstract class Body extends EventEmitter<BodyEvents>
     fixRotation!: boolean;
     radius!: number;
     impulse = new Vector();
-    _v = new Vector();
 
     setDensity(density: number) {
         (this.density as number) = density;
@@ -292,23 +291,23 @@ export abstract class Body extends EventEmitter<BodyEvents>
         this.emit('willUpdate', timeScale);
         const { velocity, impulse, bounds, position } = this;
         if (this.active) {
-            position.plusVector(velocity, timeScale);
-            bounds.moveVector(velocity, timeScale);
-            const { acceleration } = this,
-                maxAngularSpeed = this.maxAngularSpeed * timeScale,
-                maxSpeed = this.maxSpeed * timeScale,
-                airSpeedScale = 1 - this.airFriction,
-                angularSpeed = (this.angularSpeed *= airSpeedScale) * timeScale;
-            let speed = velocity.plusVector(acceleration, timeScale)
-                .plusVector(this.gravity, timeScale)
-                .scale(airSpeedScale)
-                .getNorm();
-            acceleration.reset();
+            const maxSpeed = this.maxSpeed;
+            let speed = velocity.getNorm() / timeScale;
             if (speed > maxSpeed) {
                 velocity.scale(maxSpeed / speed);
                 speed = maxSpeed;
             }
+            position.plusVector(velocity, timeScale);
+            bounds.moveVector(velocity, timeScale);
             (this.isStatic as boolean) = ((this.speed as number) = speed) <= Body.maxStaticSpeed;
+            const { acceleration } = this,
+                maxAngularSpeed = this.maxAngularSpeed * timeScale,
+                airSpeedScale = 1 - this.airFriction,
+                angularSpeed = (this.angularSpeed *= airSpeedScale) * timeScale;
+            velocity.plusVector(acceleration, timeScale)
+                .plusVector(this.gravity, timeScale)
+                .scale(airSpeedScale);
+            acceleration.reset();
             if (angularSpeed > maxAngularSpeed) {
                 (this.rotation as number) += (this.angularSpeed = maxAngularSpeed);
             } else {
@@ -323,7 +322,6 @@ export abstract class Body extends EventEmitter<BodyEvents>
         position.plusVector(impulse);
         bounds.moveVector(impulse);
         impulse.reset();
-        this._v.setVector(velocity);
         this.emit('didUpdate', timeScale);
     }
 

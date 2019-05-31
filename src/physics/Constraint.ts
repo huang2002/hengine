@@ -97,10 +97,10 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
         }
         offsetVector.setNorm(delta);
         const originIsActive = originPosition !== origin && (origin as Body).active,
-            { velocity: targetVelocity, _v: _targetVelocity } = target,
+            { velocity: targetVelocity } = target,
             { stiffness } = this;
         if (originIsActive) {
-            const { velocity: originVelocity, _v: _originVelocity } = origin as Body;
+            const { velocity: originVelocity } = origin as Body;
             if (target.active) {
                 const { mass: originMass } = origin as Body,
                     { mass: targetMass } = target,
@@ -108,7 +108,7 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
                     targetScale = 1 - originScale;
                 (origin as Body).moveVector(offsetVector, originScale * stiffness);
                 target.moveVector(offsetVector, -targetScale * stiffness);
-                const relativeVelocity = Vector.minus(_targetVelocity, _originVelocity);
+                const relativeVelocity = Vector.minus(targetVelocity, originVelocity);
                 if (Vector.dot(relativeVelocity, offsetVector)) {
                     const bounceVelocity = Vector.projectVector(relativeVelocity, offsetVector)
                         .plusVector(offsetVector)
@@ -120,7 +120,7 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
             } else {
                 (origin as Body).moveVector(offsetVector);
                 originVelocity.minusVector(
-                    Vector.projectVector(_originVelocity, offsetVector),
+                    Vector.projectVector(originVelocity, offsetVector),
                     elasticity
                 );
                 // TODO: solve the rotation of origin here
@@ -129,7 +129,7 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
             if (target.active || this.force) {
                 target.move(-offsetVector.x, -offsetVector.y);
                 targetVelocity.minusVector(
-                    Vector.projectVector(_targetVelocity, offsetVector),
+                    Vector.projectVector(targetVelocity, offsetVector),
                     elasticity
                 );
                 // TODO: solve the rotation of target here
