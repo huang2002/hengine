@@ -161,13 +161,9 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
                 innerHalfWidth = halfWidth - radius,
                 innerHalfHeight = halfHeight - radius;
             context.moveTo(-innerHalfWidth, -halfHeight);
-            context.lineTo(innerHalfWidth, -halfHeight);
-            context.arcTo(halfWidth, -halfHeight, halfWidth, -innerHalfHeight, radius);
-            context.lineTo(halfWidth, innerHalfHeight);
-            context.arcTo(halfWidth, halfHeight, innerHalfWidth, halfHeight, radius);
-            context.lineTo(-innerHalfWidth, halfHeight);
-            context.arcTo(-halfWidth, halfHeight, -halfWidth, innerHalfHeight, radius);
-            context.lineTo(-halfWidth, -innerHalfHeight);
+            context.arcTo(halfWidth, -halfHeight, halfWidth, innerHalfHeight, radius);
+            context.arcTo(halfWidth, halfHeight, -innerHalfWidth, halfHeight, radius);
+            context.arcTo(-halfWidth, halfHeight, -halfWidth, -innerHalfHeight, radius);
             context.arcTo(-halfWidth, -halfHeight, -innerHalfWidth, -halfHeight, radius);
         } else {
             context.rect(-width / 2, -height / 2, width, height);
