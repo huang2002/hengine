@@ -46,19 +46,21 @@ export class Circle extends Shape implements Required<CircleOptions>, Renderable
         bounds.bottom = y + halfHeight;
     }
 
-    // TODO: fix this
     getClosest(target: VectorLike) {
-        const { position } = this;
-        return Vector.minus(target, position).setNorm(this.radius).plusVector(position);
+        const { position } = this,
+            deltaVector = Vector.minus(target, position),
+            angle = deltaVector.getAngle();
+        return deltaVector.setNorm(this.radius * _sqrt(
+            Utils.quadraticSum(_cos(angle) * this.scaleX, _sin(angle) * this.scaleY)
+        )).plusVector(position);
     }
 
     project(direction: Vector) {
-        const { radius, rotation, scaleX, scaleY } = this,
-            positionProjection = Vector.project(this.position, direction),
-            angle = rotation - direction.getAngle(),
-            cos = _cos(angle),
-            sin = _sin(angle),
-            halfLength = radius * _sqrt(Utils.quadraticSum(cos * scaleX, sin * scaleY));
+        const positionProjection = Vector.project(this.position, direction),
+            angle = this.rotation - direction.getAngle(),
+            halfLength = this.radius * _sqrt(
+                Utils.quadraticSum(_cos(angle) * this.scaleX, _sin(angle) * this.scaleY)
+            );
         return {
             min: positionProjection - halfLength,
             max: positionProjection + halfLength
