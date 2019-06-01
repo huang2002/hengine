@@ -1,5 +1,5 @@
 import { Body, BodyOptions } from "../physics/Body";
-import { Renderable, Renderer } from "../renderer/Renderer";
+import { Renderable, RendererLike } from "../renderer/Renderer";
 import { _assign, _null } from "../common/references";
 import { Style, StrokeStyle, CommonStyle, FillStyle } from "./Style";
 import { Utils } from "../common/Utils";
@@ -32,7 +32,7 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
         { fillStyle: _null } as ShapeStyle
     );
 
-    static applyStyle(renderer: Renderer, style: ShapeStyle) {
+    static applyStyle(renderer: RendererLike, style: ShapeStyle) {
         Style.Common.apply(renderer, style);
         Style.Fill.apply(renderer, style);
         Style.Stroke.apply(renderer, style);
@@ -58,7 +58,7 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
     abstract path(context: CanvasRenderingContext2D): void;
     abstract updateBounds(): void;
 
-    render(renderer: Renderer) {
+    render(renderer: RendererLike) {
 
         if (!this.visible) {
             return;

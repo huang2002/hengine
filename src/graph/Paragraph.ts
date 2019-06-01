@@ -1,5 +1,5 @@
 import { _assign } from "../common/references";
-import { Renderable, Renderer } from "../renderer/Renderer";
+import { Renderable, RendererLike } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { TextStyle, Text } from "./Text";
 import { Utils } from "../common/Utils";
@@ -44,7 +44,7 @@ export class Paragraph implements Required<ParagraphOptions>, Renderable {
     position!: Vector;
     style!: TextStyle;
 
-    render(renderer: Renderer) {
+    render(renderer: RendererLike) {
         const { style, fillFirst, lines, lineHeight, indent, position } = this,
             { fillStyle, strokeStyle, shadowColor } = style,
             { context } = renderer;

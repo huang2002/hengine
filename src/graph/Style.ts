@@ -1,6 +1,6 @@
 import { _null } from "../common/references";
 import { Utils } from "../common/Utils";
-import { Renderer } from "../renderer/Renderer";
+import { RendererLike } from "../renderer/Renderer";
 
 export type RenderingStyle = string | CanvasGradient | CanvasPattern;
 
@@ -24,7 +24,7 @@ export interface FillStyle {
 
 export interface SubStyleObject<T> {
     defaults: T;
-    apply(renderer: Renderer, style: T): void;
+    apply(renderer: RendererLike, style: T): void;
 }
 
 export interface StyleObject {

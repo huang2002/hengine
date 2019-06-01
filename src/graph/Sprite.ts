@@ -1,4 +1,4 @@
-import { Renderable, Renderer } from "../renderer/Renderer";
+import { Renderable, RendererLike } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { _assign, _document, _undefined } from "../common/references";
 import { Utils } from "../common/Utils";
@@ -69,7 +69,7 @@ export class Sprite implements Required<SpriteOptions>, Renderable {
         return this;
     }
 
-    render(renderer: Renderer) {
+    render(renderer: RendererLike) {
         if (!this.visible) {
             return;
         }

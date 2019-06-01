@@ -3,7 +3,7 @@ import { _assign, _undefined, _abs, _Infinity } from "../common/references";
 import { Vector, VectorLike } from "../geometry/Vector";
 import { CategoryTag, Category } from "./Category";
 import { Bounds } from "../geometry/Bounds";
-import { Renderable, Renderer } from "../renderer/Renderer";
+import { Renderable, RendererLike } from "../renderer/Renderer";
 import { Utils } from "../common/Utils";
 import { PointerEventParameters } from "../core/Pointer";
 import { CollisionInfo } from "./Collision";
@@ -199,7 +199,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
     protected _rotate?(rotation: number, origin?: VectorLike): void;
     abstract getClosest(target: VectorLike): Vector;
     abstract project(direction: Vector): Projection;
-    abstract render(renderer: Renderer): void;
+    abstract render(renderer: RendererLike): void;
 
     setScale(scaleX: number, scaleY = scaleX) {
         const deltaScaleX = scaleX / this.scaleX,

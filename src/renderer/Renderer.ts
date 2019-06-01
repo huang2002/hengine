@@ -3,9 +3,17 @@ import { SizingFunction, Sizing } from "./Sizing";
 import { Vector, VectorLike } from "../geometry/Vector";
 import { Utils } from "../common/Utils";
 import { Bounds } from "../geometry/Bounds";
+import { RenderingStyle } from "../graph/Style";
 
 export interface Renderable {
-    render(renderer: Renderer): void;
+    render(renderer: RendererLike): void;
+}
+
+export interface RendererLike {
+    canvas: HTMLCanvasElement;
+    context: CanvasRenderingContext2D;
+    ratio: number;
+    fill(color: RenderingStyle | null): void;
 }
 
 export type RendererOptions = Partial<{
@@ -24,7 +32,7 @@ export type RendererOptions = Partial<{
     restoration: boolean;
 }>;
 
-export class Renderer implements Required<RendererOptions>{
+export class Renderer implements Required<RendererOptions>, RendererLike {
 
     static defaults: RendererOptions = {
         settings: Utils.Const.EMPTY_OBJECT,
@@ -159,6 +167,17 @@ export class Renderer implements Required<RendererOptions>{
         }
         this._resize(true);
         return this;
+    }
+
+    fill(color: RenderingStyle | null) {
+        const { context, bounds } = this,
+            { left, top, width, height } = bounds;
+        if (color) {
+            context.fillStyle = color;
+            context.fillRect(left, top, width, height);
+        } else {
+            context.clearRect(left, top, width, height);
+        }
     }
 
     render(renderable: Renderable) {

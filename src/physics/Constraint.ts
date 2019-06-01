@@ -1,5 +1,5 @@
 import { _assign, _undefined, _null } from "../common/references";
-import { Renderable, Renderer } from "../renderer/Renderer";
+import { Renderable, RendererLike } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { Body } from "./Body";
 import { StrokeStyle, Style, CommonStyle } from "../graph/Style";
@@ -137,7 +137,7 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
         }
     }
 
-    render(renderer: Renderer) {
+    render(renderer: RendererLike) {
         const { style, origin, target } = this;
         if (!style.strokeStyle || !origin || !target) {
             return;

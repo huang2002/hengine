@@ -1,5 +1,5 @@
 import { _assign } from "../common/references";
-import { Renderable, Renderer } from "../renderer/Renderer";
+import { Renderable, RendererLike } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { ShapeStyle, Shape } from "./Shape";
 import { Utils } from "../common/Utils";
@@ -28,7 +28,7 @@ export class Text implements Required<TextOptions>, Renderable {
         direction: 'inherit',
     } as TextStyle);
 
-    static applyStyle(renderer: Renderer, textStyle: TextStyle) {
+    static applyStyle(renderer: RendererLike, textStyle: TextStyle) {
         Shape.applyStyle(renderer, textStyle);
         const { context } = renderer;
         context.font = textStyle.font;
@@ -54,7 +54,7 @@ export class Text implements Required<TextOptions>, Renderable {
     position!: Vector;
     style!: TextStyle;
 
-    render(renderer: Renderer) {
+    render(renderer: RendererLike) {
         const { style, fillFirst, content, position } = this,
             { fillStyle } = style,
             { context } = renderer;

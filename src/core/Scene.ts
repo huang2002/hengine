@@ -253,15 +253,9 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     }
 
     render(renderer: Renderer) {
-        const { context, bounds, width, height } = renderer,
-            { left, top } = bounds;
+        const { context } = renderer;
         this.emit('willRender', context);
-        if (this.background) {
-            context.fillStyle = this.background;
-            context.fillRect(left, top, width, height);
-        } else {
-            context.clearRect(left, top, width, height);
-        }
+        renderer.fill(this.background);
         this.objects.concat(this.attachments).forEach(renderable => {
             renderer.render(renderable);
         });
