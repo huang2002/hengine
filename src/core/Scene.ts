@@ -218,13 +218,12 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
             pointerConstraint.update(timeScale);
         }
 
-        const collidableBodies = new Array<Body>(),
-            deferredObjects = new Array<SceneObject>();
+        const collidableBodies = new Array<Body>();
 
-        this.objects.forEach(object => {
+        this.objects.filter(object => {
             if (object.update) {
                 if (object.defer) {
-                    deferredObjects.push(object);
+                    return true;
                 } else {
                     object.update!(timeScale);
                 }
@@ -232,9 +231,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
                     collidableBodies.push(object as Body);
                 }
             }
-        });
-
-        deferredObjects.forEach(object => {
+        }).forEach(object => {
             object.update!(timeScale);
         });
 
