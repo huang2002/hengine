@@ -28,8 +28,6 @@ export namespace Utils {
         Callback<ThisParameterType<T>, Parameters<T>, ReturnType<T>> &
         { cache: Map<string, ReturnType<T>>; };
 
-    export type ExcludeKeys<O, K extends keyof O> = Pick<O, Exclude<keyof O, K>>;
-
 }
 
 export const Utils = {

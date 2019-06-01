@@ -4,7 +4,7 @@ import { _abs, _assign, _cos, _sin, _sqrt, _PI, _undefined } from "../common/ref
 import { Shape, ShapeOptions } from "./Shape";
 import { Utils } from "../common/Utils";
 
-export type CircleOptions = Utils.ExcludeKeys<ShapeOptions, 'isCircle'>;
+export type CircleOptions = Omit<ShapeOptions, 'isCircle'>;
 
 export class Circle extends Shape implements Required<CircleOptions>, Renderable {
 
