@@ -52,7 +52,7 @@ export class Bounds {
         );
     }
 
-    update(vertices: ReadonlyArray<VectorLike>) {
+    updateVertices(vertices: ReadonlyArray<VectorLike>) {
         vertices.forEach(({ x, y }, i) => {
             if (i > 0) {
                 if (x < this.left) {

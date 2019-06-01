@@ -105,7 +105,7 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
     updateBounds() {
         const { vertices, bounds, position } = this;
         if (vertices.length) {
-            bounds.update(vertices);
+            bounds.updateVertices(vertices);
             bounds.moveVector(position);
         } else {
             bounds.left = bounds.right = position.x;

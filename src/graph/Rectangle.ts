@@ -92,7 +92,7 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
             dy1 = dx0 * sin + dy0 * cos,
             dx2 = dx0 * cos - -dy0 * sin,
             dy2 = dx0 * sin + -dy0 * cos;
-        bounds.update(Vertices.fromArray([
+        bounds.updateVertices(Vertices.fromArray([
             x + dx1, y + dy1,
             x + dx2, y + dy2,
             x - dx1, y - dy1,
