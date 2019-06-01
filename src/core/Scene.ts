@@ -128,6 +128,10 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         }
     }
 
+    private _draggableFilter(body: Body) {
+        return body.draggable;
+    }
+
     private _onPointerStart(position: Vector, id: number, event: Event) {
         const { pointerConstraint } = this;
         if (!pointerConstraint) {
@@ -137,7 +141,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         if (pointerConstraint.target) {
             pointerConstraint.target.emit('dragEnd', position, id, event);
         }
-        const focus = this.getFocus(body => body.draggable);
+        const focus = this.getFocus(this._draggableFilter);
         if (focus) {
             pointerConstraint.target = focus;
             pointerConstraint.targetOffset.setVector(position).minusVector(focus.position);
@@ -187,16 +191,15 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         return this;
     }
 
-    getFocus(filterCallback?: Utils.Callback<void, Body, any>) {
+    getFocus(filter?: Utils.Callback<void, Body, any>) {
         const { pointerChecker } = this;
         if (!pointerChecker) {
             return;
         }
         const { _pointer } = this,
             bodies = this.objects.concat(this.attachments)
-                .filter(object =>
-                    (object as Body).interactive &&
-                    (!filterCallback || filterCallback(object as Body))
+                .filter(
+                    object => (object as Body).interactive && (!filter || filter(object as Body))
                 ) as Body[];
         for (let i = bodies.length; i--;) {
             const body = bodies[i];
