@@ -72,4 +72,28 @@ export class Bounds {
         });
     }
 
+    updateBounds(boundsArray: ReadonlyArray<Bounds>) {
+        boundsArray.forEach(({ left, right, top, bottom }, i) => {
+            if (i > 0) {
+                if (left < this.left) {
+                    this.left = left;
+                }
+                if (right > this.right) {
+                    this.right = right;
+                }
+                if (top < this.top) {
+                    this.top = top;
+                }
+                if (bottom > this.bottom) {
+                    this.bottom = bottom;
+                }
+            } else {
+                this.left = left;
+                this.right = right;
+                this.top = top;
+                this.bottom = bottom;
+            }
+        });
+    }
+
 }
