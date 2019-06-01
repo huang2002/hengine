@@ -4,15 +4,21 @@ import { Vector, VectorLike } from "../geometry/Vector";
 import { Utils } from "../common/Utils";
 import { Bounds } from "../geometry/Bounds";
 import { RenderingStyle } from "../graph/Style";
+import { LayerOptions, Layer } from "../graph/Layer";
 
 export interface Renderable {
     render(renderer: RendererLike): void;
 }
 
 export interface RendererLike {
-    canvas: HTMLCanvasElement;
-    context: CanvasRenderingContext2D;
-    ratio: number;
+    readonly canvas: HTMLCanvasElement;
+    readonly context: CanvasRenderingContext2D;
+    readonly ratio: number;
+    readonly width: number;
+    readonly height: number;
+    readonly origin: Vector;
+    readonly originX: number;
+    readonly originY: number;
     fill(color: RenderingStyle | null): void;
 }
 
@@ -36,11 +42,11 @@ export class Renderer implements Required<RendererOptions>, RendererLike {
 
     static defaults: RendererOptions = {
         settings: Utils.Const.EMPTY_OBJECT,
-        width: 480,
-        height: 320,
+        width: Layer.defaults.width,
+        height: Layer.defaults.height,
         margin: 10,
-        ratio: _window.devicePixelRatio || 1,
-        origin: Vector.of(.5, .5),
+        ratio: Layer.defaults.ratio,
+        origin: Layer.defaults.origin,
         parent: _document.body,
         align: true,
         sizing: Sizing.Fit,
@@ -80,6 +86,8 @@ export class Renderer implements Required<RendererOptions>, RendererLike {
     readonly resizeEvents!: string[];
     readonly bounds = new Bounds();
     readonly resizeListener = Utils.debounce(this._resizeListener.bind(this));
+    readonly originX!: number;
+    readonly originY!: number;
     width!: number;
     height!: number;
     margin!: number;
@@ -90,8 +98,6 @@ export class Renderer implements Required<RendererOptions>, RendererLike {
     restoration!: boolean;
     private _offsetX!: number;
     private _offsetY!: number;
-    private _originOffsetX!: number;
-    private _originOffsetY!: number;
     private _scale!: number;
 
     set resizeDelay(delay: number) {
@@ -138,20 +144,20 @@ export class Renderer implements Required<RendererOptions>, RendererLike {
         canvas.width = width * ratio;
         canvas.height = height * ratio;
 
-        const originOffsetX = this._originOffsetX = width * origin.x,
-            originOffsetY = this._originOffsetY = height * origin.y;
+        const originX = (this.originX as number) = width * origin.x,
+            originY = (this.originY as number) = height * origin.y;
 
         this.context.setTransform(
             ratio, 0,
             0, ratio,
-            originOffsetX * ratio, originOffsetY * ratio
+            originX * ratio, originY * ratio
         );
 
         const { bounds } = this;
-        bounds.top = -originOffsetY;
-        bounds.right = -originOffsetX + width;
-        bounds.bottom = -originOffsetY + height;
-        bounds.left = -originOffsetX;
+        bounds.top = -originY;
+        bounds.right = -originX + width;
+        bounds.bottom = -originY + height;
+        bounds.left = -originX;
 
     }
 
@@ -194,17 +200,26 @@ export class Renderer implements Required<RendererOptions>, RendererLike {
     outer2inner(position: VectorLike) {
         const { _scale } = this;
         return Vector.of(
-            (position.x - this._offsetX) / _scale - this._originOffsetX,
-            (position.y - this._offsetY) / _scale - this._originOffsetY
+            (position.x - this._offsetX) / _scale - this.originX,
+            (position.y - this._offsetY) / _scale - this.originY
         );
     }
 
     inner2outer(position: VectorLike) {
         const { _scale } = this;
         return Vector.of(
-            (position.x + this._originOffsetX) * _scale + this._offsetX,
-            (position.y + this._originOffsetY) * _scale + this._offsetY,
+            (position.x + this.originX) * _scale + this._offsetX,
+            (position.y + this.originY) * _scale + this._offsetY,
         );
+    }
+
+    createLayer(options?: LayerOptions) {
+        const { bounds } = this;
+        return new Layer(_assign({
+            width: bounds.width,
+            height: bounds.height,
+            ratio: this.ratio,
+        }, options));
     }
 
 }

@@ -17,13 +17,13 @@ const engine = new HE.Engine({ inspector, renderer });
 
 const menuScene = engine.createScene({
     background: '#cdf',
-    delay: 100,
+    delay: 50,
 });
 
 const title = new HE.Text({
     content: 'Hello, world!',
     style: {
-        font: 'bold 36px Consolas',
+        font: 'bold 40px Consolas',
         fillStyle: '#6f0',
         strokeStyle: '#03f',
         lineWidth: 4,
@@ -33,8 +33,16 @@ const title = new HE.Text({
         shadowOffsetY: 2,
     },
 });
-title.position.y = -100;
-menuScene.attach(title);
+title.position.y = -80;
+
+const titleLayer = renderer.createLayer({
+    objects: [title],
+    offset: Vector.of(0, -80),
+    width: 350,
+    height: 60,
+});
+titleLayer.cache(true);
+menuScene.attach(titleLayer);
 
 const button = new HE.Rectangle({
     interactive: true,
