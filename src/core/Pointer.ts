@@ -4,7 +4,7 @@ import { EventEmitter } from "../common/EventEmitter";
 import { BodyLike } from "../physics/Body";
 import { Bounds } from "../geometry/Bounds";
 
-export type PointerTransform = (position: VectorLike) => VectorLike;
+export type PointerTransform = (position: Vector) => Vector;
 
 export type PointerOptions = Partial<{
     target: EventTarget;
@@ -24,7 +24,6 @@ export interface PointerEvents {
     click: PointerEventParameters;
 }
 
-// TODO: improve multi-points handling
 export class Pointer extends EventEmitter<PointerEvents> implements Required<PointerOptions>, BodyLike {
 
     static defaults: PointerOptions = {
@@ -75,6 +74,7 @@ export class Pointer extends EventEmitter<PointerEvents> implements Required<Poi
     readonly active: boolean = true;
     readonly isHolding: boolean = false;
     readonly startTimeStamps = new _Map<number, number>();
+    readonly positions = new _Map<number, Vector>();
     private startListener: EventListener;
     private moveListener: EventListener;
     private endListener: EventListener;
@@ -83,32 +83,38 @@ export class Pointer extends EventEmitter<PointerEvents> implements Required<Poi
     transform!: null | PointerTransform;
     radius!: number;
 
-    private _setPosition(rawPosition: VectorLike) {
-        const { bounds, radius, position } = this;
-        position.setVector(this.transform ? this.transform(rawPosition) : rawPosition);
-        bounds.left = position.x - radius;
-        bounds.right = position.x + radius;
-        bounds.top = position.y - radius;
-        bounds.bottom = position.y + radius;
+    private _setPosition(id: number, rawPosition: Vector, endFlag?: boolean) {
+        const { bounds, radius, positions } = this,
+            newPosition = this.transform ? this.transform(rawPosition) : rawPosition;
+        this.position.setVector(newPosition);
+        if (endFlag) {
+            positions.delete(id);
+        } else {
+            positions.set(id, newPosition);
+        }
+        bounds.left = newPosition.x - radius;
+        bounds.right = newPosition.x + radius;
+        bounds.top = newPosition.y - radius;
+        bounds.bottom = newPosition.y + radius;
     }
 
-    private _start(id: number, rawPosition: VectorLike, event: Event) {
+    private _start(id: number, rawPosition: Vector, event: Event) {
         (this.isHolding as boolean) = true;
         this.startTimeStamps.set(id, event.timeStamp);
-        this._setPosition(rawPosition);
+        this._setPosition(id, rawPosition);
         this.emit('start', this.position, id, event);
     }
 
-    private _move(id: number, rawPosition: VectorLike, event: Event) {
+    private _move(id: number, rawPosition: Vector, event: Event) {
         if (this.holdOnly && !this.isHolding) {
             return;
         }
-        this._setPosition(rawPosition);
+        this._setPosition(id, rawPosition);
         this.emit('move', this.position, id, event);
     }
 
-    private _end(id: number, rawPosition: VectorLike, event: Event) {
-        this._setPosition(rawPosition);
+    private _end(id: number, rawPosition: Vector, event: Event) {
+        this._setPosition(id, rawPosition, true);
         (this.isHolding as boolean) = false;
         const { startTimeStamps } = this,
             startTimeStamp = startTimeStamps.get(id)!;
