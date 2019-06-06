@@ -41,10 +41,17 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
     private _usedRAF?: boolean;
     private _lastTickTime!: number;
 
+    private _requestTick(delay: number) {
+        this._timer = (this._usedRAF = delay <= Timer.RAFThreshold && this.allowRAF) ?
+            _window.requestAnimationFrame(this._tick) :
+            _setTimeout(this._tick, _max(delay, 0)) as unknown as number;
+    }
+
     private _tick() {
 
         const startTime = _now(),
-            deltaTime = (this.lastFrameDelay as number) = startTime - this._lastTickTime;
+            deltaTime = (this.lastFrameDelay as number) = startTime - this._lastTickTime,
+            { _timer } = this;
 
         this._lastTickTime = startTime;
         this.emit('tick', deltaTime);
@@ -53,11 +60,10 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
             return;
         }
 
-        const duration = (this.lastFrameDuration as number) = _now() - startTime,
-            delay = _max(this.delay - (this.fixDelay ? duration : 0), 0);
-        this._timer = (this._usedRAF = delay <= Timer.RAFThreshold && this.allowRAF) ?
-            _window.requestAnimationFrame(this._tick) :
-            _setTimeout(this._tick, _max(delay, 0)) as unknown as number;
+        const duration = (this.lastFrameDuration as number) = _now() - startTime;
+        if (this._timer === _timer) {
+            this._requestTick(_max(this.delay - (this.fixDelay ? duration : 0), 0));
+        }
 
     }
 
@@ -74,6 +80,15 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
             (this._usedRAF ? _window.cancelAnimationFrame : _clearTimeout)(_timer);
             this._timer = _undefined;
         }
+    }
+
+    reschedule(delay: number) {
+        this.stop();
+        this.delay = delay;
+        (this.isRunning as boolean) = true;
+        const now = _now();
+        this._requestTick(_max(delay - (now - this._lastTickTime), 0));
+        this._lastTickTime = now;
     }
 
 }

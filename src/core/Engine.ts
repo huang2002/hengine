@@ -80,7 +80,10 @@ export class Engine implements Required<EngineOptions> {
         }
         const { currentScene, inspector, renderer } = this;
         if (currentScene) {
-            this.timer.delay = currentScene.delay;
+            const { timer } = this;
+            if (timer.delay !== currentScene.delay) {
+                timer.reschedule(currentScene.delay);
+            }
             currentScene.update(timeScale);
             renderer.render(currentScene);
         }
