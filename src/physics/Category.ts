@@ -8,9 +8,9 @@ export interface CategoryObject {
     readonly FULL_MASK: number;
     registry: CategoryRecord[];
     count: number;
-    next(): number;
-    for(tag: CategoryTag): number;
-    tagFor(category: number): CategoryTag | void;
+    readonly next: () => number;
+    readonly for: (tag: CategoryTag) => number;
+    readonly tagFor: (category: number) => CategoryTag | void;
 }
 
 export const Category: CategoryObject = {

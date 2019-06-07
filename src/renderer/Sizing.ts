@@ -15,12 +15,12 @@ export type SizingFunction = (
 ) => SizingResult;
 
 export interface SizingObject {
-    Full: SizingFunction;
-    Center: SizingFunction;
-    Fit: SizingFunction;
-    FixedWidth: SizingFunction;
-    FixedHeight: SizingFunction;
-    Fixed: SizingFunction;
+    readonly Full: SizingFunction;
+    readonly Center: SizingFunction;
+    readonly Fit: SizingFunction;
+    readonly FixedWidth: SizingFunction;
+    readonly FixedHeight: SizingFunction;
+    readonly Fixed: SizingFunction;
 }
 
 export const Sizing: SizingObject = {

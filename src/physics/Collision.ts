@@ -2,31 +2,31 @@ import { Body, BodyLike } from "./Body";
 import { Vector } from "../geometry/Vector";
 import { _null, _Infinity, _min, _max, _assign, _abs, _Set, _sign } from "../common/references";
 
-export interface CollisionResult {
+export type CollisionResult = Readonly<{
     overlap: number;
     overlapVector: Vector;
     // TODO: point: Vector;
-}
+}>;
 
-export interface CollisionInfo extends CollisionResult {
+export type CollisionInfo = CollisionResult & Readonly<{
     body1: Body;
     body2: Body;
     edgeVector: Vector | null;
     relativeVelocity: Vector;
-}
+}>;
 
 export type CollisionChecker = (body1: BodyLike, body2: BodyLike) => CollisionResult | null;
 
-export interface CollisionObject {
+export type CollisionObject = Readonly<{
     check(bodies: Body[], checker: CollisionChecker): void;
     find(bodies: Body[], checker: CollisionChecker): CollisionInfo[];
-    Checker: {
+    Checker: Readonly<{
         AABB: CollisionChecker;
         SAT: CollisionChecker;
         Distance: CollisionChecker;
         Smart: CollisionChecker;
-    };
-}
+    }>;
+}>;
 
 export const Collision: CollisionObject = {
 

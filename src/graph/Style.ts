@@ -24,14 +24,14 @@ export interface FillStyle {
 
 export interface SubStyleObject<T> {
     defaults: T;
-    apply(renderer: RendererLike, style: T): void;
+    readonly apply: (renderer: RendererLike, style: T) => void;
 }
 
-export interface StyleObject {
+export type StyleObject = Readonly<{
     Common: SubStyleObject<CommonStyle>;
     Stroke: SubStyleObject<StrokeStyle>;
-    Fill: SubStyleObject<FillStyle>,
-}
+    Fill: SubStyleObject<FillStyle>;
+}>;
 
 export const Style: StyleObject = {
 

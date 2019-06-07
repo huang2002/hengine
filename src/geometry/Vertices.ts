@@ -80,4 +80,4 @@ export const Vertices = {
         }
     }),
 
-};
+} as const;
