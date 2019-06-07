@@ -47,7 +47,7 @@ export const Utils = {
     },
 
     mix(a: number, b: number, k: number) {
-        return a * k + b * (1 - k);
+        return a + (b - a) * k;
     },
 
     rad2deg(rad: number) {
