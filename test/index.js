@@ -44,7 +44,7 @@ const titleLayer = renderer.createLayer({
 titleLayer.cache(true);
 menuScene.attach(titleLayer);
 
-const button = new HE.Rectangle({
+const playButton = new HE.Rectangle({
     interactive: true,
     position: Vector.of(0, 50),
     width: 100,
@@ -71,7 +71,7 @@ const button = new HE.Rectangle({
         }),
     ],
 });
-menuScene.attach(button.on('click', (position, id, event) => {
+menuScene.attach(playButton.on('click', (position, id, event) => {
     console.log('Button clicked at ' + position, ' (id:' + id + ')', event);
     engine.enter(mainScene);
 }));
