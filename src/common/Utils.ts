@@ -12,15 +12,15 @@ export namespace Utils {
 
     export type DebounceCallback = Callback;
 
-    export interface DebounceWrapper<F extends DebounceCallback> {
-        (...args: Parameters<F>): void;
+    export interface DebounceWrapper<T extends DebounceCallback> {
+        (...args: Parameters<T>): void;
         delay: number;
     }
 
     export type ThrottleCallback = Callback<any>;
 
-    export interface ThresholdWrapper<F extends ThrottleCallback> {
-        (...args: Parameters<F>): ReturnType<F> | void;
+    export interface ThresholdWrapper<T extends ThrottleCallback> {
+        (...args: Parameters<T>): ReturnType<T> | void;
         threshold: number;
     }
 
@@ -40,8 +40,7 @@ export const Utils = {
     } as const,
 
     removeIndex(array: unknown[], index: number) {
-        const end = array.length - 1;
-        for (; index < end; index++) {
+        for (const end = array.length - 1; index < end; index++) {
             array[index] = array[index + 1];
         }
         array.length--;
@@ -60,7 +59,7 @@ export const Utils = {
     },
 
     quadraticSum(a: number, b: number) {
-        return _pow(a, 2) + _pow(b, 2);
+        return a * a + b * b;
     },
 
     distance(x1: number, y1: number, x2: number, y2: number) {
@@ -68,9 +67,9 @@ export const Utils = {
     },
 
     debounce: _assign(
-        function debounce<F extends Utils.DebounceCallback>(callback: F, delay?: number) {
+        function debounce<T extends Utils.DebounceCallback>(callback: T, delay?: number) {
             let timer: any;
-            const wrapper: Utils.DebounceWrapper<F> = function debounceWrapper() {
+            const wrapper: Utils.DebounceWrapper<T> = function debounceWrapper() {
                 if (timer !== _undefined) {
                     _clearTimeout(timer);
                 }
@@ -88,13 +87,13 @@ export const Utils = {
     ),
 
     throttle: _assign(
-        function throttle<F extends Utils.ThrottleCallback>(callback: F, threshold?: number) {
+        function throttle<T extends Utils.ThrottleCallback>(callback: T, threshold?: number) {
             let lastCallTime = 0;
-            const wrapper: Utils.ThresholdWrapper<F> = function throttleWrapper(this: any) {
+            const wrapper: Utils.ThresholdWrapper<T> = function throttleWrapper(this: any) {
                 const currentTime = _now();
                 if (currentTime - lastCallTime >= wrapper.threshold) {
                     lastCallTime = currentTime;
-                    return callback.apply(this, arguments as unknown as unknown[]) as ReturnType<F>;
+                    return callback.apply(this, arguments as unknown as unknown[]) as ReturnType<T>;
                 }
             };
             wrapper.threshold = threshold || Utils.throttle.defaultThreshold;
@@ -106,7 +105,7 @@ export const Utils = {
 
     cache<T extends Utils.Callback<any>>(fn: T): Utils.CacheWrapper<T> {
         const map = new _Map<string, ReturnType<T>>();
-        const cacheWrapper = function cacheWrapper(
+        const wrapper = function cacheWrapper(
             this: ThisParameterType<T>, ...args: Utils.ToArray<Parameters<T>>
         ) {
             const parameters = args.join();
@@ -118,8 +117,8 @@ export const Utils = {
                 return result;
             }
         };
-        cacheWrapper.cache = map;
-        return cacheWrapper;
+        wrapper.cache = map;
+        return wrapper;
     },
 
 } as const;
