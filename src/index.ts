@@ -1,6 +1,9 @@
 export * from "./common/Utils";
 export * from "./common/EventEmitter";
 
+export * from "./transition/Transition";
+export * from "./transition/Timing";
+
 export * from "./geometry/Vector";
 export * from "./geometry/Bounds";
 export * from "./geometry/Vertices";
