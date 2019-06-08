@@ -9,10 +9,12 @@ import { Pointer } from "./Pointer";
 import { Vector } from "../geometry/Vector";
 import { Constraint } from "../physics/Constraint";
 
-export type SceneObject = Body | Renderable & {
+export interface SceneEffect {
     defer?: boolean;
-    update?(timeScale: number): void;
-};
+    update(timeScale: number): void;
+}
+
+export type SceneObject = Body | Renderable & Partial<SceneEffect>;
 
 export type SceneOptions = Partial<{
     delay: number;
@@ -23,6 +25,7 @@ export type SceneOptions = Partial<{
     pointer: Pointer | null;
     objects: SceneObject[];
     attachments: SceneObject[];
+    effects: SceneEffect[];
     collisionChecker: CollisionChecker | null;
     pointerChecker: CollisionChecker | null;
     pointerConstraint: Constraint | null;
@@ -37,6 +40,7 @@ export interface SceneEvents {
     exit: [];
 }
 
+// TODO: add `transition`
 export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOptions> {
 
     static defaults: SceneOptions = {
@@ -68,6 +72,9 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         if (!this.attachments) {
             this.attachments = [];
         }
+        if (!this.effects) {
+            this.effects = [];
+        }
 
     }
 
@@ -78,6 +85,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     clean!: boolean;
     objects!: SceneObject[];
     attachments!: SceneObject[];
+    effects!: SceneEffect[];
     collisionChecker!: CollisionChecker | null;
     pointerChecker!: CollisionChecker | null;
     pointerConstraint!: Constraint | null;
@@ -215,6 +223,14 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
 
         this.emit('willUpdate', timeScale);
 
+        const deferredEffects = this.effects.filter(effect => {
+            if (effect.defer) {
+                return true;
+            } else {
+                effect.update(timeScale);
+            }
+        });
+
         const { pointerConstraint } = this;
 
         if (pointerConstraint) {
@@ -250,6 +266,10 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         if (collisionChecker) {
             Collision.check(collidableBodies, collisionChecker);
         }
+
+        deferredEffects.forEach(effect => {
+            effect.update(timeScale);
+        });
 
         this.emit('didUpdate', timeScale);
 
