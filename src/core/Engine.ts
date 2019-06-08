@@ -65,11 +65,11 @@ export class Engine implements Required<EngineOptions> {
             if (timer.delay !== scene.delay) {
                 timer.reschedule(scene.delay);
             }
+            scene.active = true;
+            scene.emit('enter');
             if (!timer.isRunning) {
                 timer.start();
             }
-            scene.active = true;
-            scene.emit('enter');
         }
     }
 

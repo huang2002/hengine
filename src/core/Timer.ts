@@ -42,29 +42,24 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
     private _lastTickTime!: number;
 
     private _requestTick(delay: number) {
-        this._timer = (this._usedRAF = delay <= Timer.RAFThreshold && this.allowRAF) ?
+        this._timer = (this._usedRAF = this.delay <= Timer.RAFThreshold && this.allowRAF) ?
             _window.requestAnimationFrame(this._tick) :
             _setTimeout(this._tick, _max(delay, 0)) as unknown as number;
     }
 
     private _tick() {
-
         const startTime = _now(),
             deltaTime = (this.lastFrameDelay as number) = startTime - this._lastTickTime,
             { _timer } = this;
-
         this._lastTickTime = startTime;
         this.emit('tick', deltaTime);
-
         if (!this.isRunning) {
             return;
         }
-
         const duration = (this.lastFrameDuration as number) = _now() - startTime;
         if (this._timer === _timer) {
             this._requestTick(_max(this.delay - (this.fixDelay ? duration : 0), 0));
         }
-
     }
 
     start() {
@@ -74,6 +69,9 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
     }
 
     stop() {
+        if (!this.isRunning) {
+            return;
+        }
         (this.isRunning as boolean) = false;
         const { _timer } = this;
         if (_timer !== _undefined) {
@@ -83,12 +81,14 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
     }
 
     reschedule(delay: number) {
-        this.stop();
         this.delay = delay;
-        (this.isRunning as boolean) = true;
-        const now = _now();
-        this._requestTick(_max(delay - (now - this._lastTickTime), 0));
-        this._lastTickTime = now;
+        if (this.isRunning) {
+            this.stop();
+            (this.isRunning as boolean) = true;
+            const now = _now();
+            this._requestTick(_max(delay - (now - this._lastTickTime), 0));
+            this._lastTickTime = now;
+        }
     }
 
 }
