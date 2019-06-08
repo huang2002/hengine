@@ -2,6 +2,7 @@ import { _assign, _now, _null, _undefined } from "../common/references";
 import { EventEmitter } from "../common/EventEmitter";
 import { TimingFunction, Timing } from "./Timing";
 import { Utils } from "../common/Utils";
+import { SceneEffect } from "../core/Scene";
 
 export type TransitionOptions<T extends object = any> = Partial<{
     active: boolean;
@@ -23,7 +24,7 @@ export interface TransitionEvents {
 
 export class Transition<T extends object>
     extends EventEmitter<TransitionEvents>
-    implements Required<TransitionOptions> {
+    implements Required<TransitionOptions>, SceneEffect {
 
     static defaults: TransitionOptions<any> = {
         active: true,
