@@ -62,8 +62,8 @@ export class Engine implements Required<EngineOptions> {
         this.currentScene = scene;
         if (scene) {
             const { timer } = this;
-            if (scene.delay) {
-                timer.delay = scene.delay;
+            if (timer.delay !== scene.delay) {
+                timer.reschedule(scene.delay);
             }
             if (!timer.isRunning) {
                 timer.start();
