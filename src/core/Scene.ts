@@ -199,6 +199,20 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         return this;
     }
 
+    use(effect: SceneEffect) {
+        this.effects.push(effect);
+        return this;
+    }
+
+    disuse(effect: SceneEffect) {
+        const { effects } = this,
+            index = effects.indexOf(effect);
+        if (~index) {
+            Utils.removeIndex(effects, index);
+        }
+        return this;
+    }
+
     getFocus(filter?: Utils.Callback<void, Body, any>) {
         const { pointerChecker } = this;
         if (!pointerChecker) {
