@@ -87,7 +87,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
         stiffness: 1,
         slop: .2,
         elasticity: .3,
-        friction: .3,
+        friction: .4,
         staticFriction: .5,
         airFriction: 0,
         fixRotation: true,
