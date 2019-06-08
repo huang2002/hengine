@@ -287,6 +287,22 @@ export abstract class Body extends EventEmitter<BodyEvents>
         return this;
     }
 
+    moveTo(x: number, y: number) {
+        const { position } = this,
+            deltaX = x - position.x,
+            deltaY = y - position.y;
+        this.position.plus(deltaX, deltaY);
+        this.bounds.move(deltaX, deltaY);
+        return this;
+    }
+
+    moveToVector(vector: VectorLike) {
+        const deltaVector = Vector.minus(vector, this.position);
+        this.position.plusVector(deltaVector);
+        this.bounds.moveVector(deltaVector);
+        return this;
+    }
+
     update(timeScale: number) {
         this.emit('willUpdate', timeScale);
         const { velocity, impulse, bounds, position } = this;
