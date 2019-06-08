@@ -40,7 +40,6 @@ export interface SceneEvents {
     exit: [];
 }
 
-// TODO: add `transition`
 export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOptions> {
 
     static defaults: SceneOptions = {
