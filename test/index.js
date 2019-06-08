@@ -17,7 +17,7 @@ const engine = new HE.Engine({ inspector, renderer });
 
 const menuScene = engine.createScene({
     background: '#cdf',
-    delay: 50,
+    delay: 20,
 });
 
 const title = new HE.Text({
@@ -71,10 +71,23 @@ const playButton = new HE.Rectangle({
         }),
     ],
 });
-menuScene.attach(playButton.on('click', (position, id, event) => {
-    console.log('Button clicked at ' + position, ' (id:' + id + ')', event);
-    engine.enter(mainScene);
-}));
+menuScene.attach(
+    playButton.on('click', (position, id, event) => {
+        console.log('Button clicked at ' + position, ' (id:' + id + ')', event);
+        engine.enter(mainScene);
+    })
+).use(
+    new HE.Transition({
+        from: renderer.bounds.bottom + playButton.height / 2,
+        to: 0,
+        duration: 2000,
+        timing: HE.Timing.easeInOut,
+    }).on('update', y => {
+        playButton.moveTo(playButton.position.x, y);
+    }).on('end', () => {
+        menuScene.fps = 10;
+    })
+);
 
 const mainScene = engine.createScene({
     background: '#fff',
