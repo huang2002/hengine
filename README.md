@@ -6,12 +6,11 @@
 
 - [Introduction](#introduction)
 - [Usage](#usage)
-- [API Reference](#api-reference)
 - [Links](#links)
 
 ## Introduction
 
-(TBC)
+`hengine` is a 2D game engine with many basic functionalities such as scene management, graphic rendering, interaction detection and a simple physics engine. With `hengine`, you can easily create your own games. Also, you can use `hengine` to present other awesome 2D graphics.
 
 ## Usage
 
@@ -56,11 +55,8 @@ If you want a specified version, just replace `latest` with that in the url. By 
 
 For more information about these two CDN sites, visit [www.jsdelivr.com](https://www.jsdelivr.com) or [unpkg.com](https://unpkg.com).
 
-## API Reference
-
-(TBC)
-
 ## Links
 
+- [Documents](https://github.com/huang2002/hengine/wiki)
 - [Changelog](./CHANGELOG.md)
 - [License (MIT)](./LICENSE)
