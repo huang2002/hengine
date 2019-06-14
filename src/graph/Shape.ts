@@ -4,7 +4,6 @@ import { _assign, _null } from "../common/references";
 import { Style, StrokeStyle, CommonStyle, FillStyle } from "./Style";
 import { Utils } from "../common/Utils";
 
-
 export type ShapeStyle = CommonStyle & StrokeStyle & FillStyle;
 
 export type ShapeOptions = BodyOptions & Partial<{
@@ -12,6 +11,7 @@ export type ShapeOptions = BodyOptions & Partial<{
     visible: boolean;
     fillFirst: boolean;
     closePath: boolean;
+    preferShadow: boolean;
     texture: Renderable | null;
     attachments: Renderable[];
 }>;
@@ -22,6 +22,7 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
         visible: true,
         fillFirst: true,
         closePath: true,
+        preferShadow: false,
         texture: _null,
     };
 
@@ -52,6 +53,7 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
     visible!: boolean;
     fillFirst!: boolean;
     closePath!: boolean;
+    preferShadow!: boolean;
     texture!: Renderable | null;
     attachments!: Renderable[];
 
@@ -66,7 +68,8 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
 
         const { style, fillFirst, position, texture, attachments } = this,
             { fillStyle } = style,
-            { context } = renderer;
+            { context } = renderer,
+            { TRANSPARENT } = Utils.Const;
 
         context.translate(position.x, position.y);
 
@@ -76,6 +79,21 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
             texture.render(renderer);
             context.rotate(-rotation);
         } else {
+            if (this.preferShadow && !style.shadowBlur && style.shadowColor !== TRANSPARENT) {
+                const { shadowOffsetX, shadowOffsetY } = style;
+                context.translate(shadowOffsetX, shadowOffsetY);
+                context.beginPath();
+                this.path(context);
+                if (this.closePath) {
+                    context.closePath();
+                }
+                context.fillStyle = style.shadowColor;
+                context.fill();
+                context.translate(-shadowOffsetX, -shadowOffsetY);
+                if (style.fillStyle) {
+                    context.fillStyle = style.fillStyle;
+                }
+            }
             Shape.applyStyle(renderer, style);
             context.beginPath();
             this.path(context);
@@ -84,11 +102,11 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
             }
             if (fillFirst && fillStyle) {
                 context.fill();
-                context.shadowColor = Utils.Const.TRANSPARENT;
+                context.shadowColor = TRANSPARENT;
             }
             if (style.strokeStyle) {
                 context.stroke();
-                context.shadowColor = Utils.Const.TRANSPARENT;
+                context.shadowColor = TRANSPARENT;
             }
             if (!fillFirst && fillStyle) {
                 context.fill();

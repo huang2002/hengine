@@ -10,6 +10,7 @@ export type TextOptions = Partial<{
     visible: boolean;
     content: string;
     fillFirst: boolean;
+    preferShadow: boolean;
     position: Vector;
     style: Partial<TextStyle>;
 }>;
@@ -19,6 +20,7 @@ export class Text implements Required<TextOptions>, Renderable {
     static defaults: TextOptions = {
         visible: true,
         content: '',
+        preferShadow: false,
     };
 
     static defaultStyle: TextStyle = _assign({} as TextStyle, Shape.defaultStyle, {
@@ -51,24 +53,34 @@ export class Text implements Required<TextOptions>, Renderable {
     visible!: boolean;
     content!: string;
     fillFirst!: boolean;
+    preferShadow!: boolean;
     position!: Vector;
     style!: TextStyle;
 
     render(renderer: RendererLike) {
         const { style, fillFirst, content, position } = this,
+            { x, y } = position,
             { fillStyle } = style,
-            { context } = renderer;
+            { context } = renderer,
+            { TRANSPARENT } = Utils.Const;
         Text.applyStyle(renderer, style);
+        if (this.preferShadow && !style.shadowBlur && style.shadowColor !== TRANSPARENT) {
+            context.fillStyle = style.shadowColor;
+            context.fillText(content, x + style.shadowOffsetX, y + style.shadowOffsetY);
+            if (style.fillStyle) {
+                context.fillStyle = style.fillStyle;
+            }
+        }
         if (fillFirst && fillStyle) {
-            context.fillText(content, position.x, position.y);
-            context.shadowColor = Utils.Const.TRANSPARENT;
+            context.fillText(content, x, y);
+            context.shadowColor = TRANSPARENT;
         }
         if (style.strokeStyle) {
-            context.strokeText(content, position.x, position.y);
-            context.shadowColor = Utils.Const.TRANSPARENT;
+            context.strokeText(content, x, y);
+            context.shadowColor = TRANSPARENT;
         }
         if (!fillFirst && fillStyle) {
-            context.fillText(content, position.x, position.y);
+            context.fillText(content, x, y);
         }
     }
 
