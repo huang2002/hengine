@@ -67,8 +67,8 @@ export class Text implements Required<TextOptions>, Renderable {
         if (this.preferShadow && !style.shadowBlur && style.shadowColor !== TRANSPARENT) {
             context.fillStyle = style.shadowColor;
             context.fillText(content, x + style.shadowOffsetX, y + style.shadowOffsetY);
-            if (style.fillStyle) {
-                context.fillStyle = style.fillStyle;
+            if (fillStyle) {
+                context.fillStyle = fillStyle;
             }
         }
         if (fillFirst && fillStyle) {

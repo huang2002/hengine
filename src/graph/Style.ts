@@ -24,7 +24,7 @@ export interface FillStyle {
 
 export interface SubStyleObject<T> {
     defaults: T;
-    readonly apply: (renderer: RendererLike, style: T) => void;
+    apply(renderer: RendererLike, style: T): void;
 }
 
 export type StyleObject = Readonly<{

@@ -90,8 +90,8 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
                 context.fillStyle = style.shadowColor;
                 context.fill();
                 context.translate(-shadowOffsetX, -shadowOffsetY);
-                if (style.fillStyle) {
-                    context.fillStyle = style.fillStyle;
+                if (fillStyle) {
+                    context.fillStyle = fillStyle;
                 }
             }
             Shape.applyStyle(renderer, style);

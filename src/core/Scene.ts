@@ -59,12 +59,11 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         this._onPointerStart = this._onPointerStart.bind(this);
         this._onPointerEnd = this._onPointerEnd.bind(this);
 
-        this.pointerConstraint = options.pointerConstraint !== _undefined ?
-            options.pointerConstraint :
-            new Constraint();
-
         _assign(this, Scene.defaults, options);
 
+        if (!this.pointerConstraint) {
+            this.pointerConstraint = new Constraint();
+        }
         if (!this.objects) {
             this.objects = [];
         }

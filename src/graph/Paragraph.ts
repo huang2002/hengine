@@ -48,28 +48,24 @@ export class Paragraph implements Required<ParagraphOptions>, Renderable {
         const { style, fillFirst, lines, lineHeight, indent, position } = this,
             { fillStyle, strokeStyle, shadowColor } = style,
             { context } = renderer;
+        let { x, y } = position;
         Text.applyStyle(renderer, style);
-        context.translate(position.x, position.y);
-        lines.forEach((line, i) => {
+        lines.forEach(line => {
+            x += lineHeight;
+            y += indent;
             if (fillFirst && fillStyle) {
-                context.fillText(line, 0, 0);
+                context.fillText(line, x, y);
                 context.shadowColor = Utils.Const.TRANSPARENT;
             }
             if (strokeStyle) {
-                context.strokeText(line, 0, 0);
+                context.strokeText(line, x, y);
                 context.shadowColor = Utils.Const.TRANSPARENT;
             }
             if (!fillFirst && fillStyle) {
-                context.fillText(line, 0, 0);
+                context.fillText(line, x, y);
             }
-            context.translate(indent, lineHeight);
             context.shadowColor = shadowColor;
         });
-        const { length: lineCount } = lines;
-        context.translate(
-            -position.x - indent * lineCount,
-            -position.y - lineHeight * lineCount
-        );
     }
 
 }

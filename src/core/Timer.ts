@@ -36,7 +36,6 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
     delay!: number;
     allowRAF!: boolean;
     fixDelay!: boolean;
-
     private _timer?: number;
     private _usedRAF?: boolean;
     private _lastTickTime!: number;
