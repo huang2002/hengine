@@ -17,12 +17,14 @@ export type SpriteOptions = Partial<{
     srcH: number;
     width: number;
     height: number;
+    rotation: number;
 }>;
 
 export class Sprite implements Required<SpriteOptions>, Renderable {
 
     static defaults: SpriteOptions = {
         visible: true,
+        rotation: 0,
     };
 
     static defaultStyle: CommonStyle = _assign({} as CommonStyle, Style.Common.defaults);
@@ -52,6 +54,7 @@ export class Sprite implements Required<SpriteOptions>, Renderable {
     srcH!: number;
     width!: number;
     height!: number;
+    rotation!: number;
 
     load(
         src: string,
@@ -75,12 +78,13 @@ export class Sprite implements Required<SpriteOptions>, Renderable {
         }
         const { image } = this;
         if (image) {
-            const { position } = this,
+            const { position, rotation } = this,
                 { width, height } = image,
                 { context } = renderer,
                 dstW = this.width || width,
                 dstH = this.height || height;
             Style.Common.apply(renderer, this.style);
+            context.rotate(rotation);
             context.drawImage(
                 image,
                 (this.srcX || 0) - dstW / 2, (this.srcY || 0) - dstH / 2,
@@ -88,6 +92,7 @@ export class Sprite implements Required<SpriteOptions>, Renderable {
                 position.x, position.y,
                 dstW, dstH
             );
+            context.rotate(-rotation);
         }
     }
 
