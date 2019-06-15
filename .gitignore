@@ -2,3 +2,5 @@ node_modules
 dist
 raw
 typings
+docs 
+.tsbuildinfo

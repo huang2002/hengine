@@ -1,14 +1,14 @@
 {
     "name": "hengine",
     "description": "A 2D game engine for javascript/typescript.",
-    "version": "0.1.0",
+    "version": "0.26.0",
     "main": "dist/hengine.umd.min.js",
     "module": "dist/hengine.min.js",
     "types": "index.d.ts",
     "scripts": {
-        "prebuild": "rd /q /s dist typings raw || exit 0",
-        "build": "tsc && rollup -c",
-        "postbuild": "terser dist/hengine.js --config-file terser.json --module -o dist/hengine.min.js && terser dist/hengine.umd.js --config-file terser.json -o dist/hengine.umd.min.js"
+        "prebuild": "tsc",
+        "build": "rollup -c",
+        "postbuild": "terser dist/hengine.js --config-file terser.json --module -o dist/hengine.min.js && terser dist/hengine.umd.js --config-file terser.json -o dist/hengine.umd.min.js && node stat"
     },
     "license": "MIT",
     "author": "3h",
@@ -31,11 +31,11 @@
         "index.d.ts"
     ],
     "devDependencies": {
-        "@babel/core": "^7.3.3",
-        "@babel/preset-env": "^7.3.1",
-        "rollup": "^1.2.1",
+        "@babel/core": "^7.4.5",
+        "@babel/preset-env": "^7.4.5",
+        "rollup": "^1.13.0",
         "rollup-plugin-babel": "^4.3.2",
-        "terser": "^3.16.1",
-        "typescript": "^3.3.3"
+        "terser": "^4.0.0",
+        "typescript": "^3.5.1"
     }
 }
