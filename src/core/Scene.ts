@@ -231,6 +231,26 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         return _null;
     }
 
+    drag(target: Body | null) {
+        const { pointer } = this;
+        if (!pointer) {
+            return;
+        }
+        const { pointerConstraint } = this;
+        if (!pointerConstraint) {
+            return;
+        }
+        const { position } = pointer;
+        if (pointerConstraint.target) {
+            pointerConstraint.target.emit('dragEnd');
+        }
+        pointerConstraint.target = target;
+        if (target) {
+            pointerConstraint.targetOffset.setVector(position).minusVector(target.position);
+            target.emit('dragStart');
+        }
+    }
+
     update(timeScale: number) {
         timeScale *= this.timeScale;
 

@@ -197,6 +197,12 @@ const box1 = new HE.Rectangle({
 });
 mainScene.add(box1);
 
+mainScene.pointer.on('start', function () {
+    if (mainScene.active && mainScene.pointerChecker(this, ground)) {
+        mainScene.drag(box1);
+    }
+});
+
 const box2 = new HE.Rectangle({
     tag: 'box',
     draggable: true,
