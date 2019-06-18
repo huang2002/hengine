@@ -51,8 +51,6 @@ export class Paragraph implements Required<ParagraphOptions>, Renderable {
         let { x, y } = position;
         Text.applyStyle(renderer, style);
         lines.forEach(line => {
-            x += lineHeight;
-            y += indent;
             if (fillFirst && fillStyle) {
                 context.fillText(line, x, y);
                 context.shadowColor = Utils.Const.TRANSPARENT;
@@ -65,6 +63,8 @@ export class Paragraph implements Required<ParagraphOptions>, Renderable {
                 context.fillText(line, x, y);
             }
             context.shadowColor = shadowColor;
+            x += indent;
+            y += lineHeight;
         });
     }
 
