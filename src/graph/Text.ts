@@ -65,6 +65,7 @@ export class Text implements Required<TextOptions>, Renderable {
             { TRANSPARENT } = Utils.Const;
         Text.applyStyle(renderer, style);
         if (this.preferShadow && !style.shadowBlur && style.shadowColor !== TRANSPARENT) {
+            context.shadowColor = TRANSPARENT;
             context.fillStyle = style.shadowColor;
             context.fillText(content, x + style.shadowOffsetX, y + style.shadowOffsetY);
             if (fillStyle) {

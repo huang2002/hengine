@@ -80,6 +80,7 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
             context.rotate(-rotation);
         } else {
             if (this.preferShadow && !style.shadowBlur && style.shadowColor !== TRANSPARENT) {
+                context.shadowColor = TRANSPARENT;
                 const { shadowOffsetX, shadowOffsetY } = style;
                 context.translate(shadowOffsetX, shadowOffsetY);
                 context.beginPath();
