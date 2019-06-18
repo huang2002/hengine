@@ -53,8 +53,8 @@ export class Inspector implements Required<InspectorOptions> {
                     font: '10px Consolas',
                     textAlign: 'left',
                     textBaseline: 'top',
-                    fillStyle: '#0ff',
-                    strokeStyle: '#00f',
+                    fillStyle: '#00f',
+                    strokeStyle: _null,
                 },
             });
         }
