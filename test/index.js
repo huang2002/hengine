@@ -17,7 +17,6 @@ const engine = new HE.Engine({ inspector, renderer });
 
 const menuScene = engine.createScene({
     background: '#cdf',
-    delay: 20,
 });
 
 const title = new HE.Text({
@@ -82,10 +81,12 @@ menuScene.attach(
         to: 0,
         duration: 2000,
         timing: HE.Timing.easeInOut,
+    }).on('start', () => {
+        menuScene.fps = 50;
     }).on('update', y => {
         playButton.moveTo(playButton.position.x, y);
     }).on('end', () => {
-        menuScene.fps = 10;
+        menuScene.delay = -1;
     })
 );
 

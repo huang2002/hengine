@@ -24,7 +24,11 @@ export class Inspector implements Required<InspectorOptions> {
 
     static defaults: InspectorOptions = {
         callbacks: [
-            engine => `FPS: ${(1000 / engine.timer.lastFrameDelay).toFixed(3)}`,
+            engine => {
+                const { currentScene: scene } = engine;
+                return `FPS: ${scene && scene.delay >= 0 ?
+                    (1000 / engine.timer.lastFrameDelay).toFixed(3) : 0}`;
+            },
             engine => `Frame Duration: ${engine.timer.lastFrameDuration}`,
             engine => `Objects: ${engine.currentScene ? engine.currentScene.objects.length : 0}`,
             engine => `Effects: ${engine.currentScene ? engine.currentScene.effects.length : 0}`,
