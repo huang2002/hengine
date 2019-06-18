@@ -11,10 +11,10 @@ export type SpriteOptions = Partial<{
     position: Vector;
     image: ImageLike;
     style: Partial<CommonStyle>;
-    srcX: number;
-    srcY: number;
-    srcW: number;
-    srcH: number;
+    clipX: number;
+    clipY: number;
+    clipWidth: number;
+    clipHeight: number;
     width: number;
     height: number;
     rotation: number;
@@ -48,10 +48,10 @@ export class Sprite implements Required<SpriteOptions>, Renderable {
     position!: Vector;
     image!: ImageLike;
     style!: CommonStyle;
-    srcX!: number;
-    srcY!: number;
-    srcW!: number;
-    srcH!: number;
+    clipX!: number;
+    clipY!: number;
+    clipWidth!: number;
+    clipHeight!: number;
     width!: number;
     height!: number;
     rotation!: number;
@@ -87,8 +87,8 @@ export class Sprite implements Required<SpriteOptions>, Renderable {
             context.rotate(rotation);
             context.drawImage(
                 image,
-                (this.srcX || 0) - dstW / 2, (this.srcY || 0) - dstH / 2,
-                this.srcW || width, this.srcH || height,
+                (this.clipX || 0) - dstW / 2, (this.clipY || 0) - dstH / 2,
+                this.clipWidth || width, this.clipHeight || height,
                 position.x, position.y,
                 dstW, dstH
             );
