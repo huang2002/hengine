@@ -60,7 +60,7 @@ export interface BodyEvents {
     didUpdate: number;
     collision: [Body, CollisionInfo];
     click: PointerEventParameters;
-    dragStart: PointerEventParameters;
+    dragStart: PointerEventParameters | [];
     dragEnd: PointerEventParameters | [];
 }
 
