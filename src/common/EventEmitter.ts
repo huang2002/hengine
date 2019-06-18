@@ -1,9 +1,9 @@
 import { _Map, _undefined } from "./references";
 import { Utils } from "./Utils";
 
-export type EventListener<T> = Utils.Callback<void, T, void>;
+export type EventListener<T, A> = Utils.Callback<T, A, void>;
 
-export type EventListenerRecord<T> = [EventListener<T>, boolean];
+export type EventListenerRecord<T, A> = [EventListener<T, A>, boolean];
 
 export class EventEmitter<E extends object = any> {
 
@@ -16,9 +16,9 @@ export class EventEmitter<E extends object = any> {
         this.clearEvents = this.clearEvents.bind(this);
     }
 
-    private _listenerMap = new _Map<keyof E, EventListenerRecord<any>[]>();
+    private _listenerMap = new _Map<keyof E, EventListenerRecord<this, any>[]>();
 
-    on<T extends keyof E>(event: T, listener: EventListener<E[T]>, once?: boolean) {
+    on<T extends keyof E>(event: T, listener: EventListener<this, E[T]>, once?: boolean) {
         const { _listenerMap } = this;
         if (_listenerMap.has(event)) {
             _listenerMap.get(event)!.push([listener, !once]);
@@ -28,7 +28,7 @@ export class EventEmitter<E extends object = any> {
         return this;
     }
 
-    off<T extends keyof E>(event: T, listener: EventListener<E[T]>, once?: boolean) {
+    off<T extends keyof E>(event: T, listener: EventListener<this, E[T]>, once?: boolean) {
         once = !!once;
         const { _listenerMap } = this;
         if (_listenerMap.has(event)) {
@@ -45,7 +45,7 @@ export class EventEmitter<E extends object = any> {
         return this;
     }
 
-    once<T extends keyof E>(event: T, listener: EventListener<E[T]>) {
+    once<T extends keyof E>(event: T, listener: EventListener<this, E[T]>) {
         return this.on(event, listener, true);
     }
 
@@ -55,7 +55,7 @@ export class EventEmitter<E extends object = any> {
             const records = _listenerMap.get(event)!;
             if (records.length) {
                 _listenerMap.set(event, records.filter(record => {
-                    record[0].apply(_undefined, args);
+                    record[0].apply(this, args);
                     return record[1];
                 }));
                 return true;

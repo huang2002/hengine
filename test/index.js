@@ -153,8 +153,8 @@ const createBall = (x, y, strokeStyle) => new HE.Circle({
 
 const ball1 = createBall(-170, -150, '#f60');
 mainScene.add(
-    ball1.on('didUpdate', () => {
-        ball1.style.strokeStyle = ball1.isStatic ? '#f00' : '#0c0';
+    ball1.on('didUpdate', function () {
+        this.style.strokeStyle = this.isStatic ? '#f00' : '#0c0';
     }).once('collision', (...args) => {
         console.log('Ball1 collision:', ...args);
     })
