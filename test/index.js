@@ -225,6 +225,7 @@ const box3 = new HE.Rectangle({
     style: boxStyle,
 });
 mainScene.add(box3);
+inspector.callbacks.push(() => `box3 Contact Count: ${mainScene.active ? box3.contact.size : 'N/A'}`);
 
 mainScene.add(new HE.Constraint({
     origin: box2,

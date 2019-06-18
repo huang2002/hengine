@@ -1,5 +1,5 @@
 import { EventEmitter } from "../common/EventEmitter";
-import { _assign, _undefined, _abs, _Infinity } from "../common/references";
+import { _assign, _undefined, _abs, _Infinity, _Set } from "../common/references";
 import { Vector, VectorLike } from "../geometry/Vector";
 import { CategoryTag, Category } from "./Category";
 import { Bounds } from "../geometry/Bounds";
@@ -145,6 +145,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
     readonly mass: number = 0;
     readonly isStatic!: boolean;
     readonly speed: number = 0;
+    readonly contact = new _Set();
     active!: boolean;
     interactive!: boolean;
     draggable!: boolean;

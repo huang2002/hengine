@@ -280,6 +280,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
                     object.update!(timeScale);
                 }
                 if ((object as Body).category && (object as Body).collisionFilter) {
+                    (object as Body).contact.clear();
                     collidableBodies.push(object as Body);
                 }
             }

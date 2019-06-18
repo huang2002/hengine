@@ -33,8 +33,7 @@ export const Collision: CollisionObject = {
     // TODO: fix stacking
     check(bodies, checker) {
 
-        const { maxStaticSpeed } = Body,
-            collisionBodies = new _Set<Body>();
+        const { maxStaticSpeed } = Body;
 
         Collision.find(bodies, checker).filter(collisionInfo => {
 
@@ -94,14 +93,14 @@ export const Collision: CollisionObject = {
                 }
             }
 
-            collisionBodies.add(body1).add(body2);
-
             return edgeVector;
 
         }).forEach(collisionInfo => {
             // TODO: solve rotation
-            const { body1, body2 } = collisionInfo,
-                { velocity: v1 } = body1,
+            const { body1, body2 } = collisionInfo;
+            body1.contact.add(body2);
+            body2.contact.add(body1);
+            const { velocity: v1 } = body1,
                 { velocity: v2 } = body2,
                 friction = _min(body1.friction, body2.friction),
                 staticFriction = _min(body1.staticFriction, body2.staticFriction);
