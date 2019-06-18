@@ -8,6 +8,7 @@ import { Collision, CollisionChecker } from "../physics/Collision";
 import { Pointer } from "./Pointer";
 import { Vector } from "../geometry/Vector";
 import { Constraint } from "../physics/Constraint";
+import { Timer } from "./Timer";
 
 export interface SceneEffect {
     defer?: boolean;
@@ -43,7 +44,7 @@ export interface SceneEvents {
 export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOptions> {
 
     static defaults: SceneOptions = {
-        delay: 0,
+        delay: Timer.defaults.delay,
         timeScale: 1,
         background: '#fff',
         clean: false,
