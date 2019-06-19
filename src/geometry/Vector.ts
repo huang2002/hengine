@@ -200,8 +200,8 @@ export class Vector {
     }
 
     getAngle() {
-        const { y } = this;
-        return _Math.atan(y / this.x) + (y > 0 ? 0 : _PI);
+        const { x } = this;
+        return _Math.atan(this.y / x) + (x > 0 ? 0 : _PI);
     }
 
     turn(clockwise?: boolean) {
