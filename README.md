@@ -8,6 +8,6 @@
 
 ## Links
 
-- [Documents](https://github.com/huang2002/hengine/wiki)
+- [Documentation](https://github.com/huang2002/hengine/wiki)
 - [Changelog](./CHANGELOG.md)
 - [License (MIT)](./LICENSE)
