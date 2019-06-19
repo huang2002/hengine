@@ -19,7 +19,7 @@ export namespace Utils {
 
     export type ThrottleCallback = Callback<any>;
 
-    export interface ThresholdWrapper<T extends ThrottleCallback> {
+    export interface ThrottleWrapper<T extends ThrottleCallback> {
         (...args: Parameters<T>): ReturnType<T> | void;
         threshold: number;
     }
@@ -89,7 +89,7 @@ export const Utils = {
     throttle: _assign(
         function throttle<T extends Utils.ThrottleCallback>(callback: T, threshold?: number) {
             let lastCallTime = 0;
-            const wrapper: Utils.ThresholdWrapper<T> = function throttleWrapper(this: any) {
+            const wrapper: Utils.ThrottleWrapper<T> = function throttleWrapper(this: any) {
                 const currentTime = _now();
                 if (currentTime - lastCallTime >= wrapper.threshold) {
                     lastCallTime = currentTime;
