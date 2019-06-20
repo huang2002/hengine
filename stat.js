@@ -11,6 +11,6 @@ fs.readdirSync(DIST_DIR).forEach(fileName => {
         name = (fileName + ' ').padEnd(30, '.'),
         size = fs.statSync(file).size / 1024;
 
-    console.log(`${name} ${size.toFixed(3).toString().padStart(6)} KB`);
+    console.log(`${name} ${size.toFixed(3).toString().padStart(7)} KB`);
 
 });
