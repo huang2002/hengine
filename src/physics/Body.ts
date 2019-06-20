@@ -145,7 +145,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
     readonly mass: number = 0;
     readonly isStatic!: boolean;
     readonly speed: number = 0;
-    readonly contact = new _Set();
+    readonly contact = new _Set<Body>();
     active!: boolean;
     interactive!: boolean;
     draggable!: boolean;
