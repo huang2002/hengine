@@ -258,4 +258,41 @@ const stick = new HE.Constraint({
 });
 mainScene.add(stick);
 
+const particlePool = new HE.Pool(HE.Polygon, {
+    tag: 'particle',
+    vertices: HE.Vertices.createStar(4, 1, 5, HE.Utils.Const.HALF_PI / 2),
+    style: {
+        fillStyle: '#ff0',
+        strokeStyle: null,
+        opacity: .9,
+    },
+});
+const MAX_PARTICLE_COUNT = 50,
+    PARTICLE_LIFE = 1e3;
+let particleCount = 0;
+const addParticle = HE.Utils.throttle(function () {
+    particleCount++;
+    const particle = particlePool.get();
+    particle.position.setVector(this.pointer.position);
+    this.attach(particle);
+    const transition = new HE.Transition({
+        target: particle.style,
+        key: 'opacity',
+        to: 0,
+        duration: PARTICLE_LIFE,
+        timing: HE.Timing.easeIn,
+    });
+    this.use(transition);
+    setTimeout(() => {
+        this.detach(particle);
+        this.disuse(transition);
+        particleCount--;
+    }, PARTICLE_LIFE);
+}, 20);
+mainScene.on('willUpdate', function () {
+    if (particleCount < MAX_PARTICLE_COUNT) {
+        addParticle.call(this);
+    }
+});
+
 engine.enter(menuScene);

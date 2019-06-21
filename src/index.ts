@@ -1,5 +1,6 @@
 export * from "./common/Utils";
 export * from "./common/EventEmitter";
+export * from "./common/Pool";
 
 export * from "./transition/Transition";
 export * from "./transition/Timing";
