@@ -22,11 +22,11 @@ export interface TransitionEvents {
     end: [];
 }
 
-export class Transition<T extends object>
+export class Transition<T extends object = any>
     extends EventEmitter<TransitionEvents>
     implements Required<TransitionOptions>, SceneEffect {
 
-    static defaults: TransitionOptions<any> = {
+    static defaults: TransitionOptions = {
         active: true,
         from: 0,
         to: 1,
