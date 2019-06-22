@@ -139,6 +139,9 @@ export class Pointer extends EventEmitter<PointerEvents> implements Required<Poi
     }
 
     destroy() {
+        if (!this.active) {
+            return;
+        }
         (this.active as boolean) = false;
         const { target } = this;
         if (this.isTouchMode) {
