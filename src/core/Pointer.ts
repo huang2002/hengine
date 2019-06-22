@@ -39,26 +39,26 @@ export class Pointer extends EventEmitter<PointerEvents> implements Required<Poi
 
         const { target } = this;
         if (this.isTouchMode) {
-            target.addEventListener('touchstart', this.startListener = ((event: TouchEvent) => {
+            target.addEventListener('touchstart', this._startListener = ((event: TouchEvent) => {
                 const touchPoint = event.changedTouches[0];
                 this._start(touchPoint.identifier, Vector.of(touchPoint.clientX, touchPoint.clientY), event);
             }) as EventListener);
-            target.addEventListener('touchmove', this.moveListener = ((event: TouchEvent) => {
+            target.addEventListener('touchmove', this._moveListener = ((event: TouchEvent) => {
                 const touchPoint = event.changedTouches[0];
                 this._move(touchPoint.identifier, Vector.of(touchPoint.clientX, touchPoint.clientY), event);
             }) as EventListener);
-            target.addEventListener('touchend', this.endListener = ((event: TouchEvent) => {
+            target.addEventListener('touchend', this._endListener = ((event: TouchEvent) => {
                 const touchPoint = event.changedTouches[0];
                 this._end(touchPoint.identifier, Vector.of(touchPoint.clientX, touchPoint.clientY), event);
             }) as EventListener);
         } else {
-            target.addEventListener('mousedown', this.startListener = ((event: MouseEvent) => {
+            target.addEventListener('mousedown', this._startListener = ((event: MouseEvent) => {
                 this._start(-1, Vector.of(event.clientX, event.clientY), event);
             }) as EventListener);
-            target.addEventListener('mousemove', this.moveListener = ((event: MouseEvent) => {
+            target.addEventListener('mousemove', this._moveListener = ((event: MouseEvent) => {
                 this._move(-1, Vector.of(event.clientX, event.clientY), event);
             }) as EventListener);
-            target.addEventListener('mouseup', this.endListener = ((event: MouseEvent) => {
+            target.addEventListener('mouseup', this._endListener = ((event: MouseEvent) => {
                 this._end(-1, Vector.of(event.clientX, event.clientY), event);
             }) as EventListener);
         }
@@ -75,9 +75,9 @@ export class Pointer extends EventEmitter<PointerEvents> implements Required<Poi
     readonly isHolding: boolean = false;
     readonly startTimeStamps = new _Map<number, number>();
     readonly positions = new _Map<number, Vector>();
-    private startListener: EventListener;
-    private moveListener: EventListener;
-    private endListener: EventListener;
+    private _startListener: EventListener;
+    private _moveListener: EventListener;
+    private _endListener: EventListener;
     holdOnly!: boolean;
     clickThreshold!: number;
     transform!: null | PointerTransform;
@@ -142,13 +142,13 @@ export class Pointer extends EventEmitter<PointerEvents> implements Required<Poi
         (this.active as boolean) = false;
         const { target } = this;
         if (this.isTouchMode) {
-            target.removeEventListener('touchstart', this.startListener);
-            target.removeEventListener('touchmove', this.moveListener);
-            target.removeEventListener('touchend', this.endListener);
+            target.removeEventListener('touchstart', this._startListener);
+            target.removeEventListener('touchmove', this._moveListener);
+            target.removeEventListener('touchend', this._endListener);
         } else {
-            target.removeEventListener('mousedown', this.startListener);
-            target.removeEventListener('mousemove', this.moveListener);
-            target.removeEventListener('mouseup', this.endListener);
+            target.removeEventListener('mousedown', this._startListener);
+            target.removeEventListener('mousemove', this._moveListener);
+            target.removeEventListener('mouseup', this._endListener);
         }
     }
 
