@@ -94,13 +94,13 @@ export class Renderer extends EventEmitter<RendererEvents>
     readonly resizeEvents!: string[];
     readonly bounds = new Bounds();
     readonly resizeListener = Utils.debounce(this._resizeListener.bind(this));
+    readonly origin!: Vector;
     readonly originX!: number;
     readonly originY!: number;
-    width!: number;
-    height!: number;
-    margin!: number;
-    ratio!: number;
-    origin!: Vector;
+    readonly width!: number;
+    readonly height!: number;
+    readonly margin!: number;
+    readonly ratio!: number;
     align!: boolean;
     sizing!: SizingFunction;
     restoration!: boolean;
@@ -129,8 +129,8 @@ export class Renderer extends EventEmitter<RendererEvents>
                 style.marginLeft = size.left + 'px';
                 style.marginTop = size.top + 'px';
                 if (force) {
-                    width = this.width = size.width;
-                    height = this.height = size.height;
+                    width = (this.width as number) = size.width;
+                    height = (this.height as number) = size.height;
                 }
                 styleWidth = size.styleWidth;
                 styleHeight = size.styleHeight;
@@ -176,10 +176,10 @@ export class Renderer extends EventEmitter<RendererEvents>
     }
 
     resize(width: number, height: number, ratio?: number) {
-        this.width = width;
-        this.height = height;
+        (this.width as number) = width;
+        (this.height as number) = height;
         if (ratio) {
-            this.ratio = ratio;
+            (this.ratio as number) = ratio;
         }
         this._resize(true);
         return this;
