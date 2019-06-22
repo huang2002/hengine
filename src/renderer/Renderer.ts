@@ -111,6 +111,9 @@ export class Renderer extends EventEmitter<RendererEvents>
     set resizeDelay(delay: number) {
         this.resizeListener.delay = delay;
     }
+    get resizeDelay() {
+        return this.resizeListener.delay;
+    }
 
     private _resize(force?: boolean) {
 
