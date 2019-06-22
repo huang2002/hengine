@@ -5,6 +5,7 @@ import { Utils } from "../common/Utils";
 import { Bounds } from "../geometry/Bounds";
 import { RenderingStyle } from "../graph/Style";
 import { LayerOptions, Layer } from "../graph/Layer";
+import { EventEmitter } from "../common/EventEmitter";
 
 export interface Renderable {
     render(renderer: RendererLike): void;
@@ -38,7 +39,12 @@ export type RendererOptions = Partial<{
     restoration: boolean;
 }>;
 
-export class Renderer implements Required<RendererOptions>, RendererLike {
+export interface RendererEvents {
+    resize: [];
+}
+
+export class Renderer extends EventEmitter<RendererEvents>
+    implements Required<RendererOptions>, RendererLike {
 
     static defaults: RendererOptions = {
         settings: Utils.Const.EMPTY_OBJECT,
@@ -56,6 +62,8 @@ export class Renderer implements Required<RendererOptions>, RendererLike {
     };
 
     constructor(options: Readonly<RendererOptions> = Utils.Const.EMPTY_OBJECT) {
+        super();
+
         _assign(this, Renderer.defaults, options);
 
         let { canvas } = this;
@@ -136,6 +144,8 @@ export class Renderer implements Required<RendererOptions>, RendererLike {
 
         style.width = styleWidth + 'px';
         style.height = styleHeight + 'px';
+
+        this.emit('resize');
 
         if (!force) {
             return;
