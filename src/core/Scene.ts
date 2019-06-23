@@ -215,18 +215,17 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
 
     getFocus(filter?: Utils.Callback<void, Body, any>) {
         const { pointerChecker } = this;
-        if (!pointerChecker) {
-            return;
-        }
-        const { _pointer } = this,
-            bodies = this.objects.concat(this.attachments)
-                .filter(
-                    object => (object as Body).interactive && (!filter || filter(object as Body))
-                ) as Body[];
-        for (let i = bodies.length; i--;) {
-            const body = bodies[i];
-            if (pointerChecker(_pointer!, body)) {
-                return body;
+        if (pointerChecker) {
+            const { _pointer } = this,
+                bodies = this.objects.concat(this.attachments)
+                    .filter(
+                        object => (object as Body).interactive && (!filter || filter(object as Body))
+                    ) as Body[];
+            for (let i = bodies.length; i--;) {
+                const body = bodies[i];
+                if (pointerChecker(_pointer!, body)) {
+                    return body;
+                }
             }
         }
         return _null;
