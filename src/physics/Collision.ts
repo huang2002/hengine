@@ -62,15 +62,13 @@ export const Collision: CollisionObject = {
                         impulse1.minusVector(overlapVector, impulseScale / 2);
                         impulse2.plusVector(overlapVector, impulseScale / 2);
                     }
-                    if (edgeVector) {
-                        if (Vector.dot(relativeVelocity, overlapVector) < 0) {
-                            Vector.distribute(
-                                Vector.projectVector(relativeVelocity, overlapVector),
-                                v1, v2,
-                                m2, -m1,
-                                elasticity
-                            );
-                        }
+                    if (edgeVector && Vector.dot(relativeVelocity, overlapVector) < 0) {
+                        Vector.distribute(
+                            Vector.projectVector(relativeVelocity, overlapVector),
+                            v1, v2,
+                            m2, -m1,
+                            elasticity
+                        );
                     }
                 } else {
                     if (impulseScale) {
