@@ -1,6 +1,6 @@
 {
     "name": "hengine",
-    "description": "A 2D game engine for javascript/typescript.",
+    "description": "A 2D graphic engine for javascript/typescript.",
     "version": "0.26.0",
     "main": "dist/hengine.umd.min.js",
     "module": "dist/hengine.min.js",
@@ -19,9 +19,10 @@
     "homepage": "https://github.com/huang2002/hengine#readme",
     "keywords": [
         "hengine",
-        "game",
-        "engine",
         "2d",
+        "graphic",
+        "engine",
+        "game",
         "canvas",
         "3h"
     ],
