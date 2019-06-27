@@ -9,5 +9,6 @@
 ## Links
 
 - [Documentation](https://github.com/huang2002/hengine/wiki)
+- [Contributing Guide](./CONTRIBUTING.md)
 - [Changelog](./CHANGELOG.md)
 - [License (MIT)](./LICENSE)
