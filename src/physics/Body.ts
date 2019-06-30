@@ -85,7 +85,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
         gravity: Vector.of(0, 2),
         density: 1,
         stiffness: 1,
-        slop: .2,
+        slop: .1,
         elasticity: .3,
         friction: .4,
         staticFriction: .5,
@@ -168,7 +168,6 @@ export abstract class Body extends EventEmitter<BodyEvents>
     airFriction!: number;
     fixRotation!: boolean;
     radius!: number;
-    impulse = new Vector();
 
     setDensity(density: number) {
         (this.density as number) = density;
@@ -306,7 +305,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
 
     update(timeScale: number) {
         this.emit('willUpdate', timeScale);
-        const { velocity, impulse, bounds, position } = this;
+        const { velocity, bounds, position } = this;
         if (this.active) {
             const maxSpeed = this.maxSpeed;
             let speed = velocity.getNorm() / timeScale;
@@ -336,9 +335,6 @@ export abstract class Body extends EventEmitter<BodyEvents>
         } else {
             (this.isStatic as boolean) = false;
         }
-        position.plusVector(impulse);
-        bounds.moveVector(impulse);
-        impulse.reset();
         this.emit('didUpdate', timeScale);
     }
 
