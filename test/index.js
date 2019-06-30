@@ -94,6 +94,18 @@ const mainScene = engine.createScene({
     background: '#fff',
 });
 
+function label(object, info) {
+    object.attachments.push(new HE.Text({
+        content: info,
+        style: {
+            font: '10px Consolas',
+            fillStyle: '#444',
+            strokeStyle: null,
+        },
+    }));
+    return object;
+}
+
 const ground = new HE.Rectangle({
     tag: 'ground',
     position: Vector.of(-10, 100),
@@ -140,7 +152,7 @@ const wall = new HE.Rectangle({
 });
 mainScene.add(wall);
 
-const createBall = (x, y, strokeStyle) => new HE.Circle({
+const createBall = (x, y, strokeStyle, info) => label(new HE.Circle({
     tag: 'ball',
     active: true,
     draggable: true,
@@ -150,9 +162,9 @@ const createBall = (x, y, strokeStyle) => new HE.Circle({
         fillStyle: '#ff0',
         strokeStyle,
     },
-});
+}), info);
 
-const ball1 = createBall(-170, -150, '#f60');
+const ball1 = createBall(-170, -150, '#f60', 'ball1');
 mainScene.add(
     ball1.on('didUpdate', function () {
         this.style.strokeStyle = this.isStatic ? '#f00' : '#0c0';
@@ -161,13 +173,13 @@ mainScene.add(
     })
 );
 
-const ball2 = createBall(-60, -150, '#c00');
+const ball2 = createBall(-60, -150, '#c00', 'ball2');
 mainScene.add(ball2);
 
-const ball3 = createBall(-170, -200, '#f50');
+const ball3 = createBall(-170, -200, '#f50', 'ball3');
 mainScene.add(ball3);
 
-const ball4 = createBall(-170, -250, '#f50');
+const ball4 = createBall(-170, -250, '#f50', 'ball4');
 mainScene.add(ball4);
 
 const constraint = new HE.Constraint({
@@ -185,7 +197,7 @@ const boxStyle = {
     strokeStyle: '#603',
 };
 
-const box1 = new HE.Rectangle({
+const box1 = label(new HE.Rectangle({
     tag: 'box',
     active: true,
     draggable: true,
@@ -195,7 +207,7 @@ const box1 = new HE.Rectangle({
     radius: 15,
     elasticity: 1,
     style: boxStyle,
-});
+}), 'box1');
 mainScene.add(box1);
 
 mainScene.pointer.on('start', function () {
@@ -204,7 +216,7 @@ mainScene.pointer.on('start', function () {
     }
 });
 
-const box2 = new HE.Rectangle({
+const box2 = label(new HE.Rectangle({
     tag: 'box',
     draggable: true,
     position: Vector.of(90, -150),
@@ -212,10 +224,10 @@ const box2 = new HE.Rectangle({
     height: 40,
     radius: 10,
     style: boxStyle,
-});
+}), 'box2');
 mainScene.add(box2);
 
-const box3 = new HE.Rectangle({
+const box3 = label(new HE.Rectangle({
     tag: 'box',
     active: true,
     draggable: true,
@@ -224,7 +236,7 @@ const box3 = new HE.Rectangle({
     height: 32,
     density: 2,
     style: boxStyle,
-});
+}), 'box3');
 mainScene.add(box3);
 inspector.callbacks.push(() => `box3 Contact Count: ${mainScene.active ? box3.contact.size : 'N/A'}`);
 
@@ -237,16 +249,17 @@ mainScene.add(new HE.Constraint({
     },
 }));
 
-const cradle = new HE.Circle({
+const cradle = label(new HE.Circle({
     tag: 'cradle',
     active: true,
     draggable: true,
+    collisionFilter: HE.Category.FULL_MASK ^ wall.category,
     position: Vector.of(150, 50),
     radius: 22,
     style: {
         fillStyle: '#f80',
     },
-});
+}), 'cradle');
 mainScene.add(cradle);
 
 const stick = new HE.Constraint({
@@ -273,7 +286,7 @@ let particleCount = 0;
 const addParticle = HE.Utils.throttle(function () {
     particleCount++;
     const particle = particlePool.get();
-    particle.position.setVector(this.pointer.position);
+    particle.moveToVector(this.pointer.position);
     this.attach(particle);
     const transition = new HE.Transition({
         target: particle.style,
