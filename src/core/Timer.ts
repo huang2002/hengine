@@ -1,5 +1,8 @@
 import { _assign, _undefined, _clearTimeout, _setTimeout, _max, _window, _now } from "../common/references";
 import { EventEmitter } from "../common/EventEmitter";
+import { Utils } from "../common/Utils";
+
+export type ScheduleCallback<T extends any[] = any[]> = Utils.Callback<void, T, void>;
 
 export type TimerOptions = Partial<{
     delay: number;
@@ -39,6 +42,9 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
     private _timer?: number;
     private _usedRAF?: boolean;
     private _lastTickTime!: number;
+    private _lastStopTime!: number;
+    private _scheduleId = 0;
+    private _schedule = new Map<number, [ScheduleCallback<any>, number, any[]]>();
 
     private _requestTick(delay: number) {
         this._timer = (this._usedRAF = this.delay <= Timer.RAFThreshold && this.allowRAF) ?
@@ -51,6 +57,13 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
             deltaTime = (this.lastFrameDelay as number) = startTime - this._lastTickTime,
             { _timer } = this;
         this._lastTickTime = startTime;
+        const { _schedule } = this;
+        _schedule.forEach((record, id) => {
+            if (startTime >= record[1]) {
+                record[0].apply(_undefined, record[2]);
+                _schedule.delete(id);
+            }
+        });
         this.emit('tick', deltaTime);
         if (!this.isRunning) {
             return;
@@ -64,7 +77,14 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
 
     start() {
         (this.isRunning as boolean) = true;
-        this._lastTickTime = _now();
+        const now = (this._lastTickTime = _now()),
+            { _lastStopTime } = this;
+        if (_lastStopTime !== _undefined) {
+            const delay = now - _lastStopTime;
+            this._schedule.forEach(record => {
+                record[1] += delay;
+            });
+        }
         this._tick();
     }
 
@@ -73,6 +93,7 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
             return;
         }
         (this.isRunning as boolean) = false;
+        this._lastStopTime = _now();
         const { _timer } = this;
         if (_timer !== _undefined) {
             (this._usedRAF ? _window.cancelAnimationFrame : _clearTimeout)(_timer);
@@ -92,6 +113,16 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
             this._requestTick(_max(delay - (now - this._lastTickTime), 0));
             this._lastTickTime = now;
         }
+    }
+
+    setSchedule<T extends any[]>(callback: ScheduleCallback<T>, timeout: number, ...args: T) {
+        const id = this._scheduleId++;
+        this._schedule.set(id, [callback, _now() + timeout, args]);
+        return id;
+    }
+
+    clearSchedule(id: number) {
+        this._schedule.delete(id);
     }
 
 }

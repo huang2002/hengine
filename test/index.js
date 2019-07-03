@@ -15,6 +15,8 @@ const inspector = new HE.Inspector({
 
 const engine = new HE.Engine({ inspector, renderer });
 
+const { timer } = engine;
+
 const menuScene = engine.createScene({
     background: '#cdf',
 });
@@ -296,7 +298,7 @@ const addParticle = HE.Utils.throttle(function () {
         timing: HE.Timing.easeIn,
     });
     this.use(transition);
-    setTimeout(() => {
+    timer.setSchedule(() => {
         this.detach(particle);
         this.disuse(transition);
         particleCount--;
