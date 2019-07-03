@@ -15,7 +15,7 @@ const inspector = new HE.Inspector({
 
 const engine = new HE.Engine({ inspector, renderer });
 
-const { timer } = engine;
+const { timer, pointer } = engine;
 
 const menuScene = engine.createScene({
     background: '#cdf',
@@ -284,8 +284,14 @@ const particlePool = new HE.Pool(HE.Polygon, {
 });
 const MAX_PARTICLE_COUNT = 50,
     PARTICLE_LIFE = 1e3;
-let particleCount = 0;
+let particleCount = 0,
+    lastPointerPosition = '';
 const addParticle = HE.Utils.throttle(function () {
+    const currentPointerPosition = pointer.position + '';
+    if (currentPointerPosition === lastPointerPosition) {
+        return;
+    }
+    lastPointerPosition = currentPointerPosition;
     particleCount++;
     const particle = particlePool.get();
     particle.moveToVector(this.pointer.position);
@@ -298,11 +304,11 @@ const addParticle = HE.Utils.throttle(function () {
         timing: HE.Timing.easeIn,
     });
     this.use(transition);
-    timer.setSchedule(() => {
-        this.detach(particle);
-        this.disuse(transition);
+    timer.setSchedule(scene => {
+        scene.detach(particle);
+        scene.disuse(transition);
         particleCount--;
-    }, PARTICLE_LIFE);
+    }, PARTICLE_LIFE, this);
 }, 20);
 mainScene.on('willUpdate', function () {
     if (particleCount < MAX_PARTICLE_COUNT) {
