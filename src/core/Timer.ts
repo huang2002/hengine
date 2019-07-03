@@ -115,7 +115,7 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
         }
     }
 
-    setSchedule<T extends any[]>(callback: ScheduleCallback<T>, timeout: number, ...args: T) {
+    setSchedule<T extends any[] = any[]>(callback: ScheduleCallback<T>, timeout: number, ...args: T) {
         const id = this._scheduleId++;
         this._schedule.set(id, [callback, _now() + timeout, args]);
         return id;
