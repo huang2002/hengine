@@ -2,11 +2,12 @@ import { _abs, _Math } from "../common/references";
 
 export type TimingFunction = (x: number) => number;
 
+const interpolate = (p1: number, p2: number, t: number) => {
+    const _t = 1 - t;
+    return 3 * p1 * _t * _t * t + 3 * p2 * t * t * _t + t * t * t;
+};
+
 const cubic = (x1: number, y1: number, x2: number, y2: number): TimingFunction => x => {
-    const interpolate = (p1: number, p2: number, t: number) => {
-        const _t = 1 - t;
-        return 3 * p1 * _t * _t * t + 3 * p2 * t * t * _t + t * t * t;
-    };
     if (x <= 0) {
         return 0;
     } else if (x >= 1) {
