@@ -1,3 +1,15 @@
+## 0.28.0 - 2019-07-09
+
+- Add `engine.restoration`
+- Add `engine.rerenderOnResize`
+- Add `timer.setInterval` & `timer.clearInterval`
+- Add events to engine instances
+- Rename `timer.set/clearSchedule` `timer.set/clearTimeout`
+- Modify the arguments of `render` events on scene instances
+- Modify `delay` handling in timers
+- Modify `resize` event condition in renderers
+- Improve some internals
+
 ## 0.27.0 - 2019-07-04
 
 - Add `timer.setSchedule` & `timer.clearSchedule`
