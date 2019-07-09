@@ -148,11 +148,11 @@ export class Renderer extends EventEmitter<RendererEvents>
         style.width = styleWidth + 'px';
         style.height = styleHeight + 'px';
 
-        this.emit('resize');
-
         if (!force) {
             return;
         }
+
+        this.emit('resize');
 
         canvas.width = width * ratio;
         canvas.height = height * ratio;
