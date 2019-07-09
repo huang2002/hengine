@@ -36,8 +36,8 @@ export interface SceneEvents {
     enter: [];
     willUpdate: number;
     didUpdate: number;
-    willRender: CanvasRenderingContext2D;
-    didRender: CanvasRenderingContext2D;
+    willRender: Renderer;
+    didRender: Renderer;
     exit: [];
 }
 
@@ -310,13 +310,12 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     }
 
     render(renderer: Renderer) {
-        const { context } = renderer;
-        this.emit('willRender', context);
+        this.emit('willRender', renderer);
         renderer.fill(this.background);
         this.objects.concat(this.attachments).forEach(renderable => {
             renderer.render(renderable);
         });
-        this.emit('didRender', context);
+        this.emit('didRender', renderer);
     }
 
 }
