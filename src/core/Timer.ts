@@ -45,6 +45,8 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
     private _lastStopTime!: number;
     private _timeoutId = 0;
     private _timeoutCallbacks = new Map<number, [ScheduleCallback<any>, number, any[]]>();
+    private _intervalId = 0;
+    private _intervalCallbacks = new Map<number, [ScheduleCallback<any>, number, number, any[]]>();
 
     private _requestTick(delay: number) {
         this._timer = (this._usedRAF = this.delay <= Timer.RAFThreshold && this.allowRAF) ?
@@ -62,6 +64,14 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
             if (startTime >= record[1]) {
                 record[0].apply(_undefined, record[2]);
                 _timeoutCallbacks.delete(id);
+            }
+        });
+        this._intervalCallbacks.forEach(record => {
+            if (startTime >= record[1]) {
+                record[0].apply(_undefined, record[3]);
+                while (startTime >= record[1]) {
+                    record[1] += record[2];
+                }
             }
         });
         this.emit('tick', deltaTime);
@@ -82,6 +92,9 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
         if (_lastStopTime !== _undefined) {
             const delay = now - _lastStopTime;
             this._timeoutCallbacks.forEach(record => {
+                record[1] += delay;
+            });
+            this._intervalCallbacks.forEach(record => {
                 record[1] += delay;
             });
         }
@@ -123,6 +136,16 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
 
     clearTimeout(id: number) {
         this._timeoutCallbacks.delete(id);
+    }
+
+    setInterval<T extends any[] = any[]>(callback: ScheduleCallback<T>, interval: number, ...args: T) {
+        const id = this._intervalId++;
+        this._intervalCallbacks.set(id, [callback, _now() + interval, interval, args]);
+        return id;
+    }
+
+    clearInterval(id: number) {
+        this._intervalCallbacks.delete(id);
     }
 
 }
