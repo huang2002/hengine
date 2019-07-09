@@ -16,6 +16,7 @@ export type EngineOptions = Partial<{
     maxTimeScale: number;
     currentScene: Scene | null;
     rerenderOnResize: boolean;
+    restoration: boolean;
 }>;
 
 export interface EngineEvents {
@@ -31,6 +32,7 @@ export class Engine extends EventEmitter<EngineEvents> implements Required<Engin
         baseTime: 50,
         maxTimeScale: 2,
         rerenderOnResize: true,
+        restoration: true,
     };
 
     constructor(options: Readonly<EngineOptions> = Utils.Const.EMPTY_OBJECT) {
@@ -55,8 +57,11 @@ export class Engine extends EventEmitter<EngineEvents> implements Required<Engin
             if (this.rerenderOnResize) {
                 const { currentScene } = this;
                 if (currentScene) {
+                    const { context } = renderer;
                     this.emit('willRender', renderer);
+                    context.save();
                     renderer.render(currentScene);
+                    context.restore();
                     this.emit('didRender', renderer);
                 }
             }
@@ -72,6 +77,7 @@ export class Engine extends EventEmitter<EngineEvents> implements Required<Engin
     maxTimeScale!: number;
     currentScene: Scene | null = _null;
     rerenderOnResize!: boolean;
+    restoration!: boolean;
 
     createScene(options?: SceneOptions) {
         return new Scene(_assign({ pointer: this.pointer }, options));
@@ -112,7 +118,10 @@ export class Engine extends EventEmitter<EngineEvents> implements Required<Engin
             currentScene.update(timeScale);
             this.emit('didUpdate', timeScale);
             this.emit('willRender', renderer);
+            const { context } = renderer;
+            context.save();
             renderer.render(currentScene);
+            context.restore();
             this.emit('didRender', renderer);
         }
         if (inspector) {
