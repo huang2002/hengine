@@ -15,6 +15,7 @@ export type EngineOptions = Partial<{
     baseTime: number;
     maxTimeScale: number;
     currentScene: Scene | null;
+    rerenderOnResize: boolean;
 }>;
 
 export interface EngineEvents {
@@ -29,6 +30,7 @@ export class Engine extends EventEmitter<EngineEvents> implements Required<Engin
     static defaults: EngineOptions = {
         baseTime: 50,
         maxTimeScale: 2,
+        rerenderOnResize: true,
     };
 
     constructor(options: Readonly<EngineOptions> = Utils.Const.EMPTY_OBJECT) {
@@ -47,17 +49,29 @@ export class Engine extends EventEmitter<EngineEvents> implements Required<Engin
         }
 
         this.timer.on('tick', this.tick = this.tick.bind(this));
-        this.pointer.transform = this.renderer.outer2inner.bind(this.renderer);
+        const { renderer } = this;
+        this.pointer.transform = renderer.outer2inner.bind(this.renderer);
+        renderer.on('resize', () => {
+            if (this.rerenderOnResize) {
+                const { currentScene } = this;
+                if (currentScene) {
+                    this.emit('willRender', renderer);
+                    renderer.render(currentScene);
+                    this.emit('didRender', renderer);
+                }
+            }
+        });
 
     }
 
-    timer!: Timer;
-    renderer!: Renderer;
-    pointer!: Pointer;
+    readonly timer!: Timer;
+    readonly renderer!: Renderer;
+    readonly pointer!: Pointer;
     inspector: Inspector | null = _null;
     baseTime!: number;
     maxTimeScale!: number;
     currentScene: Scene | null = _null;
+    rerenderOnResize!: boolean;
 
     createScene(options?: SceneOptions) {
         return new Scene(_assign({ pointer: this.pointer }, options));
