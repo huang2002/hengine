@@ -78,9 +78,8 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
         if (!this.isRunning) {
             return;
         }
-        const duration = (this.lastFrameDuration as number) = _now() - startTime,
-            { delay } = this;
-        if (delay >= 0 && this._timer === _timer) {
+        const duration = (this.lastFrameDuration as number) = _now() - startTime;
+        if (this._timer === _timer) {
             this._requestTick(_max(this.delay - (this.fixDelay ? duration : 0), 0));
         }
     }
