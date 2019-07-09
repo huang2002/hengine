@@ -17,6 +17,20 @@ const engine = new HE.Engine({ inspector, renderer });
 
 const { timer, pointer } = engine;
 
+let timestamp = 'Loading';
+timer.setInterval(now => {
+    timestamp = `Timestamp: ${now()}`;
+}, 1000, Date.now);
+engine.on('didRender', ({ context, bounds }) => {
+    Object.assign(context, {
+        font: '10px Consolas',
+        textAlign: 'right',
+        textBaseline: 'bottom',
+        fillStyle: '#00f',
+    });
+    context.fillText(timestamp, bounds.right - 10, bounds.bottom - 10);
+});
+
 const menuScene = engine.createScene({
     background: '#cdf',
 });
@@ -88,7 +102,7 @@ menuScene.attach(
     }).on('update', y => {
         playButton.moveTo(playButton.position.x, y);
     }).on('end', () => {
-        menuScene.delay = -1;
+        menuScene.delay = 500;
     })
 );
 
