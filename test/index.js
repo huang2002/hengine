@@ -304,7 +304,7 @@ const addParticle = HE.Utils.throttle(function () {
         timing: HE.Timing.easeIn,
     });
     this.use(transition);
-    timer.setSchedule(scene => {
+    timer.setTimeout(scene => {
         scene.detach(particle);
         scene.disuse(transition);
         particleCount--;

@@ -43,8 +43,8 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
     private _usedRAF?: boolean;
     private _lastTickTime!: number;
     private _lastStopTime!: number;
-    private _scheduleId = 0;
-    private _schedule = new Map<number, [ScheduleCallback<any>, number, any[]]>();
+    private _timeoutId = 0;
+    private _timeoutCallbacks = new Map<number, [ScheduleCallback<any>, number, any[]]>();
 
     private _requestTick(delay: number) {
         this._timer = (this._usedRAF = this.delay <= Timer.RAFThreshold && this.allowRAF) ?
@@ -57,11 +57,11 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
             deltaTime = (this.lastFrameDelay as number) = startTime - this._lastTickTime,
             { _timer } = this;
         this._lastTickTime = startTime;
-        const { _schedule } = this;
-        _schedule.forEach((record, id) => {
+        const { _timeoutCallbacks } = this;
+        _timeoutCallbacks.forEach((record, id) => {
             if (startTime >= record[1]) {
                 record[0].apply(_undefined, record[2]);
-                _schedule.delete(id);
+                _timeoutCallbacks.delete(id);
             }
         });
         this.emit('tick', deltaTime);
@@ -81,7 +81,7 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
             { _lastStopTime } = this;
         if (_lastStopTime !== _undefined) {
             const delay = now - _lastStopTime;
-            this._schedule.forEach(record => {
+            this._timeoutCallbacks.forEach(record => {
                 record[1] += delay;
             });
         }
@@ -115,14 +115,14 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
         }
     }
 
-    setSchedule<T extends any[] = any[]>(callback: ScheduleCallback<T>, timeout: number, ...args: T) {
-        const id = this._scheduleId++;
-        this._schedule.set(id, [callback, _now() + timeout, args]);
+    setTimeout<T extends any[] = any[]>(callback: ScheduleCallback<T>, timeout: number, ...args: T) {
+        const id = this._timeoutId++;
+        this._timeoutCallbacks.set(id, [callback, _now() + timeout, args]);
         return id;
     }
 
-    clearSchedule(id: number) {
-        this._schedule.delete(id);
+    clearTimeout(id: number) {
+        this._timeoutCallbacks.delete(id);
     }
 
 }
