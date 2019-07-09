@@ -5,6 +5,7 @@ import { Scene, SceneOptions } from "./Scene";
 import { Inspector } from "./Inspector";
 import { Utils } from "../common/Utils";
 import { Pointer } from "./Pointer";
+import { EventEmitter } from "../common/EventEmitter";
 
 export type EngineOptions = Partial<{
     timer: Timer;
@@ -16,7 +17,14 @@ export type EngineOptions = Partial<{
     currentScene: Scene | null;
 }>;
 
-export class Engine implements Required<EngineOptions> {
+export interface EngineEvents {
+    willUpdate: number;
+    didUpdate: number;
+    willRender: Renderer;
+    didRender: Renderer;
+}
+
+export class Engine extends EventEmitter<EngineEvents> implements Required<EngineOptions> {
 
     static defaults: EngineOptions = {
         baseTime: 50,
@@ -24,6 +32,8 @@ export class Engine implements Required<EngineOptions> {
     };
 
     constructor(options: Readonly<EngineOptions> = Utils.Const.EMPTY_OBJECT) {
+        super();
+
         _assign(this, Engine.defaults, options);
 
         if (!this.timer) {
@@ -80,12 +90,16 @@ export class Engine implements Required<EngineOptions> {
         }
         const { currentScene, inspector, renderer } = this;
         if (currentScene) {
+            this.emit('willUpdate', timeScale);
             const { timer } = this;
             if (timer.delay !== currentScene.delay) {
                 timer.reschedule(currentScene.delay);
             }
             currentScene.update(timeScale);
+            this.emit('didUpdate', timeScale);
+            this.emit('willRender', renderer);
             renderer.render(currentScene);
+            this.emit('didRender', renderer);
         }
         if (inspector) {
             inspector.update(this);
