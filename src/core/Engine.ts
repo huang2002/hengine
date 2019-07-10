@@ -52,7 +52,7 @@ export class Engine extends EventEmitter<EngineEvents> implements Required<Engin
 
         this.timer.on('tick', this.tick = this.tick.bind(this));
         const { renderer } = this;
-        this.pointer.transform = renderer.outer2inner.bind(this.renderer);
+        this.pointer.transform = renderer.toInnerPosition.bind(this.renderer);
         renderer.on('resize', () => {
             if (this.rerenderOnResize) {
                 const { currentScene } = this;

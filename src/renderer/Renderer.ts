@@ -210,7 +210,7 @@ export class Renderer extends EventEmitter<RendererEvents>
         }
     }
 
-    outer2inner(position: VectorLike) {
+    toInnerPosition(position: VectorLike) {
         const { _scale } = this;
         return Vector.of(
             (position.x - this._offsetX) / _scale - this.originX,
@@ -218,7 +218,7 @@ export class Renderer extends EventEmitter<RendererEvents>
         );
     }
 
-    inner2outer(position: VectorLike) {
+    toOuterPosition(position: VectorLike) {
         const { _scale } = this;
         return Vector.of(
             (position.x + this.originX) * _scale + this._offsetX,
