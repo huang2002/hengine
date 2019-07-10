@@ -13,7 +13,14 @@ export class Pool<T, O = any> {
         return this._items.length;
     }
     set size(value: number) {
-        this._items.length = value;
+        const { _items } = this,
+            { length: currentSize } = _items;
+        _items.length = value;
+        if (currentSize < value) {
+            for (let i = currentSize; i < value; i++) {
+                _items[i] = new this.factory(this.options);
+            }
+        }
     }
 
     get() {
