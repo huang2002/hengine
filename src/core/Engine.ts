@@ -89,17 +89,21 @@ export class Engine extends EventEmitter<EngineEvents> implements Required<Engin
             currentScene.active = false;
             currentScene.emit('exit');
         }
+        const { pointer } = this;
         this.currentScene = scene;
         if (scene) {
             const { timer } = this;
             if (timer.delay !== scene.delay) {
                 timer.reschedule(scene.delay);
             }
+            pointer.transform = scene.toViewPosition;
             scene.active = true;
             scene.emit('enter');
             if (!timer.isRunning) {
                 timer.start();
             }
+        } else {
+            pointer.transform = _null;
         }
     }
 
@@ -108,7 +112,8 @@ export class Engine extends EventEmitter<EngineEvents> implements Required<Engin
         if (timeScale > this.maxTimeScale) {
             return;
         }
-        const { currentScene, inspector, renderer } = this;
+        const { currentScene, inspector, renderer } = this,
+            { context } = renderer;
         if (currentScene) {
             this.emit('willUpdate', timeScale);
             const { timer } = this;
@@ -118,15 +123,21 @@ export class Engine extends EventEmitter<EngineEvents> implements Required<Engin
             currentScene.update(timeScale);
             this.emit('didUpdate', timeScale);
             this.emit('willRender', renderer);
-            const { context } = renderer;
             context.save();
             renderer.render(currentScene);
             context.restore();
             this.emit('didRender', renderer);
         }
         if (inspector) {
+            const camera = currentScene && currentScene.camera;
+            if (camera) {
+                camera.applyTo(context);
+            }
             inspector.update(this);
             renderer.render(inspector);
+            if (camera) {
+                camera.restore(context);
+            }
         }
     }
 

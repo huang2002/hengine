@@ -30,6 +30,7 @@ export * from "./graph/Layer";
 
 export * from "./core/Timer";
 export * from "./core/Pointer";
+export * from "./core/Camera";
 export * from "./core/Scene";
 export * from "./core/Inspector";
 export * from "./core/Engine";

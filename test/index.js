@@ -108,6 +108,22 @@ menuScene.attach(
 
 const mainScene = engine.createScene({
     background: '#fff',
+    camera: new HE.Camera({
+        position: Vector.of(20, 10),
+        scale: Vector.of(.9, .9),
+    }),
+});
+
+const rotationTransition = new HE.Transition({
+    active: false,
+    target: mainScene.camera,
+    key: 'rotation',
+    from: Math.PI,
+    to: 0,
+    duration: 5000,
+});
+mainScene.use(rotationTransition).on('enter', () => {
+    rotationTransition.start();
 });
 
 function label(object, info) {

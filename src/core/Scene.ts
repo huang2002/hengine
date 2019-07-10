@@ -9,6 +9,7 @@ import { Pointer } from "./Pointer";
 import { Vector } from "../geometry/Vector";
 import { Constraint } from "../physics/Constraint";
 import { Timer } from "./Timer";
+import { Camera } from "./Camera";
 
 export interface SceneEffect {
     defer?: boolean;
@@ -23,6 +24,7 @@ export type SceneOptions = Partial<{
     timeScale: number;
     background: RenderingStyle | null;
     clean: boolean
+    camera: Camera | null;
     pointer: Pointer | null;
     objects: SceneObject[];
     attachments: SceneObject[];
@@ -48,6 +50,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         timeScale: 1,
         background: '#fff',
         clean: false,
+        camera: _null,
         pointer: _null,
         collisionChecker: Collision.Checker.Smart,
         pointerChecker: Collision.Checker.Smart,
@@ -56,6 +59,8 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     constructor(options: SceneOptions = Utils.Const.EMPTY_OBJECT) {
         super();
 
+        this.toViewPosition = this.toViewPosition.bind(this);
+        this.toGlobalPosition = this.toGlobalPosition.bind(this);
         this._onPointerClick = this._onPointerClick.bind(this);
         this._onPointerStart = this._onPointerStart.bind(this);
         this._onPointerEnd = this._onPointerEnd.bind(this);
@@ -83,6 +88,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     timeScale!: number;
     background!: RenderingStyle | null;
     clean!: boolean;
+    camera!: Camera | null;
     objects!: SceneObject[];
     attachments!: SceneObject[];
     effects!: SceneEffect[];
@@ -213,6 +219,16 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         return this;
     }
 
+    toViewPosition(position: Vector) {
+        const { camera } = this;
+        return camera ? camera.toViewPosition(position) : position;
+    }
+
+    toGlobalPosition(position: Vector) {
+        const { camera } = this;
+        return camera ? camera.toGlobalPosition(position) : position;
+    }
+
     getFocus(filter?: Utils.Callback<void, Body, any>) {
         const { pointerChecker } = this;
         if (pointerChecker) {
@@ -312,10 +328,18 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     render(renderer: Renderer) {
         this.emit('willRender', renderer);
         renderer.fill(this.background);
+        const { camera } = this,
+            { context } = renderer;
+        if (camera) {
+            camera.applyTo(context);
+        }
         this.objects.concat(this.attachments).forEach(renderable => {
             renderer.render(renderable);
         });
         this.emit('didRender', renderer);
+        if (camera) {
+            camera.restore(context);
+        }
     }
 
 }
