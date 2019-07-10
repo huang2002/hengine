@@ -8,6 +8,7 @@ export type PointerTransform = (position: Vector) => Vector;
 
 export type PointerOptions = Partial<{
     target: EventTarget;
+    pretransform: null | PointerTransform;
     transform: null | PointerTransform;
     isTouchMode: boolean;
     holdOnly: boolean;
@@ -28,6 +29,7 @@ export class Pointer extends EventEmitter<PointerEvents> implements Required<Poi
 
     static defaults: PointerOptions = {
         target: _window,
+        pretransform: _null,
         transform: _null,
         isTouchMode: navigator.maxTouchPoints > 0,
         clickThreshold: 1000,
@@ -80,12 +82,14 @@ export class Pointer extends EventEmitter<PointerEvents> implements Required<Poi
     private _endListener: EventListener;
     holdOnly!: boolean;
     clickThreshold!: number;
+    pretransform!: null | PointerTransform;
     transform!: null | PointerTransform;
     radius!: number;
 
     private _setPosition(id: number, rawPosition: Vector, endFlag?: boolean) {
-        const { bounds, radius, positions } = this,
-            newPosition = this.transform ? this.transform(rawPosition) : rawPosition;
+        const { bounds, radius, positions, pretransform, transform } = this,
+            tempPosition = pretransform ? pretransform(rawPosition) : rawPosition,
+            newPosition = transform ? transform(tempPosition) : tempPosition;
         this.position.setVector(newPosition);
         if (endFlag) {
             positions.delete(id);
