@@ -1,3 +1,11 @@
+## 0.29.0 - 2019-07-11
+
+- Add camera APIs
+- Add `pointer.pretransform`
+- Rename `renderer.outer2inner` `renderer.toInnerPosition`
+- Rename `renderer.inner2outer` `renderer.toOuterPosition`
+- Fix `size` setter in pool
+
 ## 0.28.0 - 2019-07-09
 
 - Add `engine.restoration`
