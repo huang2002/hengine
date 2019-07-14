@@ -1,3 +1,3 @@
 [submodule "docs"]
 	path = docs
-	url = ./docs
+	url = https://github.com/huang2002/hengine.wiki.git
