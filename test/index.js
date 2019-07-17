@@ -4,18 +4,14 @@
 
 const { Vector } = HE;
 
-const renderer = new HE.Renderer({
-    ratio: 2,
-});
-
 const inspector = new HE.Inspector({
     // boundsStroke: '#f00',
     velocityStroke: '#00f',
 });
 
-const engine = new HE.Engine({ inspector, renderer });
+const engine = new HE.Engine({ inspector });
 
-const { timer, pointer } = engine;
+const { renderer, timer, pointer } = engine;
 
 let timestamp = 'Loading';
 timer.setInterval(now => {
