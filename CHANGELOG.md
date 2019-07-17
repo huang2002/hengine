@@ -1,3 +1,7 @@
+## 0.30.0 - 2019-07-17
+
+- Improve default `ratio`
+
 ## 0.29.0 - 2019-07-11
 
 - Add camera APIs
