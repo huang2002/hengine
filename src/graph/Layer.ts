@@ -21,7 +21,7 @@ export class Layer implements Required<LayerOptions>, Renderable, RendererLike {
         active: true,
         width: 480,
         height: 320,
-        ratio: _window.devicePixelRatio || 1,
+        ratio: navigator.maxTouchPoints ? _window.devicePixelRatio || 1 : 2,
         origin: Vector.of(.5, .5),
         background: _null,
     };
