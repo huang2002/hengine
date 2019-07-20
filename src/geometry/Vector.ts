@@ -69,6 +69,11 @@ export class Vector {
         vector2.y += vector0.y * k2;
     }
 
+    static random(startAngle?: number, endAngle = Utils.Const.DOUBLE_PI) {
+        const angle = Utils.mix(startAngle || 0, endAngle, _Math.random());
+        return Vector.of(_cos(angle), _sin(angle));
+    }
+
     constructor(x?: number, y?: number) {
         this.x = x || 0;
         this.y = y || 0;
