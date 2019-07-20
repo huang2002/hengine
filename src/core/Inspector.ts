@@ -42,7 +42,7 @@ export class Inspector implements Required<InspectorOptions> {
         velocityStrokeScale: 1,
     };
 
-    constructor(options?: InspectorOptions) {
+    constructor(options?: Readonly<InspectorOptions>) {
         _assign(this, Inspector.defaults, options);
 
         if (!this.paragraph) {

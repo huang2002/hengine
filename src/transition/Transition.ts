@@ -37,7 +37,7 @@ export class Transition<T extends object = any>
         target: _null,
     };
 
-    constructor(options: TransitionOptions<T> = Utils.Const.EMPTY_OBJECT) {
+    constructor(options: Readonly<TransitionOptions<T>> = Utils.Const.EMPTY_OBJECT) {
         super();
         _assign(this, Transition.defaults, options);
 

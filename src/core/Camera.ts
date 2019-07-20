@@ -13,7 +13,7 @@ export class Camera implements Required<CameraOptions> {
         rotation: 0,
     };
 
-    constructor(options?: CameraOptions) {
+    constructor(options?: Readonly<CameraOptions>) {
         _assign(this, Camera.defaults, options);
 
         if (!this.position) {

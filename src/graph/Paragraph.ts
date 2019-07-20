@@ -27,7 +27,7 @@ export class Paragraph implements Required<ParagraphOptions>, Renderable {
 
     static defaultStyle: TextStyle = _assign({} as TextStyle, Text.defaultStyle);
 
-    constructor(options?: ParagraphOptions) {
+    constructor(options?: Readonly<ParagraphOptions>) {
         _assign(this, Paragraph.defaults, options);
 
         if (!this.position) {

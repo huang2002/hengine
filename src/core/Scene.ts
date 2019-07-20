@@ -56,7 +56,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         pointerChecker: Collision.Checker.Smart,
     };
 
-    constructor(options: SceneOptions = Utils.Const.EMPTY_OBJECT) {
+    constructor(options: Readonly<SceneOptions> = Utils.Const.EMPTY_OBJECT) {
         super();
 
         this.toViewPosition = this.toViewPosition.bind(this);

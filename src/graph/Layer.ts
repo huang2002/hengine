@@ -26,7 +26,7 @@ export class Layer implements Required<LayerOptions>, Renderable, RendererLike {
         background: _null,
     };
 
-    constructor(options?: LayerOptions) {
+    constructor(options?: Readonly<LayerOptions>) {
         _assign(this, Layer.defaults, options);
 
         if (!this.offset) {

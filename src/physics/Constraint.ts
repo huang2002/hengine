@@ -38,7 +38,7 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
         Style.Stroke.defaults
     );
 
-    constructor(options?: ConstraintOptions) {
+    constructor(options?: Readonly<ConstraintOptions>) {
         _assign(this, Constraint.defaults, options);
         this.style = _assign({}, Constraint.defaultStyle, this.style);
 

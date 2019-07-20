@@ -35,7 +35,7 @@ export class Pointer extends EventEmitter<PointerEvents> implements Required<Poi
         clickThreshold: 1000,
     };
 
-    constructor(options?: PointerOptions) {
+    constructor(options?: Readonly<PointerOptions>) {
         super();
         _assign(this, Pointer.defaults, options);
 
