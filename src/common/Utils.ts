@@ -1,6 +1,6 @@
 import {
     _PI, _sqrt, _pow, _window, _now, _undefined,
-    _clearTimeout, _setTimeout, _Map, _Object, _null, _assign
+    _clearTimeout, _setTimeout, _Map, _Object, _null, _assign, _Infinity
 } from "./references";
 
 export namespace Utils {
@@ -55,6 +55,19 @@ export const Utils = {
     },
 
     mix(a: number, b: number, k: number) {
+        if (a === _Infinity) {
+            if (b === a) {
+                return a;
+            } else if (b === -a) {
+                return NaN;
+            }
+        } else if (a === -_Infinity) {
+            if (b === a) {
+                return a;
+            } else if (b === -a) {
+                return NaN;
+            }
+        }
         return a + (b - a) * k;
     },
 
