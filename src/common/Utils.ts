@@ -40,18 +40,33 @@ export const Utils = {
     } as const,
 
     removeIndex(array: unknown[], index: number) {
-        for (const end = array.length - 1; index < end; index++) {
-            array[index] = array[index + 1];
+        if (!index) {
+            array.shift();
+        } else {
+            const end = array.length - 1;
+            if (index < end) {
+                for (; index < end; index++) {
+                    array[index] = array[index + 1];
+                }
+                array.length--;
+            } else {
+                array.pop();
+            }
         }
-        array.length--;
     },
 
     insert<T = unknown>(array: T[], index: number, item: T) {
-        const end = array.length++ - 1;
-        for (let i = index; i < end; i++) {
-            array[i + 1] = array[i];
+        if (!index) {
+            array.unshift(item);
+        } else if (index < array.length) {
+            const end = array.length++ - 1;
+            for (let i = index; i < end; i++) {
+                array[i + 1] = array[i];
+            }
+            array[index] = item;
+        } else {
+            array.push(item);
         }
-        array[index] = item;
     },
 
     mix(a: number, b: number, k: number) {
