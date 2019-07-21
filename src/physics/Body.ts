@@ -39,7 +39,7 @@ export type BodyOptions = Partial<{
     maxSpeed: number;
     angularSpeed: number;
     maxAngularSpeed: number;
-    gravity: Vector;
+    gravity: Vector | null;
     density: number;
     mass: number;
     stiffness: number;
@@ -159,7 +159,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
     maxSpeed!: number;
     angularSpeed !: number;
     maxAngularSpeed!: number;
-    gravity!: Vector;
+    gravity!: Vector | null;
     stiffness!: number;
     slop!: number;
     elasticity!: number;
@@ -316,13 +316,15 @@ export abstract class Body extends EventEmitter<BodyEvents>
             position.plusVector(velocity, timeScale);
             bounds.moveVector(velocity, timeScale);
             (this.isStatic as boolean) = ((this.speed as number) = speed) <= Body.maxStaticSpeed;
-            const { acceleration } = this,
+            const { acceleration, gravity } = this,
                 maxAngularSpeed = this.maxAngularSpeed * timeScale,
                 airSpeedScale = 1 - this.airFriction,
                 angularSpeed = (this.angularSpeed *= airSpeedScale) * timeScale;
-            velocity.plusVector(acceleration, timeScale)
-                .plusVector(this.gravity, timeScale)
-                .scale(airSpeedScale);
+            velocity.plusVector(acceleration, timeScale);
+            if (gravity) {
+                velocity.plusVector(gravity, timeScale);
+            }
+            velocity.scale(airSpeedScale);
             acceleration.reset();
             if (angularSpeed > maxAngularSpeed) {
                 (this.rotation as number) += (this.angularSpeed = maxAngularSpeed);
