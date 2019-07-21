@@ -46,6 +46,14 @@ export const Utils = {
         array.length--;
     },
 
+    insert<T = unknown>(array: T[], index: number, item: T) {
+        const end = array.length++ - 1;
+        for (let i = index; i < end; i++) {
+            array[i + 1] = array[i];
+        }
+        array[index] = item;
+    },
+
     mix(a: number, b: number, k: number) {
         return a + (b - a) * k;
     },
