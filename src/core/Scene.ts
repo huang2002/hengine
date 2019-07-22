@@ -27,7 +27,7 @@ export type SceneOptions = Partial<{
     camera: Camera | null;
     pointer: Pointer | null;
     objects: SceneObject[];
-    attachments: SceneObject[];
+    attachments: Renderable[];
     effects: SceneEffect[];
     collisionChecker: CollisionChecker | null;
     pointerChecker: CollisionChecker | null;
@@ -90,7 +90,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     clean!: boolean;
     camera!: Camera | null;
     objects!: SceneObject[];
-    attachments!: SceneObject[];
+    attachments!: Renderable[];
     effects!: SceneEffect[];
     collisionChecker!: CollisionChecker | null;
     pointerChecker!: CollisionChecker | null;
