@@ -60,7 +60,7 @@ export const Utils = {
             array.unshift(item);
         } else if (index < array.length) {
             const end = array.length++ - 1;
-            for (let i = index; i < end; i++) {
+            for (let i = end; i >= index; i--) {
                 array[i + 1] = array[i];
             }
             array[index] = item;
