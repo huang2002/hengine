@@ -106,6 +106,10 @@ export class Particles<T extends SceneObject = SceneObject, U = unknown>
         this.spawn.threshold = value;
     }
 
+    get threshold() {
+        return this.spawn.threshold;
+    }
+
     clear() {
         const { pool, cleaner, _legacies } = this;
         this.items.forEach(item => {
