@@ -299,47 +299,45 @@ const stick = new HE.Constraint({
 });
 mainScene.add(stick);
 
-const particlePool = new HE.Pool(HE.Polygon, {
-    tag: 'particle',
-    vertices: HE.Vertices.createStar(4, 1, 5, HE.Utils.Const.HALF_PI / 2),
-    style: {
-        fillStyle: '#ff0',
-        strokeStyle: null,
-        opacity: .9,
+const particles = new HE.Particles({
+    pool: new HE.Pool(HE.Polygon, {
+        tag: 'particle',
+        active: true,
+        vertices: HE.Vertices.createStar(4, 2, 5, HE.Utils.Const.HALF_PI / 2),
+        gravity: null,
+        airFriction: .01,
+        style: {
+            fillStyle: '#ff0',
+            strokeStyle: null
+        }
+    }),
+    minLife: 1500,
+    maxLife: 2000,
+    maxCount: 50,
+    threshold: 25,
+    initializer: function (particle, life) {
+        particle.position.setVector(pointer.position);
+        particle.velocity.setVector(Vector.random().scale(HE.Utils.mix(1, 1.5, Math.random())));
+        const effect = new HE.Transition({
+            target: particle.style,
+            key: 'opacity',
+            from: 1,
+            to: 0,
+            duration: life,
+            timing: HE.Timing.easeOut
+        });
+        mainScene.use(effect);
+        return effect;
     },
+    cleaner: function (particle, /** @type {HE.Transition} */effect) {
+        mainScene.disuse(effect);
+    }
 });
-const MAX_PARTICLE_COUNT = 50,
-    PARTICLE_LIFE = 1e3;
-let particleCount = 0,
-    lastPointerPosition = '';
-const addParticle = HE.Utils.throttle(function () {
-    const currentPointerPosition = pointer.position + '';
-    if (currentPointerPosition === lastPointerPosition) {
-        return;
-    }
-    lastPointerPosition = currentPointerPosition;
-    particleCount++;
-    const particle = particlePool.get();
-    particle.moveToVector(this.pointer.position);
-    this.attach(particle);
-    const transition = new HE.Transition({
-        target: particle.style,
-        key: 'opacity',
-        to: 0,
-        duration: PARTICLE_LIFE,
-        timing: HE.Timing.easeIn,
-    });
-    this.use(transition);
-    timer.setTimeout(scene => {
-        scene.detach(particle);
-        scene.disuse(transition);
-        particleCount--;
-    }, PARTICLE_LIFE, this);
-}, 20);
-mainScene.on('willUpdate', function () {
-    if (particleCount < MAX_PARTICLE_COUNT) {
-        addParticle.call(this);
-    }
+mainScene.attach(particles).on('didUpdate', function (timeScale) {
+    particles.update(timeScale);
+});
+inspector.callbacks.push(function () {
+    return 'Particle Count: ' + particles.items.length;
 });
 
 engine.enter(menuScene);
