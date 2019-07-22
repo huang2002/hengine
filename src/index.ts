@@ -27,6 +27,7 @@ export * from "./graph/Circle";
 export * from "./graph/Polygon";
 export * from "./graph/Line";
 export * from "./graph/Layer";
+export * from "./graph/Particles";
 
 export * from "./core/Timer";
 export * from "./core/Pointer";
