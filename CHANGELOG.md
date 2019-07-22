@@ -1,3 +1,11 @@
+## 0.31.0 - 2019-07-22
+
+- Add `Particles`
+- Add `Vector.random`
+- Add `Utils.insert`
+- Improve `Utils.removeIndex` & `Utils.mix`
+- Improve `body.gravity`
+
 ## 0.30.0 - 2019-07-17
 
 - Improve default `ratio`
