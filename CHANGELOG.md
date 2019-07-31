@@ -1,3 +1,7 @@
+## 0.33.0 - 2019-07-31
+
+- Add `Utils.random`
+
 ## 0.32.0 - 2019-07-31
 
 - Add `engine.maxDelay`
