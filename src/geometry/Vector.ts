@@ -70,7 +70,7 @@ export class Vector {
     }
 
     static random(startAngle?: number, endAngle = Utils.Const.DOUBLE_PI) {
-        const angle = Utils.mix(startAngle || 0, endAngle, _Math.random());
+        const angle = Utils.random(startAngle || 0, endAngle);
         return Vector.of(_cos(angle), _sin(angle));
     }
 

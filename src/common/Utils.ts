@@ -1,6 +1,6 @@
 import {
     _PI, _sqrt, _pow, _window, _now, _undefined,
-    _clearTimeout, _setTimeout, _Map, _Object, _null, _assign, _Infinity
+    _clearTimeout, _setTimeout, _Map, _Object, _null, _assign, _Infinity, _Math
 } from "./references";
 
 export namespace Utils {
@@ -84,6 +84,10 @@ export const Utils = {
             }
         }
         return a + (b - a) * k;
+    },
+
+    random(min: number, max: number) {
+        return Utils.mix(min, max, _Math.random());
     },
 
     rad2deg(rad: number) {
