@@ -1,3 +1,8 @@
+## 0.32.0 - 2019-07-31
+
+- Add `engine.maxDelay`
+- Remove `engine.maxTimeScale`
+
 ## 0.31.0 - 2019-07-22
 
 - Add `Particles`
