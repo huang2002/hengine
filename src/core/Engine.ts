@@ -13,7 +13,7 @@ export type EngineOptions = Partial<{
     pointer: Pointer;
     inspector: Inspector | null;
     baseTime: number;
-    maxTimeScale: number;
+    maxDelay: number;
     currentScene: Scene | null;
     rerenderOnResize: boolean;
     restoration: boolean;
@@ -30,7 +30,7 @@ export class Engine extends EventEmitter<EngineEvents> implements Required<Engin
 
     static defaults: EngineOptions = {
         baseTime: 50,
-        maxTimeScale: 2,
+        maxDelay: 1500,
         rerenderOnResize: true,
         restoration: true,
     };
@@ -74,7 +74,7 @@ export class Engine extends EventEmitter<EngineEvents> implements Required<Engin
     readonly pointer!: Pointer;
     inspector: Inspector | null = _null;
     baseTime!: number;
-    maxTimeScale!: number;
+    maxDelay!: number;
     currentScene: Scene | null = _null;
     rerenderOnResize!: boolean;
     restoration!: boolean;
@@ -108,13 +108,13 @@ export class Engine extends EventEmitter<EngineEvents> implements Required<Engin
     }
 
     tick(deltaTime: number) {
-        const timeScale = deltaTime / this.baseTime;
-        if (timeScale > this.maxTimeScale) {
+        if (deltaTime > this.maxDelay) {
             return;
         }
         const { currentScene, inspector, renderer } = this,
             { context } = renderer;
         if (currentScene) {
+            const timeScale = deltaTime / this.baseTime;
             this.emit('willUpdate', timeScale);
             const { timer } = this;
             if (timer.delay !== currentScene.delay) {
