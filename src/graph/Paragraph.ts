@@ -50,37 +50,41 @@ export class Paragraph implements Required<ParagraphOptions>, Renderable {
     render(renderer: RendererLike) {
         const { style, fillFirst, lines, lineHeight, indent, position } = this,
             { fillStyle, strokeStyle, shadowColor, shadowOffsetX, shadowOffsetY } = style,
+            { x, y } = position,
             { context } = renderer,
             { TRANSPARENT } = Utils.Const,
             preferShadow = this.preferShadow && !style.shadowBlur && style.shadowColor !== TRANSPARENT;
-        let { x, y } = position;
         Text.applyStyle(renderer, style);
         if (preferShadow) {
             context.shadowColor = TRANSPARENT;
         }
+        context.translate(x, y);
+        let dx = 0,
+            dy = 0;
         lines.forEach(line => {
             if (preferShadow) {
                 context.fillStyle = style.shadowColor;
-                context.fillText(line, x + shadowOffsetX, y + shadowOffsetY);
+                context.fillText(line, dx + shadowOffsetX, dy + shadowOffsetY);
                 if (fillStyle) {
                     context.fillStyle = fillStyle;
                 }
             }
             if (fillFirst && fillStyle) {
-                context.fillText(line, x, y);
+                context.fillText(line, dx, dy);
                 context.shadowColor = TRANSPARENT;
             }
             if (strokeStyle) {
-                context.strokeText(line, x, y);
+                context.strokeText(line, dx, dy);
                 context.shadowColor = TRANSPARENT;
             }
             if (!fillFirst && fillStyle) {
-                context.fillText(line, x, y);
+                context.fillText(line, dx, dy);
             }
             context.shadowColor = shadowColor;
-            x += indent;
-            y += lineHeight;
+            dx += indent;
+            dy += lineHeight;
         });
+        context.translate(-x, -y);
     }
 
 }
