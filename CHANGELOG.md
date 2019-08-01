@@ -1,3 +1,7 @@
+### 0.33.2 - 2019-08-01
+
+- fix `pool.get`
+
 ### 0.33.1 - 2019-08-01
 
 - fix particle spawning
