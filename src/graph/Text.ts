@@ -12,6 +12,7 @@ export type TextOptions = Partial<{
     fillFirst: boolean;
     preferShadow: boolean;
     position: Vector;
+    rotation: number;
     style: Partial<TextStyle>;
 }>;
 
@@ -21,6 +22,7 @@ export class Text implements Required<TextOptions>, Renderable {
         visible: true,
         content: '',
         preferShadow: false,
+        rotation: 0,
     };
 
     static defaultStyle: TextStyle = _assign({} as TextStyle, Shape.defaultStyle, {
@@ -55,16 +57,18 @@ export class Text implements Required<TextOptions>, Renderable {
     fillFirst!: boolean;
     preferShadow!: boolean;
     position!: Vector;
+    rotation!: number;
     style!: TextStyle;
 
     render(renderer: RendererLike) {
-        const { style, fillFirst, content, position } = this,
+        const { style, fillFirst, content, position, rotation } = this,
             { x, y } = position,
             { fillStyle } = style,
             { context } = renderer,
             { TRANSPARENT } = Utils.Const;
         Text.applyStyle(renderer, style);
         context.translate(x, y);
+        context.rotate(rotation);
         if (this.preferShadow && !style.shadowBlur && style.shadowColor !== TRANSPARENT) {
             context.shadowColor = TRANSPARENT;
             context.fillStyle = style.shadowColor;
@@ -84,6 +88,7 @@ export class Text implements Required<TextOptions>, Renderable {
         if (!fillFirst && fillStyle) {
             context.fillText(content, 0, 0);
         }
+        context.rotate(-rotation);
         context.translate(-x, -y);
     }
 

@@ -12,6 +12,7 @@ export type ParagraphOptions = Partial<{
     fillFirst: boolean;
     preferShadow: boolean;
     position: Vector;
+    rotation: number;
     style: Partial<TextStyle>;
 }>;
 
@@ -23,6 +24,7 @@ export class Paragraph implements Required<ParagraphOptions>, Renderable {
         indent: 0,
         lineHeight: 20,
         preferShadow: true,
+        rotation: 0,
     };
 
     static defaultStyle: TextStyle = _assign({} as TextStyle, Text.defaultStyle);
@@ -45,10 +47,11 @@ export class Paragraph implements Required<ParagraphOptions>, Renderable {
     fillFirst!: boolean;
     preferShadow!: boolean;
     position!: Vector;
+    rotation!: number;
     style!: TextStyle;
 
     render(renderer: RendererLike) {
-        const { style, fillFirst, lines, lineHeight, indent, position } = this,
+        const { style, fillFirst, lines, lineHeight, indent, position, rotation } = this,
             { fillStyle, strokeStyle, shadowColor, shadowOffsetX, shadowOffsetY } = style,
             { x, y } = position,
             { context } = renderer,
@@ -59,6 +62,7 @@ export class Paragraph implements Required<ParagraphOptions>, Renderable {
             context.shadowColor = TRANSPARENT;
         }
         context.translate(x, y);
+        context.rotate(rotation);
         let dx = 0,
             dy = 0;
         lines.forEach(line => {
@@ -84,6 +88,7 @@ export class Paragraph implements Required<ParagraphOptions>, Renderable {
             dx += indent;
             dy += lineHeight;
         });
+        context.rotate(-rotation);
         context.translate(-x, -y);
     }
 
