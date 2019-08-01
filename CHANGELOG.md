@@ -1,3 +1,8 @@
+## 0.34.0 - 2019-08-01
+
+- Add `particles.loop`
+- Add `Utils.pick`
+
 ### 0.33.2 - 2019-08-01
 
 - fix `pool.get`
