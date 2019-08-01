@@ -90,6 +90,10 @@ export const Utils = {
         return Utils.mix(min, max, _Math.random());
     },
 
+    pick<T = unknown>(options: T[]) {
+        return options[_Math.floor(options.length * _Math.random())];
+    },
+
     rad2deg(rad: number) {
         return rad / _PI * 180;
     },
