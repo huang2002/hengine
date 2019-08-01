@@ -1,3 +1,7 @@
+### 0.34.1 - 2019-08-01
+
+- Fix `paragraph.render` & `text.render`
+
 ## 0.34.0 - 2019-08-01
 
 - Add `particles.loop`
