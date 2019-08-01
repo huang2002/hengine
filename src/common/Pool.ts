@@ -28,8 +28,7 @@ export class Pool<T, O = any> {
         if (_items.length) {
             return _items.shift()!;
         } else {
-            const item = new this.factory(this.options);
-            return item;
+            return new this.factory(this.options);
         }
     }
 
