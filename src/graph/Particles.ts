@@ -26,6 +26,7 @@ export type ParticlesOptions<T extends SceneObject = SceneObject, U = unknown> =
     initializer: ParticleInitializer<T, U> | null;
     cleaner: ParticleCleaner<T, U> | null;
     sequential: boolean;
+    loop: boolean;
 }>;
 
 export class Particles<T extends SceneObject = SceneObject, U = unknown>
@@ -42,6 +43,7 @@ export class Particles<T extends SceneObject = SceneObject, U = unknown>
         initializer: _null,
         cleaner: _null,
         sequential: false,
+        loop: true,
     };
 
     constructor(options?: Readonly<ParticlesOptions<T, U>>) {
@@ -68,6 +70,7 @@ export class Particles<T extends SceneObject = SceneObject, U = unknown>
     initializer!: ParticleInitializer<T, U> | null;
     cleaner!: ParticleCleaner<T, U> | null;
     sequential!: boolean;
+    loop!: boolean;
     private _items: T[] = [];
     private readonly _deadlines = new _Map<T, number>();
     private readonly _legacies = new _Map<T, U>();
@@ -153,7 +156,9 @@ export class Particles<T extends SceneObject = SceneObject, U = unknown>
             }
             return true;
         });
-        this.spawn();
+        if (this.loop) {
+            this.spawn();
+        }
         const currentCount = this.items.length;
         if (currentCount > this.maxCount) {
             const { items } = this;
