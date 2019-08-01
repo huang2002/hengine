@@ -29,7 +29,6 @@ export class Pool<T, O = any> {
             return _items.shift()!;
         } else {
             const item = new this.factory(this.options);
-            _items.push(item);
             return item;
         }
     }
