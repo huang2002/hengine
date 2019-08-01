@@ -169,8 +169,8 @@ export class Particles<T extends SceneObject = SceneObject, U = unknown>
                     Utils.removeIndex(items, items.indexOf(item));
                 }
             }
-        } else if (currentCount < this.minCount - 1) {
-            for (let i = currentCount + 1; i < this.minCount; i++) {
+        } else if (currentCount < this.minCount) {
+            for (let i = currentCount; i < this.minCount; i++) {
                 this._spawn();
             }
         }
