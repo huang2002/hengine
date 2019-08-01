@@ -1,3 +1,7 @@
+### 0.33.1 - 2019-08-01
+
+- fix particle spawning
+
 ## 0.33.0 - 2019-07-31
 
 - Add `Utils.random`
