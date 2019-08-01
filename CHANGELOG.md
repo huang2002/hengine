@@ -1,3 +1,7 @@
+## 0.35.0 - 2019-08-01
+
+- Add `paragraph.rotation` & `text.rotation`
+
 ### 0.34.1 - 2019-08-01
 
 - Fix `paragraph.render` & `text.render`
