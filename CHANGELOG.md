@@ -1,3 +1,7 @@
+### 0.35.1 - 2019-08-02
+
+- Fix inspector rendering
+
 ## 0.35.0 - 2019-08-01
 
 - Add `paragraph.rotation` & `text.rotation`
