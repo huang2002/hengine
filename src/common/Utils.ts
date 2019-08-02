@@ -37,6 +37,7 @@ export const Utils = {
         DOUBLE_PI: _PI * 2,
         HALF_PI: _PI / 2,
         TRANSPARENT: 'rgba(0,0,0,0)',
+        IS_TOUCH_MODE: navigator.maxTouchPoints > 0 || /iOS|iPhone|iPod|iPad/.test(navigator.userAgent),
     } as const,
 
     removeIndex(array: unknown[], index: number) {
