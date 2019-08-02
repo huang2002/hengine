@@ -1,3 +1,8 @@
+## 0.36.0 - 2019-08-02
+
+- Add `Utils.Const.IS_TOUCH_MODE`
+- Fix touch mode detection
+
 ### 0.35.1 - 2019-08-02
 
 - Fix inspector rendering
