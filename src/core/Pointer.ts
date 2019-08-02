@@ -3,6 +3,7 @@ import { Vector, VectorLike } from "../geometry/Vector";
 import { EventEmitter } from "../common/EventEmitter";
 import { BodyLike } from "../physics/Body";
 import { Bounds } from "../geometry/Bounds";
+import { Utils } from "../common/Utils";
 
 export type PointerTransform = (position: Vector) => Vector;
 
@@ -31,7 +32,7 @@ export class Pointer extends EventEmitter<PointerEvents> implements Required<Poi
         target: _window,
         pretransform: _null,
         transform: _null,
-        isTouchMode: navigator.maxTouchPoints > 0,
+        isTouchMode: Utils.Const.IS_TOUCH_MODE,
         clickThreshold: 1000,
     };
 

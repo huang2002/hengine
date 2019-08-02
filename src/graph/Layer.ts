@@ -3,6 +3,7 @@ import { Renderable, RendererLike } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { SceneObject } from "../core/Scene";
 import { RenderingStyle } from "./Style";
+import { Utils } from "../common/Utils";
 
 export type LayerOptions = Partial<{
     active: boolean;
@@ -21,7 +22,7 @@ export class Layer implements Required<LayerOptions>, Renderable, RendererLike {
         active: true,
         width: 480,
         height: 320,
-        ratio: navigator.maxTouchPoints ? _window.devicePixelRatio || 1 : 2,
+        ratio: Utils.Const.IS_TOUCH_MODE ? _window.devicePixelRatio || 1 : 2,
         origin: Vector.of(.5, .5),
         background: _null,
     };
