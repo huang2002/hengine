@@ -129,15 +129,8 @@ export class Engine extends EventEmitter<EngineEvents> implements Required<Engin
             this.emit('didRender', renderer);
         }
         if (inspector) {
-            const camera = currentScene && currentScene.camera;
-            if (camera) {
-                camera.applyTo(context);
-            }
             inspector.update(this);
             renderer.render(inspector);
-            if (camera) {
-                camera.restore(context);
-            }
         }
     }
 

@@ -7,6 +7,7 @@ import { Engine } from "./Engine";
 import { RenderingStyle } from "../graph/Style";
 import { Body } from "../physics/Body";
 import { SceneObject } from "./Scene";
+import { Camera } from "./Camera";
 
 export type InspectorCallback = Utils.Callback<void, Engine, string>;
 
@@ -66,6 +67,7 @@ export class Inspector implements Required<InspectorOptions> {
     boundsStroke!: RenderingStyle | null;
     boundsStrokeWidth!: number;
     private _objects?: SceneObject[] | null;
+    private _camera!: Camera | null;
     velocityStroke!: RenderingStyle | null;
     velocityStrokeWidth!: number;
     velocityStrokeScale!: number;
@@ -74,13 +76,17 @@ export class Inspector implements Required<InspectorOptions> {
         const { currentScene } = engine;
         this._objects = currentScene && currentScene.objects
             .concat(currentScene.attachments);
+        this._camera = currentScene && currentScene.camera;
         this.paragraph.lines = this.callbacks.map(callback => callback(engine));
     }
 
     render(renderer: Renderer) {
-        const { _objects } = this,
+        const { _objects, _camera } = this,
             { context } = renderer;
         if (_objects) {
+            if (_camera) {
+                _camera.applyTo(context);
+            }
             if (this.boundsStroke && _objects.length) {
                 context.beginPath();
                 _objects.forEach(object => {
@@ -111,6 +117,9 @@ export class Inspector implements Required<InspectorOptions> {
                 context.strokeStyle = this.velocityStroke;
                 context.lineWidth = this.velocityStrokeWidth;
                 context.stroke();
+            }
+            if (_camera) {
+                _camera.restore(context);
             }
         }
         renderer.render(this.paragraph);
