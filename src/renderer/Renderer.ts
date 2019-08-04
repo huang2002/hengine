@@ -83,6 +83,8 @@ export class Renderer extends EventEmitter<RendererEvents>
             _window.addEventListener(event, resizeListener);
         });
 
+        this._width = this.width;
+        this._height = this.height;
         this._resize();
 
     }
@@ -104,6 +106,8 @@ export class Renderer extends EventEmitter<RendererEvents>
     align!: boolean;
     sizing!: SizingFunction;
     restoration!: boolean;
+    private _width!: number;
+    private _height!: number;
     private _offsetX!: number;
     private _offsetY!: number;
     private _scale!: number;
@@ -120,15 +124,17 @@ export class Renderer extends EventEmitter<RendererEvents>
         const { canvas, ratio, origin } = this,
             { style } = canvas;
 
-        let { width, height } = this,
-            styleWidth = width,
-            styleHeight = height;
+        const { _width, _height } = this;
+        let width = _width,
+            height = _height,
+            styleWidth = _width,
+            styleHeight = _height;
 
         if (this.align) {
             const { parent } = this;
             if (parent) {
                 const rect = parent.getBoundingClientRect(),
-                    size = this.sizing(width, height, rect.width, rect.height, this.margin);
+                    size = this.sizing(_width, _height, rect.width, rect.height, this.margin);
                 style.marginLeft = size.left + 'px';
                 style.marginTop = size.top + 'px';
                 width = (this.width as number) = size.width;
@@ -172,8 +178,8 @@ export class Renderer extends EventEmitter<RendererEvents>
     }
 
     resize(width: number, height: number, ratio?: number) {
-        (this.width as number) = width;
-        (this.height as number) = height;
+        this._width = (this.width as number) = width;
+        this._height = (this.height as number) = height;
         if (ratio) {
             (this.ratio as number) = ratio;
         }
