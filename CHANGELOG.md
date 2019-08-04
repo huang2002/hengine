@@ -1,3 +1,7 @@
+### 0.37.1 - 2019-08-04
+
+- Fix a bug in resizing
+
 ## 0.37.0 - 2019-08-04
 
 - Modify default `renderer.margin`
