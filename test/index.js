@@ -9,9 +9,13 @@ const inspector = new HE.Inspector({
     velocityStroke: '#00f',
 });
 
-const engine = new HE.Engine({ inspector });
+const renderer = new HE.Renderer({
+    sizing: HE.Sizing.Fixed,
+});
 
-const { renderer, timer, pointer } = engine;
+const engine = new HE.Engine({ inspector, renderer });
+
+const { timer, pointer } = engine;
 
 let timestamp = 'Loading';
 timer.setInterval(now => {
