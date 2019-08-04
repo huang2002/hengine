@@ -50,7 +50,7 @@ export class Renderer extends EventEmitter<RendererEvents>
         settings: Utils.Const.EMPTY_OBJECT,
         width: Layer.defaults.width,
         height: Layer.defaults.height,
-        margin: 10,
+        margin: 0,
         ratio: Layer.defaults.ratio,
         origin: Layer.defaults.origin,
         parent: _document.body,
@@ -83,7 +83,7 @@ export class Renderer extends EventEmitter<RendererEvents>
             _window.addEventListener(event, resizeListener);
         });
 
-        this._resize(true);
+        this._resize();
 
     }
 
@@ -115,7 +115,7 @@ export class Renderer extends EventEmitter<RendererEvents>
         return this.resizeListener.delay;
     }
 
-    private _resize(force?: boolean) {
+    private _resize() {
 
         const { canvas, ratio, origin } = this,
             { style } = canvas;
@@ -131,10 +131,8 @@ export class Renderer extends EventEmitter<RendererEvents>
                     size = this.sizing(width, height, rect.width, rect.height, this.margin);
                 style.marginLeft = size.left + 'px';
                 style.marginTop = size.top + 'px';
-                if (force) {
-                    width = (this.width as number) = size.width;
-                    height = (this.height as number) = size.height;
-                }
+                width = (this.width as number) = size.width;
+                height = (this.height as number) = size.height;
                 styleWidth = size.styleWidth;
                 styleHeight = size.styleHeight;
                 this._offsetX = rect.left + size.left;
@@ -147,15 +145,10 @@ export class Renderer extends EventEmitter<RendererEvents>
 
         style.width = styleWidth + 'px';
         style.height = styleHeight + 'px';
-
-        if (!force) {
-            return;
-        }
-
-        this.emit('resize');
-
         canvas.width = width * ratio;
         canvas.height = height * ratio;
+
+        this.emit('resize');
 
         const originX = (this.originX as number) = width * origin.x,
             originY = (this.originY as number) = height * origin.y;
@@ -184,7 +177,7 @@ export class Renderer extends EventEmitter<RendererEvents>
         if (ratio) {
             (this.ratio as number) = ratio;
         }
-        this._resize(true);
+        this._resize();
         return this;
     }
 
