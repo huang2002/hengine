@@ -1,3 +1,8 @@
+## 0.37.0 - 2019-08-04
+
+- Modify default `renderer.margin`
+- Fix renderer sizing
+
 ## 0.36.0 - 2019-08-02
 
 - Add `Utils.Const.IS_TOUCH_MODE`
