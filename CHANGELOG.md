@@ -1,3 +1,7 @@
+### 0.37.3 - 2019-08-05
+
+- Fix a bug in layer rendering
+
 ### 0.37.2 - 2019-08-05
 
 - fix layer rendering
