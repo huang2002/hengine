@@ -1,3 +1,7 @@
+### 0.37.2 - 2019-08-05
+
+- fix layer rendering
+
 ### 0.37.1 - 2019-08-04
 
 - Fix a bug in resizing

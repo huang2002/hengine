@@ -1,7 +1,7 @@
 {
     "name": "hengine",
     "description": "A 2D graphic engine for javascript/typescript.",
-    "version": "0.37.1",
+    "version": "0.37.2",
     "main": "dist/hengine.umd.min.js",
     "module": "dist/hengine.min.js",
     "types": "index.d.ts",
