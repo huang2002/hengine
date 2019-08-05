@@ -2,7 +2,7 @@ import { _assign, _document, _null, _window } from "../common/references";
 import { Renderable, RendererLike } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { SceneObject } from "../core/Scene";
-import { RenderingStyle } from "./Style";
+import { RenderingStyle, Style } from "./Style";
 import { Utils } from "../common/Utils";
 
 export type LayerOptions = Partial<{
@@ -79,6 +79,7 @@ export class Layer implements Required<LayerOptions>, Renderable, RendererLike {
     cache(immediate?: boolean) {
         if (immediate) {
             this.expired = false;
+            Style.Common.apply(this, Style.Common.defaults);
             this.fill(this.background);
             this.objects.forEach(object => {
                 object.render(this);
