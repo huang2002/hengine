@@ -79,7 +79,6 @@ export class Layer implements Required<LayerOptions>, Renderable, RendererLike {
     cache(immediate?: boolean) {
         if (immediate) {
             this.expired = false;
-            Style.Common.apply(this, Style.Common.defaults);
             this.fill(this.background);
             this.objects.forEach(object => {
                 object.render(this);
@@ -119,6 +118,7 @@ export class Layer implements Required<LayerOptions>, Renderable, RendererLike {
     }
 
     render(renderer: RendererLike) {
+        Style.Common.apply(renderer, Style.Common.defaults);
         const { offset } = this;
         renderer.context.drawImage(
             this.canvas,
