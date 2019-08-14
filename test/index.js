@@ -93,14 +93,14 @@ menuScene.attach(
     })
 ).use(
     new HE.Transition({
+        target: playButton,
+        key: 'y',
         from: renderer.bounds.bottom + playButton.height / 2,
         to: 0,
         duration: 2000,
         timing: HE.Timing.easeInOut,
     }).on('start', () => {
         menuScene.fps = 50;
-    }).on('update', y => {
-        playButton.moveTo(playButton.position.x, y);
     }).on('end', () => {
         menuScene.delay = 500;
     })

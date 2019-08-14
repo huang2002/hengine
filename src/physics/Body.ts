@@ -169,6 +169,26 @@ export abstract class Body extends EventEmitter<BodyEvents>
     fixRotation!: boolean;
     radius!: number;
 
+    get x() {
+        return this.position.x;
+    }
+
+    set x(value: number) {
+        const { position } = this;
+        this.bounds.move(value - position.x, 0);
+        position.x = value;
+    }
+
+    get y() {
+        return this.position.y;
+    }
+
+    set y(value: number) {
+        const { position } = this;
+        this.bounds.move(0, value - position.y);
+        position.y = value;
+    }
+
     setDensity(density: number) {
         (this.density as number) = density;
         if (this.active) {
