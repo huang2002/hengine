@@ -1,3 +1,8 @@
+## 0.38.0 - 2019-08-14
+
+- Add `body.x` & `body.y`
+- Add `Utils.ThrottleWrapper.lastCallTime`
+
 ### 0.37.3 - 2019-08-05
 
 - Fix a bug in layer rendering
