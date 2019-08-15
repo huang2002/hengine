@@ -1,3 +1,7 @@
+### 0.38.1 - 2019-08-15
+
+- Fix legacy clearing in `Particles`
+
 ## 0.38.0 - 2019-08-14
 
 - Add `body.x` & `body.y`
