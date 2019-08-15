@@ -126,6 +126,7 @@ export class Particles<T extends SceneObject = SceneObject, U = unknown>
         this.items = [];
         this._items.length = 0;
         this._deadlines.clear();
+        this._legacies.clear();
     }
 
     private _remove(item: T) {
