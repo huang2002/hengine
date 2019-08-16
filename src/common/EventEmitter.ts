@@ -29,7 +29,7 @@ export class EventEmitter<E extends object = any> {
     }
 
     off<T extends keyof E>(event: T, listener: EventListener<this, E[T]>, once?: boolean) {
-        once = !!once;
+        once = !once;
         const { _listenerMap } = this;
         if (_listenerMap.has(event)) {
             const records = _listenerMap.get(event)!,
