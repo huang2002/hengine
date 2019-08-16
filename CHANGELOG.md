@@ -1,3 +1,7 @@
+### 0.38.2 - 2019-08-16
+
+- fix the time to emit `willRender` events on scene instances
+
 ### 0.38.1 - 2019-08-15
 
 - Fix legacy clearing in `Particles`
