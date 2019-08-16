@@ -41,6 +41,6 @@ export const Category: CategoryObject = {
     tagFor(category) {
         const result = Category.registry.find(record => record[1] === category);
         return result && result[0];
-    }
+    },
 
 };

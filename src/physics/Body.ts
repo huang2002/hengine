@@ -325,9 +325,9 @@ export abstract class Body extends EventEmitter<BodyEvents>
 
     update(timeScale: number) {
         this.emit('willUpdate', timeScale);
-        const { velocity, bounds, position } = this;
         if (this.active) {
-            const maxSpeed = this.maxSpeed;
+            const { velocity, bounds, position } = this,
+                maxSpeed = this.maxSpeed;
             let speed = velocity.getNorm() / timeScale;
             if (speed > maxSpeed) {
                 velocity.scale(maxSpeed / speed);

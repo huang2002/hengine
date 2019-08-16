@@ -112,8 +112,8 @@ export const Collision: CollisionObject = {
                         overlap * staticFriction >= absRelativeEdgeSpeed ||
                         overlap * friction >= absRelativeEdgeSpeed
                     ) {
-                        const relativeEdgeVelocity = Vector.projectVector(relativeVelocity, edgeVector)
-                            .shrink(2);
+                        const relativeEdgeVelocity =
+                            Vector.projectVector(relativeVelocity, edgeVector).shrink(2);
                         v1.plusVector(relativeEdgeVelocity);
                         v2.minusVector(relativeEdgeVelocity);
                     } else if (friction) {
@@ -168,7 +168,9 @@ export const Collision: CollisionObject = {
                 const { overlapVector } = collisionInfo;
                 results.push(_assign(collisionInfo, {
                     body1, body2,
-                    edgeVector: overlapVector.isZero() ? _null : overlapVector.clone().turn().normalize(),
+                    edgeVector: overlapVector.isZero() ?
+                        _null :
+                        overlapVector.clone().turn().normalize(),
                     relativeVelocity: Vector.minus(body2.velocity, velocity1)
                 }));
             }
