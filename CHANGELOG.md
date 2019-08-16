@@ -1,6 +1,10 @@
+### 0.38.3 - 2019-08-16
+
+- Fix `eventEmitter.off`
+
 ### 0.38.2 - 2019-08-16
 
-- fix the time to emit `willRender` events on scene instances
+- Fix the time to emit `willRender` events on scene instances
 
 ### 0.38.1 - 2019-08-15
 
