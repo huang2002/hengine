@@ -38,7 +38,7 @@ export class EventEmitter<E extends object = any> {
                         record[0] === listener &&
                         record[1] === once
                 );
-            if (!~index) {
+            if (~index) {
                 Utils.removeIndex(records, index);
             }
         }
