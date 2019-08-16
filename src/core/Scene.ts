@@ -326,13 +326,13 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     }
 
     render(renderer: Renderer) {
-        this.emit('willRender', renderer);
         renderer.fill(this.background);
         const { camera } = this,
             { context } = renderer;
         if (camera) {
             camera.applyTo(context);
         }
+        this.emit('willRender', renderer);
         this.objects.concat(this.attachments).forEach(renderable => {
             renderer.render(renderable);
         });
