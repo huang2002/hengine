@@ -154,8 +154,6 @@ export class Renderer extends EventEmitter<RendererEvents>
         canvas.width = width * ratio;
         canvas.height = height * ratio;
 
-        this.emit('resize');
-
         const originX = (this.originX as number) = width * origin.x,
             originY = (this.originY as number) = height * origin.y;
 
@@ -170,6 +168,8 @@ export class Renderer extends EventEmitter<RendererEvents>
         bounds.right = -originX + width;
         bounds.bottom = -originY + height;
         bounds.left = -originX;
+
+        this.emit('resize');
 
     }
 
