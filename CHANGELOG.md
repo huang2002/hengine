@@ -1,3 +1,7 @@
+### 0.38.6 - 2019-08-17
+
+- Fix the time to emit `resize` events on renderer instances
+
 ### 0.38.5 - 2019-08-17
 
 - Fix a bug in `eventEmitter.emit`
