@@ -56,7 +56,7 @@ export class EventEmitter<E extends object = any> {
             if (records.length) {
                 _listenerMap.set(event, records.filter(record => {
                     record[0].apply(this, args);
-                    return record[1];
+                    return record[1] && records.includes(record);
                 }));
                 return true;
             }
