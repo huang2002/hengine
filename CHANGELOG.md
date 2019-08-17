@@ -1,3 +1,7 @@
+### 0.38.5 - 2019-08-17
+
+- Fix a bug in `eventEmitter.emit`
+
 ### 0.38.4 - 2019-08-16
 
 - Fix `eventEmitter.off`
