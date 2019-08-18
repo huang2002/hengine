@@ -4,14 +4,18 @@
 
 const { Vector } = HE;
 
+const renderer = new HE.Renderer({
+    sizing: HE.Sizing.Fixed,
+});
+
 const inspector = new HE.Inspector({
     // boundsStroke: '#f00',
     velocityStroke: '#00f',
 });
 
-const renderer = new HE.Renderer({
-    sizing: HE.Sizing.Fixed,
-});
+inspector.paragraph.position = renderer.createUIVector(
+    ({ bounds }) => ({ x: bounds.left + 10, y: bounds.top + 10 })
+);
 
 const engine = new HE.Engine({ inspector, renderer });
 

@@ -23,6 +23,8 @@ export interface RendererLike {
     fill(color: RenderingStyle | null): void;
 }
 
+export type UIVectorTransform = (renderer: Renderer) => VectorLike;
+
 export type RendererOptions = Partial<{
     canvas: HTMLCanvasElement;
     settings: CanvasRenderingContext2DSettings;
@@ -232,6 +234,14 @@ export class Renderer extends EventEmitter<RendererEvents>
             height: bounds.height,
             ratio: this.ratio,
         }, options));
+    }
+
+    createUIVector(transform: UIVectorTransform) {
+        const vector = Vector.from(transform(this));
+        this.on('resize', () => {
+            vector.setVector(transform(this));
+        });
+        return vector;
     }
 
 }
