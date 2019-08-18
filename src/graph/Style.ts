@@ -74,7 +74,7 @@ export const Style: StyleObject = {
     Stroke: {
 
         defaults: {
-            strokeStyle: '#000',
+            strokeStyle: null,
             lineWidth: 1,
             lineCap: 'butt',
             lineJoin: 'miter',
