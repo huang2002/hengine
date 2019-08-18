@@ -1,3 +1,8 @@
+## 0.39.0 - 2019-08-18
+
+- Add `renderer.createUIVector`
+- Modify default stroke style
+
 ### 0.38.6 - 2019-08-17
 
 - Fix the time to emit `resize` events on renderer instances
