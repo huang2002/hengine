@@ -314,7 +314,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
 
         const { collisionChecker } = this;
         if (collisionChecker) {
-            Collision.check(collidableBodies, collisionChecker);
+            Collision.solve(collidableBodies, collisionChecker);
         }
 
         deferredEffects.forEach(effect => {

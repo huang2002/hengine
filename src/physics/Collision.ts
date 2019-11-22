@@ -19,7 +19,7 @@ export type CollisionChecker = (body1: BodyLike, body2: BodyLike) => CollisionRe
 
 export type CollisionObject = Readonly<{
     find(bodies: Body[], checker: CollisionChecker): CollisionInfo[];
-    check(bodies: Body[], checker: CollisionChecker): void;
+    solve(bodies: Body[], checker: CollisionChecker): void;
     Checker: Readonly<{
         AABB: CollisionChecker;
         SAT: CollisionChecker;
@@ -58,7 +58,7 @@ export const Collision: CollisionObject = {
         return results;
     },
 
-    check(bodies, checker) {
+    solve(bodies, checker) {
 
         const { maxStaticSpeed } = Body;
 
