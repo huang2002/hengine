@@ -1,5 +1,4 @@
 import { EventEmitter } from "../common/EventEmitter";
-import { _assign, _undefined, _abs, _Infinity, _Set } from "../common/references";
 import { Vector, VectorLike } from "../geometry/Vector";
 import { CategoryTag, Category } from "./Category";
 import { Bounds } from "../geometry/Bounds";
@@ -97,7 +96,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
     constructor(options: Readonly<BodyOptions> = Utils.Const.EMPTY_OBJECT) {
         super();
 
-        _assign(this, Body.defaults, options);
+        Object.assign(this, Body.defaults, options);
 
         if (!this.position) {
             this.position = new Vector();
@@ -116,7 +115,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
         }
 
         const { scaleX, scaleY, rotation } = this;
-        if (scaleX !== _undefined || scaleY !== _undefined) {
+        if (scaleX !== undefined || scaleY !== undefined) {
             this.scale(scaleX, scaleY);
         }
         if (rotation) {
@@ -145,7 +144,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
     readonly mass: number = 0;
     readonly isStatic!: boolean;
     readonly speed: number = 0;
-    readonly contact = new _Set<Body>();
+    readonly contact = new Set<Body>();
     active!: boolean;
     interactive!: boolean;
     draggable!: boolean;
@@ -211,7 +210,7 @@ export abstract class Body extends EventEmitter<BodyEvents>
     }
 
     activate(active = true) {
-        (this.mass as number) = ((this.active as boolean) = active) ? this.area * this.density : _Infinity;
+        (this.mass as number) = ((this.active as boolean) = active) ? this.area * this.density : Infinity;
         return this;
     }
 

@@ -1,4 +1,3 @@
-import { _sqrt, _pow, _cos, _sin, _PI, _abs, _Math, _undefined } from "../common/references";
 import { Utils } from "../common/Utils";
 
 export interface VectorLike {
@@ -57,8 +56,8 @@ export class Vector {
         k1: number, k2: number,
         scale?: number
     ) {
-        let sum = _abs(k1) + _abs(k2);
-        if (scale !== _undefined) {
+        let sum = Math.abs(k1) + Math.abs(k2);
+        if (scale !== undefined) {
             sum /= scale;
         }
         k1 /= sum;
@@ -71,7 +70,7 @@ export class Vector {
 
     static random(startAngle?: number, endAngle = Utils.Const.DOUBLE_PI) {
         const angle = Utils.random(startAngle || 0, endAngle);
-        return Vector.of(_cos(angle), _sin(angle));
+        return Vector.of(Math.cos(angle), Math.sin(angle));
     }
 
     constructor(x?: number, y?: number) {
@@ -93,7 +92,7 @@ export class Vector {
     }
 
     setVector(vector: VectorLike, scale?: number) {
-        if (scale !== _undefined) {
+        if (scale !== undefined) {
             this.x = vector.x * scale;
             this.y = vector.y * scale;
         } else {
@@ -109,7 +108,7 @@ export class Vector {
     }
 
     getNorm() {
-        return _sqrt(_pow(this.x, 2) + _pow(this.y, 2));
+        return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
     }
 
     setNorm(norm: number) {
@@ -129,7 +128,7 @@ export class Vector {
     }
 
     plusVector(vector: VectorLike, scale?: number) {
-        if (scale !== _undefined) {
+        if (scale !== undefined) {
             this.x += vector.x * scale;
             this.y += vector.y * scale;
         } else {
@@ -146,7 +145,7 @@ export class Vector {
     }
 
     minusVector(vector: VectorLike, scale?: number) {
-        if (scale !== _undefined) {
+        if (scale !== undefined) {
             this.x -= vector.x * scale;
             this.y -= vector.y * scale;
         } else {
@@ -189,8 +188,8 @@ export class Vector {
     }
 
     rotate(radian: number, origin?: VectorLike) {
-        const cos = _cos(radian),
-            sin = _sin(radian);
+        const cos = Math.cos(radian),
+            sin = Math.sin(radian);
         if (origin) {
             const dx = this.x - origin.x,
                 dy = this.y - origin.y;
@@ -206,7 +205,7 @@ export class Vector {
 
     getAngle() {
         const { x } = this;
-        return _Math.atan(this.y / x) + (x > 0 ? 0 : _PI);
+        return Math.atan(this.y / x) + (x > 0 ? 0 : Math.PI);
     }
 
     turn(clockwise?: boolean) {

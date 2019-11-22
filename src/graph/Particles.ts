@@ -1,4 +1,3 @@
-import { _assign, _null, _Infinity, _Map, _now, _Math } from "../common/references";
 import { Renderable, RendererLike } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { SceneObject } from "../core/Scene";
@@ -35,19 +34,19 @@ export class Particles<T extends SceneObject = SceneObject, U = unknown>
     static defaults: ParticlesOptions = {
         visible: true,
         active: true,
-        pool: _null,
+        pool: null,
         minCount: 0,
-        maxCount: _Infinity,
-        minLife: _Infinity,
-        maxLife: _Infinity,
-        initializer: _null,
-        cleaner: _null,
+        maxCount: Infinity,
+        minLife: Infinity,
+        maxLife: Infinity,
+        initializer: null,
+        cleaner: null,
         sequential: false,
         loop: true,
     };
 
     constructor(options?: Readonly<ParticlesOptions<T, U>>) {
-        _assign(this, Particles.defaults, options);
+        Object.assign(this, Particles.defaults, options);
 
         if (!this.offset) {
             this.offset = new Vector();
@@ -72,8 +71,8 @@ export class Particles<T extends SceneObject = SceneObject, U = unknown>
     sequential!: boolean;
     loop!: boolean;
     private _items: T[] = [];
-    private readonly _deadlines = new _Map<T, number>();
-    private readonly _legacies = new _Map<T, U>();
+    private readonly _deadlines = new Map<T, number>();
+    private readonly _legacies = new Map<T, U>();
 
     set life(value: number) {
         this.minLife = this.maxLife = value;
@@ -90,8 +89,8 @@ export class Particles<T extends SceneObject = SceneObject, U = unknown>
         }
         const { items, _deadlines, initializer } = this,
             particle = pool.get(),
-            life = Utils.mix(this.minLife, this.maxLife, _Math.random());
-        _deadlines.set(particle, _now() + life);
+            life = Utils.mix(this.minLife, this.maxLife, Math.random());
+        _deadlines.set(particle, Date.now() + life);
         if (initializer) {
             this._legacies.set(particle, initializer(particle, life));
         }
@@ -99,7 +98,7 @@ export class Particles<T extends SceneObject = SceneObject, U = unknown>
         if (this.sequential) {
             items.push(particle);
         } else {
-            Utils.insert(items, _Math.round(items.length * _Math.random()), particle);
+            Utils.insert(items, Math.round(items.length * Math.random()), particle);
         }
     }
 
@@ -147,7 +146,7 @@ export class Particles<T extends SceneObject = SceneObject, U = unknown>
             return;
         }
         const { _deadlines } = this,
-            now = _now();
+            now = Date.now();
         this.items = this.items.filter(item => {
             if (_deadlines.get(item)! <= now) {
                 return this._remove(item);

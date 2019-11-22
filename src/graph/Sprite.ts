@@ -1,6 +1,5 @@
 import { Renderable, RendererLike } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
-import { _assign, _document, _undefined } from "../common/references";
 import { Utils } from "../common/Utils";
 import { Style, CommonStyle } from "./Style";
 
@@ -27,20 +26,20 @@ export class Sprite implements Required<SpriteOptions>, Renderable {
         rotation: 0,
     };
 
-    static defaultStyle: CommonStyle = _assign({} as CommonStyle, Style.Common.defaults);
+    static defaultStyle: CommonStyle = Object.assign({} as CommonStyle, Style.Common.defaults);
 
     static of(src: string, options?: Readonly<SpriteOptions>) {
         return (new Sprite(options)).load(src);
     }
 
     constructor(options: Readonly<SpriteOptions> = Utils.Const.EMPTY_OBJECT) {
-        _assign(this, options);
+        Object.assign(this, options);
 
         if (!this.position) {
             this.position = new Vector();
         }
 
-        this.style = _assign({}, Sprite.defaultStyle, this.style);
+        this.style = Object.assign({}, Sprite.defaultStyle, this.style);
 
     }
 
@@ -61,7 +60,7 @@ export class Sprite implements Required<SpriteOptions>, Renderable {
         onSuccess?: Utils.Callback<GlobalEventHandlers, Event, void>,
         onFailure?: Utils.Callback<GlobalEventHandlers, [Event | string], void>
     ) {
-        const image = this.image = _document.createElement('img');
+        const image = this.image = document.createElement('img');
         image.src = src;
         if (onSuccess) {
             image.onload = onSuccess;

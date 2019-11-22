@@ -1,4 +1,3 @@
-import { _null } from "../common/references";
 import { Utils } from "../common/Utils";
 import { RendererLike } from "../renderer/Renderer";
 
@@ -59,7 +58,7 @@ export const Style: StyleObject = {
     Fill: {
 
         defaults: {
-            fillStyle: _null,
+            fillStyle: null,
         },
 
         apply(renderer, style) {
@@ -79,7 +78,7 @@ export const Style: StyleObject = {
             lineCap: 'butt',
             lineJoin: 'miter',
             miterLimit: 10,
-            lineDash: _null,
+            lineDash: null,
             lineDashOffset: 0,
         },
 

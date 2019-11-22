@@ -1,4 +1,3 @@
-import { _assign } from "../common/references";
 import { Renderable, RendererLike } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { ShapeStyle, Shape } from "./Shape";
@@ -25,7 +24,7 @@ export class Text implements Required<TextOptions>, Renderable {
         rotation: 0,
     };
 
-    static defaultStyle: TextStyle = _assign({} as TextStyle, Shape.defaultStyle, {
+    static defaultStyle: TextStyle = Object.assign({} as TextStyle, Shape.defaultStyle, {
         font: '16px Consolas',
         textAlign: 'center',
         textBaseline: 'middle',
@@ -42,13 +41,13 @@ export class Text implements Required<TextOptions>, Renderable {
     }
 
     constructor(options?: Readonly<TextOptions>) {
-        _assign(this, Text.defaults, options);
+        Object.assign(this, Text.defaults, options);
 
         if (!this.position) {
             this.position = new Vector();
         }
 
-        this.style = _assign({}, Text.defaultStyle, this.style);
+        this.style = Object.assign({}, Text.defaultStyle, this.style);
 
     }
 

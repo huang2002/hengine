@@ -1,4 +1,3 @@
-import { _assign } from "../common/references";
 import { Renderable, RendererLike } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { TextStyle, Text } from "./Text";
@@ -27,16 +26,16 @@ export class Paragraph implements Required<ParagraphOptions>, Renderable {
         rotation: 0,
     };
 
-    static defaultStyle: TextStyle = _assign({} as TextStyle, Text.defaultStyle);
+    static defaultStyle: TextStyle = Object.assign({} as TextStyle, Text.defaultStyle);
 
     constructor(options?: Readonly<ParagraphOptions>) {
-        _assign(this, Paragraph.defaults, options);
+        Object.assign(this, Paragraph.defaults, options);
 
         if (!this.position) {
             this.position = new Vector();
         }
 
-        this.style = _assign({}, Paragraph.defaultStyle, this.style);
+        this.style = Object.assign({}, Paragraph.defaultStyle, this.style);
 
     }
 

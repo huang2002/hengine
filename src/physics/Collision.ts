@@ -1,6 +1,5 @@
 import { Body, BodyLike } from "./Body";
 import { Vector } from "../geometry/Vector";
-import { _null, _Infinity, _min, _max, _assign, _abs, _Set, _sign } from "../common/references";
 
 export type CollisionResult = Readonly<{
     overlap: number;
@@ -46,10 +45,10 @@ export const Collision: CollisionObject = {
                     continue;
                 }
                 const { overlapVector } = collisionInfo;
-                results.push(_assign(collisionInfo, {
+                results.push(Object.assign(collisionInfo, {
                     body1, body2,
                     edgeVector:
-                        overlapVector.isZero() ? _null : overlapVector.clone().turn().normalize(),
+                        overlapVector.isZero() ? null : overlapVector.clone().turn().normalize(),
                     relativeVelocity: Vector.minus(body2.velocity, velocity1)
                 }));
             }
@@ -82,7 +81,7 @@ export const Collision: CollisionObject = {
                 impulseScale = impulse > slop ? (impulse - slop) / impulse : 0,
                 { edgeVector, relativeVelocity } = collisionInfo,
                 isSeparating = Vector.dot(relativeVelocity, overlapVector) < 0,
-                bounceScale = _max(elasticity1, body2.elasticity) + 1,
+                bounceScale = Math.max(elasticity1, body2.elasticity) + 1,
                 relativeNormalVelocity = Vector.projectVector(relativeVelocity, overlapVector);
             if (body1.active) {
                 if (body2.active) {
@@ -123,15 +122,15 @@ export const Collision: CollisionObject = {
             body2.contact.add(body1);
             const { velocity: v1 } = body1,
                 { velocity: v2 } = body2,
-                friction = _min(body1.friction, body2.friction),
-                staticFriction = _min(body1.staticFriction, body2.staticFriction);
+                friction = Math.min(body1.friction, body2.friction),
+                staticFriction = Math.min(body1.staticFriction, body2.staticFriction);
             if (!staticFriction) {
                 return;
             }
             const { overlap, edgeVector, relativeVelocity } =
                 collisionInfo as CollisionInfo & { edgeVector: Vector },
                 relativeEdgeSpeed = Vector.project(relativeVelocity, edgeVector),
-                absRelativeEdgeSpeed = _abs(relativeEdgeSpeed);
+                absRelativeEdgeSpeed = Math.abs(relativeEdgeSpeed);
             if (body1.active) {
                 if (body2.active) {
                     if (
@@ -148,7 +147,7 @@ export const Collision: CollisionObject = {
                             edgeVector,
                             v1, v2,
                             body2.mass, -body1.mass,
-                            overlap * friction * _sign(relativeEdgeSpeed)
+                            overlap * friction * Math.sign(relativeEdgeSpeed)
                         );
                     }
                 } else {
@@ -159,7 +158,7 @@ export const Collision: CollisionObject = {
                     ) {
                         v1.plusVector(edgeVector, relativeEdgeSpeed);
                     } else if (friction) {
-                        v1.plusVector(edgeVector, overlap * friction * _sign(relativeEdgeSpeed));
+                        v1.plusVector(edgeVector, overlap * friction * Math.sign(relativeEdgeSpeed));
                     }
                 }
             } else {
@@ -170,7 +169,7 @@ export const Collision: CollisionObject = {
                 ) {
                     v2.minusVector(edgeVector, relativeEdgeSpeed);
                 } else if (friction) {
-                    v2.minusVector(edgeVector, overlap * friction * _sign(relativeEdgeSpeed));
+                    v2.minusVector(edgeVector, overlap * friction * Math.sign(relativeEdgeSpeed));
                 }
             }
         });
@@ -187,12 +186,12 @@ export const Collision: CollisionObject = {
                 x = delta, y = 0;
 
             if (delta < 0) {
-                return _null;
+                return null;
             }
 
             delta = bounds1.left - bounds2.right;
             if (delta > 0) {
-                return _null;
+                return null;
             } else if (-delta < min) {
                 min = -delta;
                 x = delta;
@@ -200,7 +199,7 @@ export const Collision: CollisionObject = {
 
             delta = bounds1.bottom - bounds2.top;
             if (delta < 0) {
-                return _null;
+                return null;
             } else if (delta < min) {
                 min = delta;
                 x = 0;
@@ -209,7 +208,7 @@ export const Collision: CollisionObject = {
 
             delta = bounds1.top - bounds2.bottom;
             if (delta > 0) {
-                return _null;
+                return null;
             } else if (-delta < min) {
                 min = -delta;
                 x = 0;
@@ -243,15 +242,15 @@ export const Collision: CollisionObject = {
                 normals.push(Vector.minus(position2, body1.getClosest(position2)).normalize());
             }
 
-            let minDirection: Vector | null = _null,
-                minOverlap = _Infinity;
+            let minDirection: Vector | null = null,
+                minOverlap = Infinity;
 
             for (let i = 0; i < normals.length; i++) {
                 const direction = normals[i],
                     projection1 = body1.project(direction),
                     projection2 = body2.project(direction);
                 if (projection1.min > projection2.max || projection1.max < projection2.min) {
-                    return _null;
+                    return null;
                 }
                 const overlap1 = projection1.max - projection2.min,
                     overlap2 = projection1.min - projection2.max;
@@ -278,7 +277,7 @@ export const Collision: CollisionObject = {
         Distance(body1, body2) {
             const offset = Vector.minus(body2.position, body1.position),
                 delta = body1.radius + body2.radius - offset.getNorm();
-            return delta < 0 ? _null : {
+            return delta < 0 ? null : {
                 overlap: delta,
                 overlapVector: offset.setNorm(delta)
             };
@@ -290,7 +289,7 @@ export const Collision: CollisionObject = {
                     Collision.Checker.Distance(body1, body2) :
                     Collision.Checker.SAT(body1, body2);
             } else {
-                return _null;
+                return null;
             }
         },
 

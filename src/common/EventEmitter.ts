@@ -1,4 +1,3 @@
-import { _Map, _undefined } from "./references";
 import { Utils } from "./Utils";
 
 export type EventListener<T, A> = Utils.Callback<T, A, void>;
@@ -19,7 +18,7 @@ export class EventEmitter<E extends object = any> {
         this.clearEvents = this.clearEvents.bind(this);
     }
 
-    private _listenerMap = new _Map<keyof E, EventListenerRecord<this, any>[]>();
+    private _listenerMap = new Map<keyof E, EventListenerRecord<this, any>[]>();
 
     on<T extends keyof E>(event: T, listener: EventListener<this, E[T]>, once?: boolean) {
         once = !!once;

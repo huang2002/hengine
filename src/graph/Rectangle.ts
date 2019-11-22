@@ -1,6 +1,5 @@
 import { Renderable } from "../renderer/Renderer";
 import { Vector, VectorLike } from "../geometry/Vector";
-import { _abs, _assign, _cos, _sin, _max, _sqrt, _undefined } from "../common/references";
 import { Shape, ShapeOptions } from "./Shape";
 import { Utils } from "../common/Utils";
 import { Vertices } from "../geometry/Vertices";
@@ -20,12 +19,12 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
     };
 
     constructor(options: Readonly<RectangleOptions> = Utils.Const.EMPTY_OBJECT) {
-        super(_assign({}, Rectangle.defaults, options));
+        super(Object.assign({}, Rectangle.defaults, options));
         this.updateBounds();
 
         const { rotation } = this,
-            cos = _cos(rotation),
-            sin = _sin(rotation);
+            cos = Math.cos(rotation),
+            sin = Math.sin(rotation);
         (this.normals as Vector[]) = [
             Vector.of(cos, sin),
             Vector.of(-sin, cos)
@@ -63,12 +62,12 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
     updateSize(width: number, height: number): void;
     updateSize(): void;
     updateSize(width?: number, height?: number) {
-        if (width === _undefined) {
+        if (width === undefined) {
             width = this.width;
         } else {
             this.width = width;
         }
-        if (height === _undefined) {
+        if (height === undefined) {
             height = this.height;
         } else {
             this.height = height;
@@ -86,8 +85,8 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
             dx0 -= radius;
             dy0 -= radius;
         }
-        const cos = _cos(rotation),
-            sin = _sin(rotation),
+        const cos = Math.cos(rotation),
+            sin = Math.sin(rotation),
             dx1 = dx0 * cos - dy0 * sin,
             dy1 = dx0 * sin + dy0 * cos,
             dx2 = dx0 * cos - -dy0 * sin,
@@ -112,8 +111,8 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
             dx0 -= radius;
             dy0 -= radius;
         }
-        const cos = _cos(rotation),
-            sin = _sin(rotation),
+        const cos = Math.cos(rotation),
+            sin = Math.sin(rotation),
             dx1 = dx0 * cos - dy0 * sin,
             dy1 = dx0 * sin + dy0 * cos,
             dx2 = dx0 * cos - -dy0 * sin,
@@ -133,15 +132,15 @@ export class Rectangle extends Shape implements Required<RectangleOptions>, Rend
     project(direction: Vector) {
         const { radius } = this,
             angle = this.rotation - direction.getAngle(),
-            cos = _cos(angle),
-            sin = _sin(angle);
+            cos = Math.cos(angle),
+            sin = Math.sin(angle);
         let x0 = this.width / 2,
             y0 = this.height / 2;
         if (radius > 0) {
             x0 -= radius;
             y0 -= radius;
         }
-        let halfLength = _max(_abs(x0 * cos - y0 * sin), _abs(x0 * cos + y0 * sin));
+        let halfLength = Math.max(Math.abs(x0 * cos - y0 * sin), Math.abs(x0 * cos + y0 * sin));
         if (radius > 0) {
             halfLength += radius;
         }

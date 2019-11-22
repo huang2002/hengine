@@ -1,6 +1,5 @@
 import { Body, BodyOptions } from "../physics/Body";
 import { Renderable, RendererLike } from "../renderer/Renderer";
-import { _assign, _null } from "../common/references";
 import { Style, StrokeStyle, CommonStyle, FillStyle } from "./Style";
 import { Utils } from "../common/Utils";
 
@@ -23,14 +22,14 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
         fillFirst: true,
         closePath: true,
         preferShadow: false,
-        texture: _null,
+        texture: null,
     };
 
-    static defaultStyle: ShapeStyle = _assign(
+    static defaultStyle: ShapeStyle = Object.assign(
         {} as ShapeStyle,
         Style.Common.defaults,
         Style.Stroke.defaults,
-        { fillStyle: _null } as ShapeStyle
+        { fillStyle: null } as ShapeStyle
     );
 
     static applyStyle(renderer: RendererLike, style: ShapeStyle) {
@@ -40,9 +39,9 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
     }
 
     constructor(options: Readonly<ShapeOptions> = Utils.Const.EMPTY_OBJECT) {
-        super(_assign({}, Shape.defaults, options));
+        super(Object.assign({}, Shape.defaults, options));
 
-        this.style = _assign({}, Shape.defaultStyle, this.style);
+        this.style = Object.assign({}, Shape.defaultStyle, this.style);
         if (!this.attachments) {
             this.attachments = [];
         }

@@ -1,4 +1,3 @@
-import { _assign, _now, _null, _undefined } from "../common/references";
 import { EventEmitter } from "../common/EventEmitter";
 import { TimingFunction, Timing } from "./Timing";
 import { Utils } from "../common/Utils";
@@ -34,21 +33,21 @@ export class Transition<T extends object = any>
         delay: 0,
         loop: false,
         timing: Timing.linear,
-        target: _null,
+        target: null,
     };
 
     constructor(options: Readonly<TransitionOptions<T>> = Utils.Const.EMPTY_OBJECT) {
         super();
-        _assign(this, Transition.defaults, options);
+        Object.assign(this, Transition.defaults, options);
 
         if (this.active) {
-            this._startTime = _now();
+            this._startTime = Date.now();
         }
         const { target, key } = this;
-        if (options.from === _undefined && target) {
+        if (options.from === undefined && target) {
             this.from = target[key] as unknown as number;
         }
-        if (options.to === _undefined && target) {
+        if (options.to === undefined && target) {
             this.to = target[key] as unknown as number;
         }
 
@@ -68,7 +67,7 @@ export class Transition<T extends object = any>
     private _delay = 0;
 
     start() {
-        this._startTime = _now();
+        this._startTime = Date.now();
         this.active = true;
         this._delay = 0;
         this.emit('start');
@@ -79,7 +78,7 @@ export class Transition<T extends object = any>
             return;
         }
         const { from, to } = this;
-        let x = (_now() - this._startTime - this.delay - this._delay) / this.duration,
+        let x = (Date.now() - this._startTime - this.delay - this._delay) / this.duration,
             value: number;
         if (x >= 1) {
             value = to;
@@ -104,11 +103,11 @@ export class Transition<T extends object = any>
 
     pause() {
         this.active = false;
-        this._pauseTime = _now();
+        this._pauseTime = Date.now();
     }
 
     resume() {
-        this._delay += _now() - this._pauseTime;
+        this._delay += Date.now() - this._pauseTime;
         this.active = true;
     }
 

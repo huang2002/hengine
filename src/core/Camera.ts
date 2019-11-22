@@ -1,5 +1,4 @@
 import { Vector, VectorLike } from "../geometry/Vector";
-import { _assign, _cos, _sin } from "../common/references";
 
 export type CameraOptions = Partial<{
     position: Vector;
@@ -14,7 +13,7 @@ export class Camera implements Required<CameraOptions> {
     };
 
     constructor(options?: Readonly<CameraOptions>) {
-        _assign(this, Camera.defaults, options);
+        Object.assign(this, Camera.defaults, options);
 
         if (!this.position) {
             this.position = new Vector();
@@ -52,8 +51,8 @@ export class Camera implements Required<CameraOptions> {
 
     toViewPosition(position: VectorLike) {
         const { position: pos, scale, rotation } = this,
-            cos = _cos(rotation),
-            sin = -_sin(rotation),
+            cos = Math.cos(rotation),
+            sin = -Math.sin(rotation),
             tx = (position.x + pos.x) / scale.x,
             ty = (position.y + pos.y) / scale.y;
         return Vector.of(
@@ -64,8 +63,8 @@ export class Camera implements Required<CameraOptions> {
 
     toGlobalPosition(position: VectorLike) {
         const { position: pos, scale, rotation } = this,
-            cos = _cos(rotation),
-            sin = _sin(rotation),
+            cos = Math.cos(rotation),
+            sin = Math.sin(rotation),
             tx = position.x * scale.x - pos.x,
             ty = position.y * scale.y - pos.y;
         return Vector.of(

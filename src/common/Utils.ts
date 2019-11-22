@@ -1,8 +1,3 @@
-import {
-    _PI, _sqrt, _pow, _window, _now, _undefined,
-    _clearTimeout, _setTimeout, _Map, _Object, _null, _assign, _Infinity, _Math
-} from "./references";
-
 export namespace Utils {
 
     export type ToArray<T> = T extends any[] ? T : [T];
@@ -34,9 +29,9 @@ export namespace Utils {
 export const Utils = {
 
     Const: {
-        EMPTY_OBJECT: _Object.create(_null) as {},
-        DOUBLE_PI: _PI * 2,
-        HALF_PI: _PI / 2,
+        EMPTY_OBJECT: Object.create(null) as {},
+        DOUBLE_PI: Math.PI * 2,
+        HALF_PI: Math.PI / 2,
         TRANSPARENT: 'rgba(0,0,0,0)',
         IS_TOUCH_MODE: navigator.maxTouchPoints > 0 || /iOS|iPhone|iPod|iPad/.test(navigator.userAgent),
     } as const,
@@ -72,13 +67,13 @@ export const Utils = {
     },
 
     mix(a: number, b: number, k: number) {
-        if (a === _Infinity) {
+        if (a === Infinity) {
             if (b === a) {
                 return a;
             } else if (b === -a) {
                 return NaN;
             }
-        } else if (a === -_Infinity) {
+        } else if (a === -Infinity) {
             if (b === a) {
                 return a;
             } else if (b === -a) {
@@ -89,19 +84,19 @@ export const Utils = {
     },
 
     random(min: number, max: number) {
-        return Utils.mix(min, max, _Math.random());
+        return Utils.mix(min, max, Math.random());
     },
 
     pick<T = unknown>(options: T[]) {
-        return options[_Math.floor(options.length * _Math.random())];
+        return options[Math.floor(options.length * Math.random())];
     },
 
     rad2deg(rad: number) {
-        return rad / _PI * 180;
+        return rad / Math.PI * 180;
     },
 
     deg2rad(deg: number) {
-        return deg / 180 * _PI;
+        return deg / 180 * Math.PI;
     },
 
     quadraticSum(a: number, b: number) {
@@ -109,33 +104,33 @@ export const Utils = {
     },
 
     distance(x1: number, y1: number, x2: number, y2: number) {
-        return _sqrt(Utils.quadraticSum(x2 - x1, y2 - y1));
+        return Math.sqrt(Utils.quadraticSum(x2 - x1, y2 - y1));
     },
 
-    debounce: _assign(
+    debounce: Object.assign(
         function debounce<T extends Utils.DebounceCallback>(callback: T, delay?: number) {
             let timer: any;
             const wrapper: Utils.DebounceWrapper<T> = function debounceWrapper() {
-                if (timer !== _undefined) {
-                    _clearTimeout(timer);
+                if (timer !== undefined) {
+                    clearTimeout(timer);
                 }
                 type ApplyArgs = [Utils.Callback<void>, number, ...any[]];
-                timer = _setTimeout.apply(
-                    _window,
+                timer = setTimeout.apply(
+                    window,
                     ([callback, wrapper.delay] as ApplyArgs).concat(arguments) as ApplyArgs
                 );
             };
             wrapper.delay = delay || Utils.debounce.defaultDelay;
             return wrapper;
         }, {
-            defaultDelay: 100
-        }
+        defaultDelay: 100
+    }
     ),
 
-    throttle: _assign(
+    throttle: Object.assign(
         function throttle<T extends Utils.ThrottleCallback>(callback: T, threshold?: number) {
             const wrapper: Utils.ThrottleWrapper<T> = function throttleWrapper(this: any) {
-                const currentTime = _now();
+                const currentTime = Date.now();
                 if (currentTime - wrapper.lastCallTime >= wrapper.threshold) {
                     wrapper.lastCallTime = currentTime;
                     return callback.apply(this, arguments as unknown as unknown[]) as ReturnType<T>;
@@ -145,12 +140,12 @@ export const Utils = {
             wrapper.threshold = threshold || Utils.throttle.defaultThreshold;
             return wrapper;
         }, {
-            defaultThreshold: 100
-        }
+        defaultThreshold: 100
+    }
     ),
 
     cache<T extends Utils.Callback<any>>(fn: T): Utils.CacheWrapper<T> {
-        const map = new _Map<string, ReturnType<T>>();
+        const map = new Map<string, ReturnType<T>>();
         const wrapper = function cacheWrapper(
             this: ThisParameterType<T>, ...args: Utils.ToArray<Parameters<T>>
         ) {

@@ -1,6 +1,5 @@
 import { Renderable } from "../renderer/Renderer";
 import { Vector, VectorLike } from "../geometry/Vector";
-import { _assign } from "../common/references";
 import { Shape, ShapeOptions } from "./Shape";
 import { Utils } from "../common/Utils";
 
@@ -16,7 +15,7 @@ export class Line extends Shape implements Required<LineOptions>, Renderable {
     };
 
     constructor(options: Readonly<LineOptions> = Utils.Const.EMPTY_OBJECT) {
-        super(_assign({}, Line.defaults, options));
+        super(Object.assign({}, Line.defaults, options));
         if (!this.start) {
             this.start = new Vector();
         }

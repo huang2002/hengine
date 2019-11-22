@@ -1,4 +1,3 @@
-import { _assign, _undefined, _null } from "../common/references";
 import { Renderable, RendererLike } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { Body } from "./Body";
@@ -24,23 +23,23 @@ export type ConstraintOptions = Partial<{
 export class Constraint implements Required<ConstraintOptions>, Renderable {
 
     static defaults: ConstraintOptions = {
-        origin: _null,
-        target: _null,
+        origin: null,
+        target: null,
         elasticity: 1,
         stiffness: 1,
         force: true,
         defer: true,
     };
 
-    static defaultStyle: ConstraintStyle = _assign(
+    static defaultStyle: ConstraintStyle = Object.assign(
         {} as ConstraintStyle,
         Style.Common.defaults,
         Style.Stroke.defaults
     );
 
     constructor(options?: Readonly<ConstraintOptions>) {
-        _assign(this, Constraint.defaults, options);
-        this.style = _assign({}, Constraint.defaultStyle, this.style);
+        Object.assign(this, Constraint.defaults, options);
+        this.style = Object.assign({}, Constraint.defaultStyle, this.style);
 
         if (!this.originOffset) {
             this.originOffset = new Vector();
@@ -49,13 +48,13 @@ export class Constraint implements Required<ConstraintOptions>, Renderable {
             this.targetOffset = new Vector();
         }
 
-        if (this.maxLength === _undefined) {
+        if (this.maxLength === undefined) {
             const { origin, target } = this;
             this.maxLength = origin && target ?
                 Vector.distance((origin as Body).position || origin, target.position) :
                 0;
         }
-        if (this.minLength === _undefined) {
+        if (this.minLength === undefined) {
             this.minLength = 0;
         }
 

@@ -1,4 +1,3 @@
-import { _Map, _undefined } from "../common/references";
 
 export type CategoryTag = string | symbol;
 export type CategoryRecord = [CategoryTag, number];

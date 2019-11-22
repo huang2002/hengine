@@ -1,5 +1,4 @@
 import { Renderable, Renderer } from "../renderer/Renderer";
-import { _assign, _null, _undefined } from "../common/references";
 import { EventEmitter } from "../common/EventEmitter";
 import { RenderingStyle } from "../graph/Style";
 import { Utils } from "../common/Utils";
@@ -50,8 +49,8 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         timeScale: 1,
         background: '#fff',
         clean: false,
-        camera: _null,
-        pointer: _null,
+        camera: null,
+        pointer: null,
         collisionChecker: Collision.Checker.Smart,
         pointerChecker: Collision.Checker.Smart,
     };
@@ -69,7 +68,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
             this.pointerConstraint = new Constraint();
         }
 
-        _assign(this, Scene.defaults, options);
+        Object.assign(this, Scene.defaults, options);
 
         if (!this.objects) {
             this.objects = [];
@@ -161,7 +160,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
             pointerConstraint.targetOffset.setVector(position).minusVector(focus.position);
             focus.emit('dragStart', position, id, event);
         } else {
-            pointerConstraint.target = _null;
+            pointerConstraint.target = null;
         }
     }
 
@@ -169,7 +168,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
         const { pointerConstraint } = this,
             target = pointerConstraint && pointerConstraint.target;
         if (target) {
-            pointerConstraint!.target = _null;
+            pointerConstraint!.target = null;
             target.emit('dragEnd', position, id, event);
             if (!target.active) {
                 target.velocity.reset();
@@ -244,7 +243,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
                 }
             }
         }
-        return _null;
+        return null;
     }
 
     drag(target: Body | null) {

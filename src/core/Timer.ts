@@ -1,4 +1,3 @@
-import { _assign, _undefined, _clearTimeout, _setTimeout, _max, _window, _now } from "../common/references";
 import { EventEmitter } from "../common/EventEmitter";
 import { Utils } from "../common/Utils";
 
@@ -27,7 +26,7 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
     constructor(options?: Readonly<TimerOptions>) {
         super();
 
-        _assign(this, Timer.defaults, options);
+        Object.assign(this, Timer.defaults, options);
 
         this._tick = this._tick.bind(this);
 
@@ -50,25 +49,25 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
 
     private _requestTick(delay: number) {
         this._timer = (this._usedRAF = this.delay <= Timer.RAFThreshold && this.allowRAF) ?
-            _window.requestAnimationFrame(this._tick) :
-            _setTimeout(this._tick, _max(delay, 0)) as unknown as number;
+            requestAnimationFrame(this._tick) :
+            setTimeout(this._tick, Math.max(delay, 0)) as unknown as number;
     }
 
     private _tick() {
-        const startTime = _now(),
+        const startTime = Date.now(),
             deltaTime = (this.lastFrameDelay as number) = startTime - this._lastTickTime,
             { _timer } = this;
         this._lastTickTime = startTime;
         const { _timeoutCallbacks } = this;
         _timeoutCallbacks.forEach((record, id) => {
             if (startTime >= record[1]) {
-                record[0].apply(_undefined, record[2]);
+                record[0].apply(undefined, record[2]);
                 _timeoutCallbacks.delete(id);
             }
         });
         this._intervalCallbacks.forEach(record => {
             if (startTime >= record[1]) {
-                record[0].apply(_undefined, record[3]);
+                record[0].apply(undefined, record[3]);
                 while (startTime >= record[1]) {
                     record[1] += record[2];
                 }
@@ -78,17 +77,17 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
         if (!this.isRunning) {
             return;
         }
-        const duration = (this.lastFrameDuration as number) = _now() - startTime;
+        const duration = (this.lastFrameDuration as number) = Date.now() - startTime;
         if (this._timer === _timer) {
-            this._requestTick(_max(this.delay - (this.fixDelay ? duration : 0), 0));
+            this._requestTick(Math.max(this.delay - (this.fixDelay ? duration : 0), 0));
         }
     }
 
     start() {
         (this.isRunning as boolean) = true;
-        const now = (this._lastTickTime = _now()),
+        const now = (this._lastTickTime = Date.now()),
             { _lastStopTime } = this;
-        if (_lastStopTime !== _undefined) {
+        if (_lastStopTime !== undefined) {
             const delay = now - _lastStopTime;
             this._timeoutCallbacks.forEach(record => {
                 record[1] += delay;
@@ -105,11 +104,11 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
             return;
         }
         (this.isRunning as boolean) = false;
-        this._lastStopTime = _now();
+        this._lastStopTime = Date.now();
         const { _timer } = this;
-        if (_timer !== _undefined) {
-            (this._usedRAF ? _window.cancelAnimationFrame : _clearTimeout)(_timer);
-            this._timer = _undefined;
+        if (_timer !== undefined) {
+            (this._usedRAF ? cancelAnimationFrame : clearTimeout)(_timer);
+            this._timer = undefined;
         }
     }
 
@@ -121,15 +120,15 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
         if (this.isRunning) {
             this.stop();
             (this.isRunning as boolean) = true;
-            const now = _now();
-            this._requestTick(_max(delay - (now - this._lastTickTime), 0));
+            const now = Date.now();
+            this._requestTick(Math.max(delay - (now - this._lastTickTime), 0));
             this._lastTickTime = now;
         }
     }
 
     setTimeout<T extends any[] = any[]>(callback: ScheduleCallback<T>, timeout: number, ...args: T) {
         const id = this._timeoutId++;
-        this._timeoutCallbacks.set(id, [callback, _now() + timeout, args]);
+        this._timeoutCallbacks.set(id, [callback, Date.now() + timeout, args]);
         return id;
     }
 
@@ -139,7 +138,7 @@ export class Timer extends EventEmitter<TimerEvents> implements Required<TimerOp
 
     setInterval<T extends any[] = any[]>(callback: ScheduleCallback<T>, interval: number, ...args: T) {
         const id = this._intervalId++;
-        this._intervalCallbacks.set(id, [callback, _now() + interval, interval, args]);
+        this._intervalCallbacks.set(id, [callback, Date.now() + interval, interval, args]);
         return id;
     }
 

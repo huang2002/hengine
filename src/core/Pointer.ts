@@ -1,4 +1,3 @@
-import { _assign, _window, _null, _Map } from "../common/references";
 import { Vector, VectorLike } from "../geometry/Vector";
 import { EventEmitter } from "../common/EventEmitter";
 import { BodyLike } from "../physics/Body";
@@ -29,16 +28,16 @@ export interface PointerEvents {
 export class Pointer extends EventEmitter<PointerEvents> implements Required<PointerOptions>, BodyLike {
 
     static defaults: PointerOptions = {
-        target: _window,
-        pretransform: _null,
-        transform: _null,
+        target: window,
+        pretransform: null,
+        transform: null,
         isTouchMode: Utils.Const.IS_TOUCH_MODE,
         clickThreshold: 1000,
     };
 
     constructor(options?: Readonly<PointerOptions>) {
         super();
-        _assign(this, Pointer.defaults, options);
+        Object.assign(this, Pointer.defaults, options);
 
         const { target } = this;
         if (this.isTouchMode) {
@@ -76,8 +75,8 @@ export class Pointer extends EventEmitter<PointerEvents> implements Required<Poi
     readonly normals: [] = [];
     readonly active: boolean = true;
     readonly isHolding: boolean = false;
-    readonly startTimeStamps = new _Map<number, number>();
-    readonly positions = new _Map<number, Vector>();
+    readonly startTimeStamps = new Map<number, number>();
+    readonly positions = new Map<number, Vector>();
     private _startListener: EventListener;
     private _moveListener: EventListener;
     private _endListener: EventListener;

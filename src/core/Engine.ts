@@ -1,4 +1,3 @@
-import { _assign, _null } from "../common/references";
 import { Timer } from "./Timer";
 import { Renderer } from "../renderer/Renderer";
 import { Scene, SceneOptions } from "./Scene";
@@ -38,7 +37,7 @@ export class Engine extends EventEmitter<EngineEvents> implements Required<Engin
     constructor(options: Readonly<EngineOptions> = Utils.Const.EMPTY_OBJECT) {
         super();
 
-        _assign(this, Engine.defaults, options);
+        Object.assign(this, Engine.defaults, options);
 
         if (!this.timer) {
             this.timer = new Timer();
@@ -72,15 +71,15 @@ export class Engine extends EventEmitter<EngineEvents> implements Required<Engin
     readonly timer!: Timer;
     readonly renderer!: Renderer;
     readonly pointer!: Pointer;
-    inspector: Inspector | null = _null;
+    inspector: Inspector | null = null;
     baseTime!: number;
     maxDelay!: number;
-    currentScene: Scene | null = _null;
+    currentScene: Scene | null = null;
     rerenderOnResize!: boolean;
     restoration!: boolean;
 
     createScene(options?: SceneOptions) {
-        return new Scene(_assign({ pointer: this.pointer }, options));
+        return new Scene(Object.assign({ pointer: this.pointer }, options));
     }
 
     enter(scene: Scene | null) {
@@ -103,7 +102,7 @@ export class Engine extends EventEmitter<EngineEvents> implements Required<Engin
                 timer.start();
             }
         } else {
-            pointer.transform = _null;
+            pointer.transform = null;
         }
     }
 

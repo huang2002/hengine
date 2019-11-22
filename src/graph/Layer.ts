@@ -1,4 +1,3 @@
-import { _assign, _document, _null, _window } from "../common/references";
 import { Renderable, RendererLike } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { SceneObject } from "../core/Scene";
@@ -22,13 +21,13 @@ export class Layer implements Required<LayerOptions>, Renderable, RendererLike {
         active: true,
         width: 480,
         height: 320,
-        ratio: Utils.Const.IS_TOUCH_MODE ? _window.devicePixelRatio || 1 : 2,
+        ratio: Utils.Const.IS_TOUCH_MODE ? window.devicePixelRatio || 1 : 2,
         origin: Vector.of(.5, .5),
-        background: _null,
+        background: null,
     };
 
     constructor(options?: Readonly<LayerOptions>) {
-        _assign(this, Layer.defaults, options);
+        Object.assign(this, Layer.defaults, options);
 
         if (!this.offset) {
             this.offset = new Vector();
@@ -44,7 +43,7 @@ export class Layer implements Required<LayerOptions>, Renderable, RendererLike {
 
     }
 
-    readonly canvas = _document.createElement('canvas');
+    readonly canvas = document.createElement('canvas');
     readonly context = this.canvas.getContext('2d')!;
     readonly width!: number;
     readonly height!: number;

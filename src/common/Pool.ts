@@ -1,5 +1,3 @@
-import { _undefined, _assign } from "./references";
-
 export class Pool<T, O = any> {
 
     constructor(

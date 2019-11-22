@@ -1,6 +1,5 @@
 import { Renderable } from "../renderer/Renderer";
 import { Vector, VectorLike } from "../geometry/Vector";
-import { _abs, _assign, _Set } from "../common/references";
 import { Shape, ShapeOptions } from "./Shape";
 import { Body } from "../physics/Body";
 import { Vertices } from "../geometry/Vertices";
@@ -20,7 +19,7 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
     };
 
     constructor(options: Readonly<PolygonOptions> = Utils.Const.EMPTY_OBJECT) {
-        super(_assign({}, Polygon.defaults, options));
+        super(Object.assign({}, Polygon.defaults, options));
 
         if (this.vertices) {
             this.updateVertices();
@@ -46,7 +45,7 @@ export class Polygon extends Shape implements Required<PolygonOptions>, Renderab
                 areas = new Array<number>(),
                 normals = new Array<Vector>(),
                 centers = new Array<Vector>(),
-                tangents = new _Set<string>();
+                tangents = new Set<string>();
             let totalArea = 0;
             vertices.reduce(
                 (vertex1, vertex2) => {

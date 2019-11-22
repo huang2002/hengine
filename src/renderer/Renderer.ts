@@ -1,4 +1,3 @@
-import { _document, _assign, _window, _undefined } from "../common/references";
 import { SizingFunction, Sizing } from "./Sizing";
 import { Vector, VectorLike } from "../geometry/Vector";
 import { Utils } from "../common/Utils";
@@ -55,7 +54,7 @@ export class Renderer extends EventEmitter<RendererEvents>
         margin: 0,
         ratio: Layer.defaults.ratio,
         origin: Layer.defaults.origin,
-        parent: _document.body,
+        parent: document.body,
         align: true,
         sizing: Sizing.Fit,
         resizeEvents: ['resize', 'orientationchange'],
@@ -66,11 +65,11 @@ export class Renderer extends EventEmitter<RendererEvents>
     constructor(options: Readonly<RendererOptions> = Utils.Const.EMPTY_OBJECT) {
         super();
 
-        _assign(this, Renderer.defaults, options);
+        Object.assign(this, Renderer.defaults, options);
 
         let { canvas } = this;
         if (!canvas) {
-            canvas = this.canvas || (this.canvas = _document.createElement('canvas'));
+            canvas = this.canvas || (this.canvas = document.createElement('canvas'));
         } else if (canvas.parentNode) {
             this.parent = canvas.parentElement;
         }
@@ -82,7 +81,7 @@ export class Renderer extends EventEmitter<RendererEvents>
 
         const { resizeListener } = this;
         this.resizeEvents.forEach(event => {
-            _window.addEventListener(event, resizeListener);
+            window.addEventListener(event, resizeListener);
         });
 
         this._width = this.width;
@@ -229,7 +228,7 @@ export class Renderer extends EventEmitter<RendererEvents>
 
     createLayer(options?: LayerOptions) {
         const { bounds } = this;
-        return new Layer(_assign({
+        return new Layer(Object.assign({
             width: bounds.width,
             height: bounds.height,
             ratio: this.ratio,

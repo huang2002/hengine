@@ -1,4 +1,3 @@
-import { _cos, _sin, _PI, _Infinity } from "../common/references";
 import { Vector, VectorLike } from "./Vector";
 import { Utils } from "../common/Utils";
 
@@ -13,7 +12,7 @@ export const Vertices = {
     },
 
     findClosest<T extends VectorLike>(target: VectorLike, vertices: ReadonlyArray<T>) {
-        let min = _Infinity,
+        let min = Infinity,
             closest!: T;
         vertices.forEach(vertex => {
             const current = Utils.quadraticSum(target.x - vertex.x, target.y - vertex.y);
@@ -31,7 +30,7 @@ export const Vertices = {
         const angle = Utils.Const.DOUBLE_PI / edges,
             results = [];
         for (let i = 0; i < edges; i++) {
-            results.push(Vector.of(_cos(rotation), _sin(rotation)).setNorm(radius));
+            results.push(Vector.of(Math.cos(rotation), Math.sin(rotation)).setNorm(radius));
             rotation += angle;
         }
         return results;
@@ -41,12 +40,12 @@ export const Vertices = {
         this: void, angles: number, innerRadius: number, outerRadius: number,
         rotation: number = -Utils.Const.HALF_PI
     ) {
-        const angle = _PI / angles,
+        const angle = Math.PI / angles,
             results = [];
         for (let i = 0; i < angles; i++) {
-            results.push(Vector.of(_cos(rotation), _sin(rotation)).setNorm(innerRadius));
+            results.push(Vector.of(Math.cos(rotation), Math.sin(rotation)).setNorm(innerRadius));
             rotation += angle;
-            results.push(Vector.of(_cos(rotation), _sin(rotation)).setNorm(outerRadius));
+            results.push(Vector.of(Math.cos(rotation), Math.sin(rotation)).setNorm(outerRadius));
             rotation += angle;
         }
         return results;
@@ -58,8 +57,8 @@ export const Vertices = {
         const x0 = width / 2,
             y0 = height / 2;
         if (rotation) {
-            const cos = _cos(rotation),
-                sin = _sin(rotation),
+            const cos = Math.cos(rotation),
+                sin = Math.sin(rotation),
                 x1 = x0 * cos - y0 * sin,
                 y1 = x0 * sin + y0 * sin,
                 x2 = -x0 * cos - y0 * sin,

@@ -1,4 +1,3 @@
-import { _assign, _null } from "../common/references";
 import { Renderer } from "../renderer/Renderer";
 import { Paragraph } from "../graph/Paragraph";
 import { Utils } from "../common/Utils";
@@ -36,15 +35,15 @@ export class Inspector implements Required<InspectorOptions> {
             engine => `Attachments: ${engine.currentScene ? engine.currentScene.attachments.length : 0}`,
             engine => `Pointer Position: ${engine.pointer.position}`,
         ],
-        boundsStroke: _null,
+        boundsStroke: null,
         boundsStrokeWidth: 1,
-        velocityStroke: _null,
+        velocityStroke: null,
         velocityStrokeWidth: 1,
         velocityStrokeScale: 1,
     };
 
     constructor(options?: Readonly<InspectorOptions>) {
-        _assign(this, Inspector.defaults, options);
+        Object.assign(this, Inspector.defaults, options);
 
         if (!this.paragraph) {
             this.paragraph = new Paragraph({
@@ -55,7 +54,7 @@ export class Inspector implements Required<InspectorOptions> {
                     textAlign: 'left',
                     textBaseline: 'top',
                     fillStyle: '#00f',
-                    strokeStyle: _null,
+                    strokeStyle: null,
                 },
             });
         }

@@ -1,4 +1,3 @@
-import { _abs, _Math } from "../common/references";
 
 export type TimingFunction = (x: number) => number;
 
@@ -18,7 +17,7 @@ const cubic = (x1: number, y1: number, x2: number, y2: number): TimingFunction =
         r = 1,
         t = .5,
         cur: number;
-    while (_abs((cur = (interpolate(x1, x2, t))) - x) > accuracy) {
+    while (Math.abs((cur = (interpolate(x1, x2, t))) - x) > accuracy) {
         if (cur > x) {
             r = t;
         } else {
@@ -40,7 +39,7 @@ export const Timing = {
     steps(stepCount: number, start?: boolean): TimingFunction {
         const step = 1 / stepCount;
         return x => {
-            let t = _Math.floor(x / step);
+            let t = Math.floor(x / step);
             if (start && t < stepCount) {
                 t += 1;
             }
