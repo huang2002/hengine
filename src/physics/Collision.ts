@@ -48,9 +48,8 @@ export const Collision: CollisionObject = {
                 const { overlapVector } = collisionInfo;
                 results.push(_assign(collisionInfo, {
                     body1, body2,
-                    edgeVector: overlapVector.isZero() ?
-                        _null :
-                        overlapVector.clone().turn().normalize(),
+                    edgeVector:
+                        overlapVector.isZero() ? _null : overlapVector.clone().turn().normalize(),
                     relativeVelocity: Vector.minus(body2.velocity, velocity1)
                 }));
             }
@@ -78,12 +77,12 @@ export const Collision: CollisionObject = {
             }
 
             const { velocity: v2, mass: m2 } = body2,
-                elasticity = _min(elasticity1, body2.elasticity) + 1,
                 slop = slop1 + body2.slop,
                 impulse = collisionInfo.overlap * (stiffness1 + body2.stiffness) / 2,
                 impulseScale = impulse > slop ? (impulse - slop) / impulse : 0,
                 { edgeVector, relativeVelocity } = collisionInfo,
                 isSeparating = Vector.dot(relativeVelocity, overlapVector) < 0,
+                bounceScale = _max(elasticity1, body2.elasticity) + 1,
                 relativeNormalVelocity = Vector.projectVector(relativeVelocity, overlapVector);
             if (body1.active) {
                 if (body2.active) {
@@ -92,14 +91,14 @@ export const Collision: CollisionObject = {
                         v2.plusVector(overlapVector, impulseScale / 2);
                     }
                     if (edgeVector && isSeparating) {
-                        Vector.distribute(relativeNormalVelocity, v1, v2, m2, -m1, elasticity);
+                        Vector.distribute(relativeNormalVelocity, v1, v2, m2, -m1, bounceScale);
                     }
                 } else {
                     if (impulseScale) {
                         v1.minusVector(overlapVector, impulseScale);
                     }
                     if (edgeVector && isSeparating) {
-                        v1.plusVector(relativeNormalVelocity, elasticity);
+                        v1.plusVector(relativeNormalVelocity, bounceScale);
                     }
                 }
             } else {
@@ -108,7 +107,7 @@ export const Collision: CollisionObject = {
                         v2.plusVector(overlapVector, impulseScale);
                     }
                     if (edgeVector && isSeparating) {
-                        v2.minusVector(relativeNormalVelocity, elasticity);
+                        v2.minusVector(relativeNormalVelocity, bounceScale);
                     }
                 } else {
                     return false;
