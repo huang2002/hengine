@@ -241,7 +241,7 @@ const box1 = label(new HE.Rectangle({
     width: 50,
     height: 50,
     radius: 15,
-    elasticity: 1,
+    elasticity: .5,
     style: boxStyle,
 }), 'box1');
 mainScene.add(box1);
