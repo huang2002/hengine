@@ -18,8 +18,8 @@ export type CollisionInfo = CollisionResult & Readonly<{
 export type CollisionChecker = (body1: BodyLike, body2: BodyLike) => CollisionResult | null;
 
 export type CollisionObject = Readonly<{
-    check(bodies: Body[], checker: CollisionChecker): void;
     find(bodies: Body[], checker: CollisionChecker): CollisionInfo[];
+    check(bodies: Body[], checker: CollisionChecker): void;
     Checker: Readonly<{
         AABB: CollisionChecker;
         SAT: CollisionChecker;
@@ -29,6 +29,34 @@ export type CollisionObject = Readonly<{
 }>;
 
 export const Collision: CollisionObject = {
+
+    find(bodies, checker) {
+        const results = new Array<CollisionInfo>(),
+            bodiesCount = bodies.length;
+        for (let i = 0; i < bodiesCount; i++) {
+            const body1 = bodies[i],
+                { category: category1, velocity: velocity1 } = body1;
+            for (let j = i + 1; j < bodiesCount; j++) {
+                const body2 = bodies[j];
+                if (!(category1 & body2.collisionFilter && body1.collisionFilter & body2.category)) {
+                    continue;
+                }
+                const collisionInfo = checker(body1, body2);
+                if (!collisionInfo) {
+                    continue;
+                }
+                const { overlapVector } = collisionInfo;
+                results.push(_assign(collisionInfo, {
+                    body1, body2,
+                    edgeVector: overlapVector.isZero() ?
+                        _null :
+                        overlapVector.clone().turn().normalize(),
+                    relativeVelocity: Vector.minus(body2.velocity, velocity1)
+                }));
+            }
+        }
+        return results;
+    },
 
     check(bodies, checker) {
 
@@ -148,34 +176,6 @@ export const Collision: CollisionObject = {
             }
         });
 
-    },
-
-    find(bodies, checker) {
-        const results = new Array<CollisionInfo>(),
-            bodiesCount = bodies.length;
-        for (let i = 0; i < bodiesCount; i++) {
-            const body1 = bodies[i],
-                { category: category1, velocity: velocity1 } = body1;
-            for (let j = i + 1; j < bodiesCount; j++) {
-                const body2 = bodies[j];
-                if (!(category1 & body2.collisionFilter && body1.collisionFilter & body2.category)) {
-                    continue;
-                }
-                const collisionInfo = checker(body1, body2);
-                if (!collisionInfo) {
-                    continue;
-                }
-                const { overlapVector } = collisionInfo;
-                results.push(_assign(collisionInfo, {
-                    body1, body2,
-                    edgeVector: overlapVector.isZero() ?
-                        _null :
-                        overlapVector.clone().turn().normalize(),
-                    relativeVelocity: Vector.minus(body2.velocity, velocity1)
-                }));
-            }
-        }
-        return results;
     },
 
     Checker: {
