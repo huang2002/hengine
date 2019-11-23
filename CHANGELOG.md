@@ -1,3 +1,9 @@
+## 0.40.0 - 2019-11-23
+
+- Rename `Collision.find` `Collision.solve`
+- Modify collision solution
+- Improve internal performance
+
 ## 0.39.0 - 2019-08-18
 
 - Add `renderer.createUIVector`
