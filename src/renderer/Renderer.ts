@@ -2,8 +2,8 @@ import { SizingFunction, Sizing } from "./Sizing";
 import { Vector, VectorLike } from "../geometry/Vector";
 import { Utils } from "../common/Utils";
 import { Bounds } from "../geometry/Bounds";
-import { RenderingStyle } from "../graph/Style";
-import { LayerOptions, Layer } from "../graph/Layer";
+import { RenderingStyle } from "../graphics/Style";
+import { LayerOptions, Layer } from "../graphics/Layer";
 import { EventEmitter } from "../common/EventEmitter";
 
 export interface Renderable {

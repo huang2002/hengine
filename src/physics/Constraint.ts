@@ -1,7 +1,7 @@
 import { Renderable, RendererLike } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { Body } from "./Body";
-import { StrokeStyle, Style, CommonStyle } from "../graph/Style";
+import { StrokeStyle, Style, CommonStyle } from "../graphics/Style";
 
 export type ConstraintStyle = CommonStyle & StrokeStyle;
 

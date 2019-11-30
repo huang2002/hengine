@@ -1,9 +1,5 @@
 export * from "./common/Utils";
 export * from "./common/EventEmitter";
-export * from "./common/Pool";
-
-export * from "./transition/Transition";
-export * from "./transition/Timing";
 
 export * from "./geometry/Vector";
 export * from "./geometry/Bounds";
@@ -17,17 +13,16 @@ export * from "./physics/Constraint";
 export * from "./renderer/Sizing";
 export * from "./renderer/Renderer";
 
-export * from "./graph/Style";
-export * from "./graph/Sprite";
-export * from "./graph/Text";
-export * from "./graph/Paragraph";
-export * from "./graph/Shape";
-export * from "./graph/Rectangle";
-export * from "./graph/Circle";
-export * from "./graph/Polygon";
-export * from "./graph/Line";
-export * from "./graph/Layer";
-export * from "./graph/Particles";
+export * from "./graphics/Style";
+export * from "./graphics/Sprite";
+export * from "./graphics/Text";
+export * from "./graphics/Paragraph";
+export * from "./graphics/Shape";
+export * from "./graphics/Rectangle";
+export * from "./graphics/Circle";
+export * from "./graphics/Polygon";
+export * from "./graphics/Line";
+export * from "./graphics/Layer";
 
 export * from "./core/Timer";
 export * from "./core/Pointer";
@@ -35,3 +30,8 @@ export * from "./core/Camera";
 export * from "./core/Scene";
 export * from "./core/Inspector";
 export * from "./core/Engine";
+
+export * from "./extensions/Transition";
+export * from "./extensions/Timing";
+export * from "./extensions/Pool";
+export * from "./extensions/Particles";

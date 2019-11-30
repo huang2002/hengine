@@ -1,9 +1,9 @@
 import { Renderer } from "../renderer/Renderer";
-import { Paragraph } from "../graph/Paragraph";
+import { Paragraph } from "../graphics/Paragraph";
 import { Utils } from "../common/Utils";
 import { Vector } from "../geometry/Vector";
 import { Engine } from "./Engine";
-import { RenderingStyle } from "../graph/Style";
+import { RenderingStyle } from "../graphics/Style";
 import { Body } from "../physics/Body";
 import { SceneObject } from "./Scene";
 import { Camera } from "./Camera";

@@ -1,6 +1,6 @@
 import { Renderable, Renderer } from "../renderer/Renderer";
 import { EventEmitter } from "../common/EventEmitter";
-import { RenderingStyle } from "../graph/Style";
+import { RenderingStyle } from "../graphics/Style";
 import { Utils } from "../common/Utils";
 import { Body } from "../physics/Body";
 import { Collision, CollisionChecker } from "../physics/Collision";

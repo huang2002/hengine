@@ -1,7 +1,7 @@
 import { Renderable, RendererLike } from "../renderer/Renderer";
 import { Vector } from "../geometry/Vector";
 import { SceneObject } from "../core/Scene";
-import { Pool } from "../common/Pool";
+import { Pool } from "./Pool";
 import { Utils } from "../common/Utils";
 
 export type ParticleInitializer<T extends SceneObject = SceneObject, U = unknown> =
