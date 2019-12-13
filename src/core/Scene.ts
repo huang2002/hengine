@@ -220,7 +220,7 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
     }
 
     animate(options: TransitionOptions) {
-        const transition = Object.assign(Transition.pool.get(), options);
+        const transition = Object.assign(Transition.pool.get(), options) as Transition;
         this.use(transition);
         const onExit = () => {
             transition.finish();
