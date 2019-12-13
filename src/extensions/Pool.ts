@@ -1,10 +1,23 @@
-export class Pool<T, O = any> {
+export type PoolCallback<T> = (item: T) => void;
+
+export interface PoolOptions<T, O = any> {
+    options?: O;
+    initializer?: PoolCallback<T> | null;
+    cleaner?: PoolCallback<T> | null;
+}
+
+export class Pool<T, O = any> implements Required<PoolOptions<T, O>>{
 
     constructor(
         readonly factory: new (options?: O) => T,
-        public options?: O
-    ) { }
+        options?: PoolOptions<T, O>
+    ) {
+        Object.assign(this, options);
+    }
 
+    options!: O;
+    initializer!: PoolCallback<T> | null;
+    cleaner!: PoolCallback<T> | null;
     private _items = new Array<T>();
 
     get size() {
@@ -22,16 +35,19 @@ export class Pool<T, O = any> {
     }
 
     get() {
-        const { _items } = this;
-        if (_items.length) {
-            return _items.shift()!;
-        } else {
-            return new this.factory(this.options);
+        const { _items } = this,
+            item = _items.length ? _items.shift()! : new this.factory(this.options);
+        if (this.initializer) {
+            this.initializer(item);
         }
+        return item;
     }
 
     add(item: T) {
         this._items.push(item);
+        if (this.cleaner) {
+            this.cleaner(item);
+        }
         return this;
     }
 
