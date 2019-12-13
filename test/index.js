@@ -308,14 +308,16 @@ mainScene.add(stick);
 
 const particles = new HE.Particles({
     pool: new HE.Pool(HE.Polygon, {
-        tag: 'particle',
-        active: true,
-        vertices: HE.Vertices.createStar(4, 2, 5, HE.Utils.Const.HALF_PI / 2),
-        gravity: null,
-        airFriction: .01,
-        style: {
-            fillStyle: '#ff0',
-            strokeStyle: null
+        options: {
+            tag: 'particle',
+            active: true,
+            vertices: HE.Vertices.createStar(4, 2, 5, HE.Utils.Const.HALF_PI / 2),
+            gravity: null,
+            airFriction: .01,
+            style: {
+                fillStyle: '#ff0',
+                strokeStyle: null
+            }
         }
     }),
     minLife: 1500,
