@@ -2,6 +2,7 @@ import { EventEmitter } from "../common/EventEmitter";
 import { TimingFunction, Timing } from "./Timing";
 import { Utils } from "../common/Utils";
 import { SceneEffect } from "../core/Scene";
+import { Pool } from "./Pool";
 
 export type TransitionOptions<T extends object = any> = Partial<{
     active: boolean;
@@ -24,6 +25,8 @@ export interface TransitionEvents {
 export class Transition<T extends object = any>
     extends EventEmitter<TransitionEvents>
     implements Required<TransitionOptions>, SceneEffect {
+
+    static pool = new Pool(Transition);
 
     static defaults: TransitionOptions = {
         active: true,
