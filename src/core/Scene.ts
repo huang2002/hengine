@@ -9,6 +9,7 @@ import { Vector } from "../geometry/Vector";
 import { Constraint } from "../physics/Constraint";
 import { Timer } from "./Timer";
 import { Camera } from "./Camera";
+import { TransitionOptions, Transition } from "../extensions/Transition";
 
 export interface SceneEffect {
     defer?: boolean;
@@ -216,6 +217,21 @@ export class Scene extends EventEmitter<SceneEvents> implements Required<SceneOp
             Utils.removeIndex(effects, index);
         }
         return this;
+    }
+
+    animate(options: TransitionOptions) {
+        const transition = Object.assign(Transition.pool.get(), options);
+        transition.clearEvents().start();
+        this.use(transition);
+        const onExit = () => {
+            transition.finish();
+        };
+        this.once('exit', onExit);
+        return transition.on('end', () => {
+            this.disuse(transition);
+            this.off('exit', onExit, true);
+            Transition.pool.add(transition);
+        });
     }
 
     toViewPosition(position: Vector) {
