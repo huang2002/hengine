@@ -1,3 +1,9 @@
+## 0.41.0 - 2019-12-13
+
+- Add `scene.animate`
+- Add `Transition.pool`
+- Improve `Pool` APIs
+
 ## 0.40.0 - 2019-11-23
 
 - Rename `Collision.find` `Collision.solve`
