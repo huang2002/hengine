@@ -95,20 +95,19 @@ menuScene.attach(
         console.log('Button clicked at ' + position, ' (id:' + id + ')', event);
         engine.enter(mainScene);
     })
-).use(
-    new HE.Transition({
-        target: playButton,
-        key: 'y',
-        from: renderer.bounds.bottom + playButton.height / 2,
-        to: 0,
-        duration: 2000,
-        timing: HE.Timing.easeInOut,
-    }).on('start', () => {
-        menuScene.fps = 50;
-    }).on('end', () => {
-        menuScene.delay = 500;
-    })
 );
+menuScene.animate({
+    target: playButton,
+    key: 'y',
+    from: renderer.bounds.bottom + playButton.height / 2,
+    to: 0,
+    duration: 2000,
+    timing: HE.Timing.easeInOut,
+}).once('start', () => {
+    menuScene.fps = 50;
+}).once('end', () => {
+    menuScene.delay = 500;
+});
 
 const mainScene = engine.createScene({
     background: '#fff',
