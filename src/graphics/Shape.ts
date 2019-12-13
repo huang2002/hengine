@@ -28,8 +28,8 @@ export abstract class Shape extends Body implements Required<ShapeOptions>, Rend
     static defaultStyle: ShapeStyle = Object.assign(
         {} as ShapeStyle,
         Style.Common.defaults,
+        Style.Fill.defaults,
         Style.Stroke.defaults,
-        { fillStyle: null } as ShapeStyle
     );
 
     static applyStyle(renderer: RendererLike, style: ShapeStyle) {
