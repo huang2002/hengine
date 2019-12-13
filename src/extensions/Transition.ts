@@ -26,7 +26,11 @@ export class Transition<T extends object = any>
     extends EventEmitter<TransitionEvents>
     implements Required<TransitionOptions>, SceneEffect {
 
-    static pool = new Pool(Transition);
+    static pool = new Pool(Transition, {
+        cleaner: transition => {
+            transition.clearEvents();
+        },
+    });
 
     static defaults: TransitionOptions = {
         active: true,
