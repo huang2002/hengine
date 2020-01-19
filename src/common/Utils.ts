@@ -52,7 +52,7 @@ export const Utils = {
         }
     },
 
-    insert<T = unknown>(array: T[], index: number, item: T) {
+    insertIndex<T = unknown>(array: T[], index: number, item: T) {
         if (!index) {
             array.unshift(item);
         } else if (index < array.length) {

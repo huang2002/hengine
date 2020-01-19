@@ -98,7 +98,7 @@ export class Particles<T extends SceneObject = SceneObject, U = unknown>
         if (this.sequential) {
             items.push(particle);
         } else {
-            Utils.insert(items, Math.round(items.length * Math.random()), particle);
+            Utils.insertIndex(items, Math.round(items.length * Math.random()), particle);
         }
     }
 
