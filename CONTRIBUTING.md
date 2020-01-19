@@ -1,21 +1,9 @@
 # Contributing
 
-If you find some bug or want some new feature, you may [open an issue](https://github.com/huang2002/hengine/issues/new) on GitHub.
+## Bug Reporting
 
-## Contributing Checklist
+If you find a bug, you can [open an issue](https://github.com/huang2002/hengine/issues/new) on GitHub to report it. When creating an issue, please tell me where you find it and the reproducing steps if available.
 
-Before opening an issue,
+## Feature Request
 
-1. Make sure whether it is really a bug or a feature needed. If it is not, please do not open an issue for it.
-2. View [the existing issues](https://github.com/huang2002/hengine/issues) and check whether there has already been an issue reporting such a bug or discussing about such a feature request. If it has already been such one, please do not open another one. (That is, do not make duplicated issues.)
-3. If you are sure that it is necessary to open an issue, please follow the instructions below to complete your issue.
-
-## Instructions for Issues
-
-### Reporting a bug
-
-When reporting a bug, please write clear *where you find the bug* and *the reproducing steps* if available.
-
-### Making a feature request
-
-When making a feature request, please write clear *the use case* and *the shape of the APIs for it* if you have any ideas about it.
+If you want a new feature, you can also [open an issue](https://github.com/huang2002/hengine/issues/new) on GitHub to make a request for it. When making a feature request, please tell me its use case.
