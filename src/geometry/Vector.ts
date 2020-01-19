@@ -5,8 +5,6 @@ export interface VectorLike {
     y: number;
 }
 
-// TODO: add interface `ReadonlyVector`
-
 export class Vector {
 
     static of(x: number, y: number) {
