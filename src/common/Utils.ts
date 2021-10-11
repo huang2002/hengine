@@ -114,10 +114,9 @@ export const Utils = {
                 if (timer !== undefined) {
                     clearTimeout(timer);
                 }
-                type ApplyArgs = [Utils.Callback<void>, number, ...any[]];
                 timer = setTimeout.apply(
                     window,
-                    ([callback, wrapper.delay] as ApplyArgs).concat(arguments) as ApplyArgs
+                    ([callback, wrapper.delay] as any[]).concat(arguments) as [() => void, number]
                 );
             };
             wrapper.delay = delay || Utils.debounce.defaultDelay;
