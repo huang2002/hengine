@@ -1,3 +1,3 @@
 export as namespace HE;
 
-export * from "./typings/index";
+export * from "./types/index";

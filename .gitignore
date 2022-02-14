@@ -1,5 +1,4 @@
 node_modules
 dist
-raw
-typings
-.tsbuildinfo
+js
+types

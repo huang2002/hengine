@@ -1,9 +1,9 @@
 {
     "name": "hengine",
-    "description": "A 2D graphic engine for javascript/typescript.",
+    "description": "A game engine for `canvasom`.",
     "version": "0.41.0",
-    "main": "dist/hengine.umd.min.js",
-    "module": "dist/hengine.min.js",
+    "main": "./dist/hengine.umd.min.js",
+    "module": "./dist/hengine.min.js",
     "types": "index.d.ts",
     "scripts": {
         "prebuild": "tsc",
@@ -28,15 +28,20 @@
     ],
     "files": [
         "dist",
-        "typings",
+        "types",
         "index.d.ts"
     ],
     "devDependencies": {
-        "@babel/core": "^7.8.3",
+        "@babel/core": "^7.17.0",
         "@babel/preset-env": "^7.8.3",
-        "rollup": "^1.29.0",
+        "3h-resize": "^0.1.0",
+        "rollup": "^2.67.2",
         "rollup-plugin-babel": "^4.3.3",
-        "terser": "^4.6.3",
-        "typescript": "^3.7.5"
+        "terser": "^5.10.0",
+        "typescript": "^4.5.5"
+    },
+    "dependencies": {
+        "3h-utils": "^0.2.0",
+        "canvasom": "^0.37.0"
     }
 }

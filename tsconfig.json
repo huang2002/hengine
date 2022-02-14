@@ -3,15 +3,21 @@
         "target": "ESNext",
         "module": "ESNext",
         "declaration": true,
-        "declarationDir": "./typings",
-        "outDir": "./raw",
+        "declarationDir": "./types",
+        "outDir": "./js",
         "rootDir": "./src",
+        "paths": {
+            "canvasom": [
+                "./node_modules/canvasom/index.d.ts"
+            ],
+            "3h-resize": [
+                "./node_modules/3h-resize/index.d.ts"
+            ]
+        },
         "strict": true,
         "noUnusedLocals": true,
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
-        "incremental": true,
-        "tsBuildInfoFile": ".tsbuildinfo"
     },
     "include": [
         "src"
