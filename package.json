@@ -8,7 +8,8 @@
     "scripts": {
         "prebuild": "tsc",
         "build": "rollup -c",
-        "postbuild": "terser dist/hengine.js --config-file terser.json --module -o dist/hengine.min.js && terser dist/hengine.umd.js --config-file terser.json -o dist/hengine.umd.min.js && node stat"
+        "postbuild": "terser dist/hengine.js --config-file terser.json --module -o dist/hengine.min.js && terser dist/hengine.umd.js --config-file terser.json -o dist/hengine.umd.min.js && node stat",
+        "docs": "dts2md \"**\" \"!index.d.ts\" -i ./types -o ./docs -l -I API.md"
     },
     "license": "MIT",
     "author": "3h",
@@ -35,6 +36,7 @@
         "@babel/core": "^7.17.0",
         "@babel/preset-env": "^7.8.3",
         "3h-resize": "^0.1.0",
+        "dts2md": "^0.4.3",
         "rollup": "^2.67.2",
         "rollup-plugin-babel": "^4.3.3",
         "terser": "^5.10.0",
