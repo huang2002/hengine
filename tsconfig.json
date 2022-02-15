@@ -6,14 +6,7 @@
         "declarationDir": "./types",
         "outDir": "./js",
         "rootDir": "./src",
-        "paths": {
-            "canvasom": [
-                "./node_modules/canvasom/index.d.ts"
-            ],
-            "3h-resize": [
-                "./node_modules/3h-resize/index.d.ts"
-            ]
-        },
+        "moduleResolution": "node",
         "strict": true,
         "noUnusedLocals": true,
         "allowSyntheticDefaultImports": true,
