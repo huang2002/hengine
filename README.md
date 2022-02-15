@@ -1,6 +1,6 @@
 # hengine
 
-> A game engine for `canvasom`.
+> A graphic engine for `canvasom`.
 
 ## Introduction
 
