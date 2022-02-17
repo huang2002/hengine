@@ -1,5 +1,5 @@
 import babel from "@rollup/plugin-babel";
-import nodeResolve from "@rollup/plugin-babel-resolve";
+import nodeResolve from "@rollup/plugin-node-resolve";
 
 const input = './js/index.js';
 const external = ['canvasom'];
