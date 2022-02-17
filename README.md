@@ -1,6 +1,6 @@
 # hengine
 
-> A graphic engine for `canvasom`.
+> A simple graphic engine for `canvasom`.
 
 ## Introduction
 

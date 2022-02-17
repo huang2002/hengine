@@ -1,6 +1,6 @@
 {
     "name": "hengine",
-    "description": "A graphic engine for `canvasom`.",
+    "description": "A simple graphic engine for `canvasom`.",
     "version": "0.41.0",
     "main": "./dist/hengine.umd.min.js",
     "module": "./dist/hengine.min.js",
