@@ -44,6 +44,6 @@
     },
     "dependencies": {
         "3h-resize": "^0.4.0",
-        "canvasom": "^0.39.0"
+        "canvasom": "^1.0.0"
     }
 }
